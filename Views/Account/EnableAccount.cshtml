@@ -1,0 +1,252 @@
+﻿@model ABAC.DTO.SearchDTO
+@using ABAC.Identity;
+@using ABAC.Extensions
+@{
+    ViewData["Title"] = "แก้ไข Lock / unlock";
+
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div aria-live="polite" aria-atomic="true" style="position: relative;">
+                <div class="page-title-box">
+                    <div class="float-right" style="width:50%">
+                        @if (ViewBag.ReturnCode != null)
+                        {
+                            @if (ViewBag.ReturnCode == ReturnCode.Success)
+                            {
+                                <div class="alert alert-success  border-0" role="alert">
+                                    <i class="mdi mdi-check-circle-outline font-18 mr-1"></i>
+                                    <strong class="font-18">@ViewBag.Message</strong>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger border-0" role="alert">
+                                    <i class="mdi mdi-close-circle-outline font-18 mr-1"></i>
+                                    <strong class="font-18">@ViewBag.Message</strong>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <h4 class="page-title">แก้ไข lock / unlock</h4>
+                    <p class="text-muted">
+                        Edit Lock/Unlock Account
+                    </p>
+                </div><!--end page-title-box-->
+            </div>
+        </div><!--end col-->
+    </div>
+    <!-- end page title end breadcrumb -->
+    <!--end row-->
+    <form class="form-horizontal form-parsley" asp-action="EnableAccount" asp-controller="Account" method="get">
+        <input type="hidden" id="select_id" />
+        <button id="btnremarksubmit" type="button" class="btn btn-info waves-effect waves-light" style="display:none;" data-toggle="modal" data-animation="bounce" data-target=".remark-submit">Center modal</button>
+        <div id="remark-submit-modal" class="modal fade bs-example-modal-center remark-submit" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="exampleModalLabel">หมายเหตุ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                                <textarea id="txtRemark" class="form-control"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-12 text-right">
+                                <button type="button" class="btn btn-dark" onclick="change_status()">ตกลง</button>
+                                @*<button type="button" class="btn btn-default"  data-dismiss="modal" aria-label="Close">ปิด</button>*@
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+        <button id="btnremark" type="button" class="btn btn-info waves-effect waves-light" style="display:none;" data-toggle="modal" data-animation="bounce" data-target=".remark">Center modal</button>
+        <div id="remark-modal" class="modal fade bs-example-modal-center remark" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel2" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title mt-0" id="mySmallModalLabel2">หมายเหตุ</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                               <span id="lblRemark"></span>
+                            </div>
+                        </div>
+                      
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="mt-0 header-title">ค้นหา</h4>
+                        <div class="form-group row">
+                            <div class="col-lg-9">
+                                <label class="col-form-label">คำค้น</label>
+                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, โทรศัพท์, อีเมล์" asp-for="text_search" required>
+                                @Html.ValidationMessageFor(m => m.text_search)
+
+                            </div>
+                            <div class="col-lg-2">
+                                <label class="col-form-label">ประเภทผู้ใช้</label>
+                                <select class="form-control" asp-for="usertype_search">
+                                    <option value="">All</option>
+
+                                    <option value="@IDMUserType.affiliate">@IDMUserType.affiliate.toUserTypeName()</option>
+                                    <option value="@IDMUserType.outsider">@IDMUserType.outsider.toUserTypeName()</option>
+                                    <option value="@IDMUserType.staff">@IDMUserType.staff.toUserTypeName()</option>
+                                    <option value="@IDMUserType.student">@IDMUserType.student.toUserTypeName()</option>
+                                    <option value="@IDMUserType.temporary">@IDMUserType.temporary.toUserTypeName()</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-1">
+                                <label class="col-form-label"><br /></label>
+                                <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                                <div class="table-rep-plugin">
+                                    <div class="table-responsive mb-0" data-pattern="priority-columns">
+                                        <table id="tech-companies-1" class="table table-striped mb-0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Login Name</th>
+                                                    <th>Display Name</th>
+                                                    <th>nsaccountlock</th>
+                                                    <th>Remark</th>
+                                                    <th width="200px"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.lists != null)
+                                                {
+                                                    foreach (visual_fim_user item in Model.lists)
+                                                    {
+                                                        <tr>
+                                                            <td>@item.basic_uid</td>
+                                                            <td>@item.basic_displayname</td>
+                                                            <td>
+                                                                @if (item.cu_nsaccountlock == LockStaus.Unlock)
+                                                                {
+                                                                    <span id="status-@item.basic_uid" class="badge badge-success">@item.cu_nsaccountlock</span>
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span id="status-@item.basic_uid" class="badge badge-danger">@item.cu_nsaccountlock</span>
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                <span style="display:none;" id="remark-@item.basic_uid">@item.lock_remark</span>
+                                                                @if (!string.IsNullOrEmpty(item.lock_remark))
+                                                                {
+                                                                    <a href="#" id="btnremark-@item.basic_uid" onclick="showremark('@item.basic_uid'); return false;"><span style="text-decoration:underline">หมายเหตุ</span></a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a href="#" id="btnremark-@item.basic_uid" onclick="showremark('@item.basic_uid'); return false;" style="display:none;"><span style="text-decoration:underline">หมายเหตุ</span></a>
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                @if (item.cu_nsaccountlock == LockStaus.Unlock)
+                                                                {
+                                                                    <a href="#" onclick="lockaccont('@item.basic_uid'); return false;"><i id="icon-@item.basic_uid" class="fas fa-lock font-16"></i> <span style="text-decoration:underline">Lock</span> บัญชีผู้ใช้นี้</a>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <a href="#" onclick="lockaccont('@item.basic_uid'); return false;"><i id="icon-@item.basic_uid" class="fas fa-unlock font-16"></i> <span style="text-decoration:underline">Unlock</span> บัญชีผู้ใช้นี้</a>
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                @if (Model.lists == null || Model.lists.Count() == 0)
+                                                {
+                                                    <tr>
+                                                        <td colspan="5" class="text-center">ไม่พบข้อมูล</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div> <!-- end card-body -->
+                </div> <!-- end card -->
+            </div> <!-- end col -->
+            <!-- end col -->
+        </div>
+
+    </form>
+</div><!-- container -->
+@section scripts{
+    <script>
+        function lockaccont(id) {
+            $('#btnremarksubmit').click();
+            $('#select_id').val(id);
+        }
+        function showremark(id) {
+            $('#btnremark').click();
+            var remark = $('#remark-' + id).text();
+            remark = remark.replace('\r\n', '<br/>');
+            remark = remark.replace('\n', '<br/>');
+            $('#lblRemark').html(remark);
+        }
+        function change_status() {
+            $("#remark-submit-modal").modal('hide');
+            var id = $('#select_id').val();
+            var remark = $('#txtRemark').val();
+            $.ajax({
+                type: 'Get',
+                url: '@Url.Action("ChangeStatus", "Account")?id=' + id + '&remark=' + remark,
+                success: function (data) {
+                    if (data.result == 1) {
+                        if (data.status == '@(LockStaus.Unlock)') {
+                            $('#status-' + id).removeClass();
+                            $('#status-' + id).addClass('badge badge-success');
+                            $('#status-' + id).text(data.status);
+
+                            $('#icon-' + id).removeClass();
+                            $('#icon-' + id).addClass('fas fa-lock text-primary font-16');
+                        }
+                        else {
+                            $('#status-' + id).removeClass();
+                            $('#status-' + id).addClass('badge badge-danger');
+                            $('#status-' + id).text(data.status);
+
+                            $('#icon-' + id).removeClass();
+                            $('#icon-' + id).addClass('fas fa-unlock text-primary font-16');
+                        }
+                        remark = $('#remark-' + id).text() + '<br/>' + remark;
+                        remark = remark.replace('\r\n', '<br/>');
+                        $('#remark-' + id).text(remark);
+                        if (remark != null && remark != '')
+                            $('#btnremark-' + id).show();
+                    }
+                    $('#txtRemark').val('');
+                },
+                error: function (XMLHttpRequest, errorThrown) {
+                    $('#txtRemark').val('');
+                }
+            });
+        }
+    </script>
+}

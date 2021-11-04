@@ -1,0 +1,335 @@
+﻿@inject ABAC.Services.LoginServices loginServices
+@inject ABAC.DAL.SpuContext _context
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    var version = "v28042020";
+    var controller = ViewContext.RouteData.Values["Controller"];
+    var action = ViewContext.RouteData.Values["Action"];
+
+    var portal = Configuration["SystemConf:Portal"];
+    var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve | w.group_name == UserRole.view) & w.group_username_list.Contains(loginServices.AuthenName().ToLower())).FirstOrDefault();
+    var groupname = "";
+    if (group != null)
+    {
+        groupname = group.group_name;
+    }
+
+    var setup = _context.table_setup.FirstOrDefault();
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - มหาวิทยาลัย</title>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/images/favicon.png">
+
+    <!-- App css -->
+    <!-- App css -->
+    <link href="~/metrica/assets/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="~/metrica/assets/css/jquery-ui.min.css" rel="stylesheet">
+    <link href="~/metrica/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/metrica/assets/css/metisMenu.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/metrica/assets/css/app.css?v=@version" rel="stylesheet" type="text/css" />
+
+    <link href="~/metrica/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/metrica/plugins/select2/select2.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/metrica/plugins/bootstrap-colorpicker/css/bootstrap-colorpicker.css" rel="stylesheet" type="text/css" />
+    <link href="~/metrica/plugins/timepicker/bootstrap-material-datetimepicker.css" rel="stylesheet">
+    <link href="~/metrica/plugins/nestable/jquery.nestable.min.css" rel="stylesheet" />
+
+
+</head>
+<body class="dark-sidenav">
+    <div class="loading">
+        <div class="loading-spin">
+
+            <div class="spinner-grow text-danger" role="status"></div>
+            <div class="spinner-grow text-danger" role="status"></div>
+            <div class="spinner-grow text-danger" role="status"></div>
+        </div>
+
+    </div>
+    <!-- Left Sidenav -->
+    <div class="left-sidenav">
+        <!-- LOGO -->
+        <div class="topbar-left">
+            <a href="@Url.Action("Login","Auth")" class="logo">
+                <span>
+                    <img src="~/images/logo-light.png" alt="logo-small" class="logo-sm">
+                </span>
+            </a>
+        </div>
+        <!--end logo-->
+        <div class="leftbar-profile p-3 w-100">
+            <div class="media position-relative">
+                <div class="avatar-box thumb-md align-self-center mr-3">
+                    <a class="avatar-title bg-danger rounded-circle" href="#" title="Email"><i class="far fa-envelope fa-2x"></i></a>
+                </div>
+                <div class="avatar-box thumb-md align-self-center mr-3">
+                    <a class="avatar-title bg-success rounded-circle" href="#" title="Calendar"><i class="far far fa-calendar-alt fa-2x"></i></a>
+                </div><!--end media-body-->
+                <div class="avatar-box thumb-md align-self-center mr-3">
+                    <a class="avatar-title bg-warning rounded-circle" href="#" title="Document"><i class="fas fa-folder-open fa-2x"></i></a>
+                </div><!--end media-body-->
+            </div>
+        </div>
+        <ul class="metismenu left-sidenav-menu slimscroll">
+            @if (portal == Portal.admin && (groupname == UserRole.admin | groupname == UserRole.helpdesk | groupname == UserRole.approve))
+            {
+                <li class="leftbar-menu-item">
+                    <a class="menu-link" href="@Url.Action("CheckAccount", "Account")"><i data-feather="search" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ค้นหาผุ้ใช้</a>
+                </li>
+                if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
+                {
+                    <li class="leftbar-menu-item">
+
+                        <a href="javascript: void(0);" class="menu-link">
+                            <i data-feather="plus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                            <span>สร้างบัญชีผู้ใช้</span>
+                            <span class="menu-arrow">
+                                <i class="mdi mdi-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="nav-second-level" aria-expanded="false">
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จากไฟล์</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จำนวนมาก</a></li>
+                            <li class="nav-item">@*<a class="nav-link" href="@Url.Action("CreateAccount", "AccountTemp")"><i data-feather="plus-circle" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้แบบชั่วคราว</a>*@</li>
+                        </ul>
+                    </li>
+                }
+                if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
+                {
+                    <li class="leftbar-menu-item">
+                        <a href="javascript: void(0);" class="menu-link">
+                            <i data-feather="edit" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                            <span>แก้ไขบัญชีผู้ใช้</span>
+                            <span class="menu-arrow">
+                                <i class="mdi mdi-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="nav-second-level" aria-expanded="false">
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขรหัสผ่าน</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("ManageAccount", "Account")"><i data-feather="edit-2" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขบัญชีผู้ใช้</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock</a></li>
+                            @*<li class="nav-item"><a class="nav-link" href="@Url.Action("EnableAccountFromFile", "Account")"><i data-feather="toggle-left" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock บัญชีผู้ใช้จากไฟล์</a></li>
+                                <li class="nav-item"><a class="nav-link" href="@Url.Action("MoveAccount", "Account")"><i data-feather="move" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ย้ายกลุ่มของบัญชีรายชื่อผู้ใช้</a></li>
+                                <li class="nav-item"><a class="nav-link" href="@Url.Action("InternetAccess", "Account")"><i data-feather="wifi" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไข Internet access</a></li>*@
+
+                        </ul>
+                    </li>
+                }
+                if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
+                {
+                    <li class="leftbar-menu-item">
+                        <a href="javascript: void(0);" class="menu-link">
+                            <i data-feather="minus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                            <span>ลบบัญชีผู้ใช้</span>
+                            <span class="menu-arrow">
+                                <i class="mdi mdi-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="nav-second-level" aria-expanded="false">
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีผู้ใช้</a></li>
+                            <li class="nav-item">@*<a class="nav-link" href="@Url.Action("DeleteAccountFromFile", "Account")"><i data-feather="file-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีรายชื่อผู้ใช้จากไฟล์</a>*@</li>
+                        </ul>
+                    </li>
+                }
+                @*<li class="leftbar-menu-item">
+                        <a href="@Url.Action("ApproveChangePassword", "Account")" class="menu-link">
+                            <i data-feather="check" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                            <span>อนุมัติขอเปลี่ยนรหัสผ่าน</span>
+                        </a>
+                    </li>*@
+                <li class="leftbar-menu-item">
+                    <a href="javascript: void(0);" class="menu-link">
+                        <i data-feather="pie-chart" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>รายงาน</span>
+                        <span class="menu-arrow">
+                            <i class="mdi mdi-chevron-right"></i>
+                        </span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li class="nav-item"><a class="nav-link" href="#"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการสร้างผู้ใช้งาน</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i data-feather="edit" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการแก้ไขผู้ใช้งาน</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการลบผู้ใช้งาน</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Log", "Report")"><i data-feather="list" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการกระทำ</a></li>
+                    </ul>
+                </li>
+
+                if (groupname == UserRole.admin)
+                {
+                    <li class="leftbar-menu-item">
+                        <a href="javascript: void(0);" class="menu-link">
+                            <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                            <span>ตั้งค่า</span>
+                            <span class="menu-arrow">
+                                <i class="mdi mdi-chevron-right"></i>
+                            </span>
+                        </a>
+                        <ul class="nav-second-level" aria-expanded="false">
+                            <li class="nav-item"><a class="nav-link" href="#"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>กำหนดสิทธิ์การใช้งาน</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่า Landing Page</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
+                        </ul>
+                    </li>
+                }
+            }
+            else
+            {
+                <li class="leftbar-menu-item">
+                    <a href="@Url.Action("Index", "Profile")" class="menu-link">
+                        <i data-feather="user" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>Account Profile</span>
+                    </a>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a href="@Url.Action("ChangePassword", "Profile")" class="menu-link">
+                        <i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a href="@Url.Action("Logout", "Auth")" class="menu-link">
+                        <i data-feather="power" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            }
+
+        </ul>
+
+    </div>
+    <!-- end left-sidenav-->
+    <!-- Top Bar Start -->
+    <div class="topbar">
+        <!-- Navbar -->
+        <nav class="navbar-custom">
+            <ul class="list-unstyled topbar-nav float-right mb-0">
+                <li class="dropdown">
+                    <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
+                       aria-haspopup="false" aria-expanded="false">
+                        <div class="avatar-box thumb-sm align-self-center">
+                            <span class="avatar-title bg-secondary  rounded-circle">@loginServices.AuthenName().ToUpper().Substring(0, 2)</span>
+                        </div>
+                        <span class="ml-1 nav-user-name hidden-sm">
+                            <span>@loginServices.AuthenName()</span>
+                            <i class="mdi mdi-chevron-down"></i>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a class="dropdown-item" href="@Url.Action("Index","Profile")"><i class="dripicons-user text-muted mr-2"></i> Account Profile</a>
+                        <a class="dropdown-item" href="@Url.Action("ChangePassword","Profile")"><i class="dripicons-lock text-muted mr-2"></i> Change Password</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="@Url.Action("Logout", "Auth")"><i class="dripicons-exit text-muted mr-2"></i> Logout</a>
+                    </div>
+                </li>
+            </ul><!--end topbar-nav-->
+
+            <ul class="list-unstyled topbar-nav mb-0">
+                <li>
+                    <span class="responsive-logo">
+                        <img src="~/images/logo.png" alt="logo-small" class="logo-sm align-self-center" height="34">
+                    </span>
+                </li>
+                <li>
+                    <button class="button-menu-mobile nav-link waves-effect waves-light">
+                        <i class="dripicons-menu nav-icon"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+        <!-- end navbar-->
+    </div>
+    <!-- Top Bar End -->
+    <div class="page-wrapper">
+        <!-- Page Content-->
+        <div class="page-content-tab">
+            @RenderBody()
+            <br />
+            <br />
+            <br />
+            <footer class="footer text-center text-sm-center">
+                @if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
+                {
+                    <p>
+                        @Html.Raw(setup.first_page_description)
+                    </p>
+                }
+                else
+                {
+                    <p>
+                        ศูนย์ ICT มหาวิทยาลัย
+                        <br />
+                        email: ictcenter@cu.ac.th
+                    </p>
+                }
+            </footer><!--end footer-->
+        </div>
+    </div>
+
+    <!-- end page-wrapper -->
+    <!-- jQuery  -->
+    <script src="~/metrica/assets/js/jquery.min.js"></script>
+    <script src="~/metrica/assets/js/jquery-ui.min.js"></script>
+    <script src="~/metrica/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/metrica/assets/js/metismenu.min.js"></script>
+    <script src="~/metrica/assets/js/waves.js"></script>
+    <script src="~/metrica/assets/js/feather.min.js"></script>
+    <script src="~/metrica/assets/js/jquery.slimscroll.min.js"></script>
+
+    <!-- Parsley js -->
+    <script src="~/metrica/plugins/parsleyjs/parsley.min.js"></script>
+    <script src="~/metrica/assets/pages/jquery.validation.init.js"></script>
+
+    <script src="~/metrica/plugins/moment/moment.js"></script>
+    <script src="~/metrica/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/metrica/plugins/select2/select2.min.js"></script>
+    <script src="~/metrica/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js"></script>
+    <script src="~/metrica/plugins/timepicker/bootstrap-material-datetimepicker.js"></script>
+    <script src="~/metrica/plugins/nestable/jquery.nestable.min.js"></script>
+    <!--Wysiwig js-->
+    <script src="~/metrica/plugins/tinymce/tinymce.min.js"></script>
+    <script src="~/metrica/assets/pages/jquery.form-editor.init.js"></script>
+    <!-- App js -->
+    <script src="~/metrica/assets/js/jquery.core.js"></script>
+    <script src="~/metrica/assets/js/app.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.dpicker').bootstrapMaterialDatePicker({
+                weekStart: 0,
+                time: false,
+                format: 'DD/MM/YYYY'
+            });
+        });
+
+        function displayBusyIndicator() {
+            $('.loading').show();
+        }
+        $(window).on('beforeunload', function () {
+            displayBusyIndicator();
+        });
+        $(document).on('submit', 'form', function () {
+            displayBusyIndicator();
+        });
+        $(document).ajaxStart(function () {
+            displayBusyIndicator();
+        });
+        $(document).ajaxStop(function () {
+            $('.loading').hide();
+        });
+    </script>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>
