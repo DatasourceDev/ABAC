@@ -1,4 +1,5 @@
-﻿using ABAC.Models;
+﻿using ABAC.Identity;
+using ABAC.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -15,7 +16,7 @@ namespace ABAC.Services
         bool isAuthen();
         bool isInAdminRoles(string[] roles);
         bool isInRoles(string[] roles);
-        void Login(visual_fim_user user, bool isPersistent);
+        void Login(AdUser2 user, bool isPersistent);
         void Logout();
         string UserRole();
     }
@@ -74,12 +75,12 @@ namespace ABAC.Services
         {
             this.httpContext = httpContext;
         }
-        public async void Login(visual_fim_user user, bool isPersistent)
+        public async void Login(AdUser2 user, bool isPersistent)
         {
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
-            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.basic_uid));
-            identity.AddClaim(new Claim(ClaimTypes.Role, user.system_idm_user_type.toUserTypeName()));
-            identity.AddClaim(new Claim(ClaimTypes.Name, user.basic_uid));
+            identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.SamAccountName));
+            identity.AddClaim(new Claim(ClaimTypes.Role, IDMUserType.staff.toUserTypeName()));
+            identity.AddClaim(new Claim(ClaimTypes.Name, user.SamAccountName));
 
             // Authenticate using the identity
             var principal = new ClaimsPrincipal(identity);

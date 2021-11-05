@@ -26,25 +26,13 @@ namespace ABAC.Controllers
         {
             this.provider = provider;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = _context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-            if(model != null)
+            var model = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (model != null)
             {
-                if (!string.IsNullOrEmpty(model.cu_pplid))
-                {
-                    if (model.cu_pplid.Length > 1)
-                    {
-                        var idcard = model.cu_pplid.Substring(0, 2);
-                        for (var k = 2; k < 12; k++)
-                        {
-                            idcard += "x";
-                        }
-                        idcard += model.cu_pplid.Substring(model.cu_pplid.Length - 1, 1);
-                        model.cu_pplid = idcard;
-                    }
-                }
-            }    
+                
+            }
             return View(model);
         }
 
@@ -127,7 +115,7 @@ namespace ABAC.Controllers
                     ViewBag.ReturnCode = ReturnCode.Success;
                 }
             }
-            
+
             return View(model);
         }
     }

@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Work\\ABAC\\ABAC\\ABAC.csproj": {}
+    "C:\\Source Code\\ABAC\\ABAC.csproj": {}
   },
   "projects": {
-    "C:\\Work\\ABAC\\ABAC\\ABAC.csproj": {
+    "C:\\Source Code\\ABAC\\ABAC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Work\\ABAC\\ABAC\\ABAC.csproj",
+        "projectUniqueName": "C:\\Source Code\\ABAC\\ABAC.csproj",
         "projectName": "ABAC",
-        "projectPath": "C:\\Work\\ABAC\\ABAC\\ABAC.csproj",
-        "packagesPath": "C:\\Users\\Jay\\.nuget\\packages\\",
-        "outputPath": "C:\\Work\\ABAC\\ABAC\\obj\\",
+        "projectPath": "C:\\Source Code\\ABAC\\ABAC.csproj",
+        "packagesPath": "C:\\Users\\service-adm\\.nuget\\packages\\",
+        "outputPath": "C:\\Source Code\\ABAC\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Jay\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\service-adm\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,6 +26,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -37,6 +38,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "EPPlus": {
               "target": "Package",
@@ -109,7 +111,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

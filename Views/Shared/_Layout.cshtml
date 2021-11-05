@@ -9,12 +9,12 @@
     var action = ViewContext.RouteData.Values["Action"];
 
     var portal = Configuration["SystemConf:Portal"];
-    var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve | w.group_name == UserRole.view) & w.group_username_list.Contains(loginServices.AuthenName().ToLower())).FirstOrDefault();
-    var groupname = "";
-    if (group != null)
-    {
-        groupname = group.group_name;
-    }
+    //var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve | w.group_name == UserRole.view) & w.group_username_list.Contains(loginServices.AuthenName().ToLower())).FirstOrDefault();
+    var groupname = UserRole.admin;
+    //if (group != null)
+    //{
+    //    groupname = group.group_name;
+    //}
 
     var setup = _context.table_setup.FirstOrDefault();
 
