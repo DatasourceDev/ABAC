@@ -31,7 +31,7 @@ namespace ABAC.Controllers
             var model = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
             if (model != null)
             {
-                
+
             }
             return View(model);
         }
@@ -45,8 +45,8 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {
-            var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-            if (userlogin == null)
+            var aduser = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (aduser == null)
                 return RedirectToAction("Logout", "Auth");
 
             if (model.OldPassword == model.Password)
@@ -57,12 +57,7 @@ namespace ABAC.Controllers
             if (ModelState.IsValid)
             {
                 var setup = _context.table_setup.FirstOrDefault();
-
-                var aduser = await _provider.GetAdUser2(userlogin.basic_uid, _context);
-                if (aduser == null)
-                    return RedirectToAction("Logout", "Auth");
-
-                if (_provider.ValidateCredentials(userlogin.basic_uid, model.OldPassword, _context).result == false)
+                if (_provider.ValidateCredentials(aduser.SamAccountName, model.OldPassword, _context).result == false)
                 {
                     ModelState.AddModelError("OldPassword", "รหัสผ่านเดิมไม่ถูกต้อง");
                     return View(model);
@@ -71,49 +66,18 @@ namespace ABAC.Controllers
                 ViewBag.Message = ReturnMessage.ChangePasswordFail;
                 ViewBag.ReturnCode = ReturnCode.Error;
 
-                if (setup.change_password_approve_enable)
-                {
-                    var reset = new reset_password_temp();
-                    reset.username = userlogin.basic_uid;
-                    reset.password = Cryptography.encrypt(model.Password);
-                    reset.ip = getClientIP();
-                    reset.target_ip = getHostIP();
-                    reset.reset_by = userlogin.basic_uid;
-                    reset.reset_date = DateUtil.Now();
-                    _context.table_reset_password_temp.Add(reset);
-                    _context.SaveChanges();
-
-                    await MailRequestApproveResetPassword(userlogin);
-
-                    writelog(LogType.log_approve_reset_password, LogStatus.successfully, IDMSource.VisualFim, userlogin.basic_uid);
-                    ViewBag.Message = "รหัสผ่านใหม่มีผลเวลา 12.00 น. ของวันทำการถัดไป";
-                    ViewBag.ReturnCode = ReturnCode.Success;
-                }
+                _context.SaveChanges();                
+                var result_ad = _provider.ChangePwd(aduser, model.Password, _context);
+                if (result_ad.result == true)
+                    writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
                 else
-                {
-                    userlogin.basic_userPassword = Cryptography.encrypt(model.Password);
-                    userlogin.cu_pwdchangeddate = DateUtil.Now();
-                    userlogin.cu_pwdchangedby = userlogin.basic_uid;
-                    userlogin.cu_pwdchangedloc = getClientIP();
+                    writelog(LogType.log_change_password, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
 
-                    _context.SaveChanges();
-                    var result_ldap = _providerldap.ChangePwd(userlogin, model.Password, _context);
-                    if (result_ldap.result == true)
-                        writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.LDAP, userlogin.basic_uid);
-                    else
-                        writelog(LogType.log_change_password, LogStatus.failed, IDMSource.LDAP, userlogin.basic_uid, log_exception: result_ldap.Message);
+                writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
 
-                    var result_ad = _provider.ChangePwd(userlogin, model.Password, _context);
-                    if (result_ad.result == true)
-                        writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.AD, userlogin.basic_uid);
-                    else
-                        writelog(LogType.log_change_password, LogStatus.failed, IDMSource.AD, userlogin.basic_uid, log_exception: result_ad.Message);
+                ViewBag.Message = ReturnMessage.ChangePasswordSuccess;
+                ViewBag.ReturnCode = ReturnCode.Success;
 
-                    writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.VisualFim, userlogin.basic_uid);
-
-                    ViewBag.Message = ReturnMessage.ChangePasswordSuccess;
-                    ViewBag.ReturnCode = ReturnCode.Success;
-                }
             }
 
             return View(model);

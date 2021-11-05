@@ -1,4 +1,4 @@
-﻿@model ABAC.Models.visual_fim_user
+﻿@model ABAC.Identity.AdUser2
 @using ABAC.Extensions;
 @{
     ViewData["Title"] = "ข้อมูลบัญชีรายชื่อผู้ใช้";
@@ -32,7 +32,7 @@
                                     <span class="text-eng">Login Name</span>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="basic_uid" readonly>
+                                    <input class="form-control" type="text" asp-for="SamAccountName" readonly>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                                     <span class="text-eng">First Name</span>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="basic_givenname" readonly>
+                                    <input class="form-control" type="text" asp-for="GivenName" readonly>
                                 </div>
                             </div>
                         </div>
@@ -58,7 +58,7 @@
                                     <span class="text-eng">Last Name</span>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="basic_sn" readonly>
+                                    <input class="form-control" type="text" asp-for="Surname" readonly>
                                 </div>
                             </div>
                         </div>
@@ -71,12 +71,12 @@
                                     <span class="text-eng">Email</span>
                                 </div>
                                 <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="basic_mail" readonly>
+                                    <input class="form-control" type="text" asp-for="EmailAddress" readonly>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    @*<div class="row">
                         <div class="col-lg-7">
                             <div class="form-group row">
                                 <div class="col-sm-4 text-right">
@@ -95,8 +95,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
+                    </div>*@
+                    @*<div class="row">
                         <div class="col-lg-7">
                             <div class="form-group row">
                                 <div class="col-sm-4 text-right">
@@ -133,7 +133,7 @@
                                     <input class="form-control" type="text" value="@DateUtil.ToDisplayDateTime(Model.cu_pwdchangeddate)" readonly>
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
