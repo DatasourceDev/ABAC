@@ -3,3 +3,7 @@
 ################################################################################
 
 /bin/Debug/netcoreapp3.1
+/obj
+.vs/ABAC/config/applicationhost.config
+.vs/ABAC/DesignTimeBuild/.dtbcache.v2
+.vs/ABAC/v16/.suo
