@@ -583,6 +583,7 @@ namespace ABAC.Controllers
         //    }
         //    return (string[])ArrayListUnixNumber.ToArray(typeof(string));
         //}
+      
         //public void genNewAccount(SpuContext context, visual_fim_user model)
         //{
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();

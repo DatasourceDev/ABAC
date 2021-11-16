@@ -80,16 +80,67 @@ namespace ABAC.Controllers
                 ViewBag.ReturnCode = ReturnCode.Error;
                 try
                 {
-                    //genNewAccount(_context, model);
-                    //_context.SaveChanges();
-                    var result_ad = _provider.CreateUser(model, _context);
-                    //model.ad_created = result_ad.result;
-                    if (result_ad.result == true)
-                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
-                    else
-                        writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
-                    _context.SaveChanges();
-                    writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                    if( model.aUUserType == aUUserType.staff)
+                    {
+                        var user = new User_Office();
+                        user.username = model.SamAccountName;
+                        user.password = Cryptography.encrypt(model.Password);
+                        user.firstname = model.GivenName;
+                        user.lastname = model.Surname;
+                        user.CitizenID = model.aUIDCard;
+                        user.PassportID = model.PassportID;
+                        user.Reference = model.Reference;
+                        user.adminname = userlogin.SamAccountName;
+                        user.Create_By = userlogin.SamAccountName;
+                        user.Create_On = DateUtil.Now();
+                        user.Update_By = userlogin.SamAccountName;
+                        user.Update_On = DateUtil.Now();
+                        _context.User_Offices.Add(user);
+                        _context.SaveChanges();
+
+                        var result_ad = _provider.CreateUser(model, _context);
+                        if (result_ad.result == true)
+                            writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                        else
+                            writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                        user.ad_created = result_ad.result;
+                        _context.SaveChanges();
+                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+
+                    }
+                    else if (model.aUUserType == aUUserType.vip)
+                    {
+                        var user = new User_VIP();
+                        user.username = model.SamAccountName;
+                        user.password = Cryptography.encrypt(model.Password);
+                        user.firstname = model.GivenName;
+                        user.lastname = model.Surname;
+                        user.CitizenID = model.aUIDCard;
+                        user.PassportID = model.PassportID;
+                        user.Reference = model.Reference;
+                        user.adminname = userlogin.SamAccountName;
+                        user.Create_By = userlogin.SamAccountName;
+                        user.Create_On = DateUtil.Now();
+                        user.Update_By = userlogin.SamAccountName;
+                        user.Update_On = DateUtil.Now();
+                        _context.User_VIPs.Add(user);
+
+                        var result_ad = _provider.CreateUser(model, _context);
+                        if (result_ad.result == true)
+                            writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                        else
+                            writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                        user.ad_created = result_ad.result;
+                        _context.SaveChanges();
+                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+
+                    }
+                    else if (model.aUUserType == aUUserType.bulk)
+                    {
+
+                    }
                 }
                 catch (Exception ex)
                 {

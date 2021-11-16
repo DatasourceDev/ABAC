@@ -250,7 +250,15 @@ namespace ABAC.Identity
         public string Reference { get; set; }
         public string PassportID { get; set; }
 
+        [DataType(DataType.Password)]
+        [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
         public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        [Compare("Password", ErrorMessage = "รหัสผ่านไม่ตรงกัน")]
         public string ConfirmPassword { get; set; }
 
 
