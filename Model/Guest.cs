@@ -10,23 +10,20 @@ namespace ABAC.Models
     public class Guest
     {
         [Key]
-        public int ID { get; set; }
+        public int id { get; set; }
 
         [Display(Name = "รหัสผู้ใช้")]
-        [MaxLength(250)]
-        public string GuestCode { get; set; }
+        public string username { get; set; }
 
         [Display(Name = "ชื่อ")]
-        [MaxLength(250, ErrorMessage = "จำนวนอักษรไม่ควรเกิน 250 ตัวอักษร")]
-        public string FirstName { get; set; }
+        public string firstname { get; set; }
 
         [Display(Name = "นามสกุล")]
-        [MaxLength(250, ErrorMessage = "จำนวนอักษรไม่ควรเกิน 250 ตัวอักษร")]
-        public string LastName { get; set; }
+        public string lastname { get; set; }
 
         [Required]
-        [Display(Name = "สถานะการใช้งาน")]
-        public Status Status { get; set; }
+        [Display(Name = "รหัสบัตรประชาชน")]
+        public Status CitizenID { get; set; }
 
         [Display(Name = "OTP Verify")]
         public bool OTPVerify { get; set; }

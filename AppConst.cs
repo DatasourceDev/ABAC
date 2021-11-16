@@ -23,14 +23,12 @@ namespace ABAC
         AD,
         LDAP
     }
-    public enum IDMUserType
+    public class aUUserType
     {
-        staff = 301, //บุคลากร
-        student = 302, //นิสิต
-        outsider = 303, //บุคคลภายนอก
-        affiliate = 304, //วิสาหกิจ
-        temporary = 305, //ผู้ใช้แบบชั่วคราว
+        public static string staff = "I";
+        public static string student = "s";
     }
+    
     public enum Status
     {
         Enable = 0,
@@ -228,25 +226,16 @@ namespace ABAC
     }
     public static class EnumStatus
     {
-        public static IDMUserType ToUserType(this string text)
+        public static string ToUserType(this string text)
         {
-            var status = IDMUserType.staff;
+            var status = aUUserType.staff;
             switch (text)
             {
                 case "staff":
-                    status = IDMUserType.staff;
+                    status = aUUserType.staff;
                     break;
                 case "student":
-                    status = IDMUserType.student;
-                    break;
-                case "outsider":
-                    status = IDMUserType.outsider;
-                    break;
-                case "affiliate":
-                    status = IDMUserType.affiliate;
-                    break;
-                case "temporary":
-                    status = IDMUserType.temporary;
+                    status = aUUserType.student;
                     break;
                 default:
                     break;
@@ -254,32 +243,38 @@ namespace ABAC
             return status;
         }
 
-        public static string toUserTypeName(this IDMUserType statusType)
+        public static string toUserTypeName(this string statusType)
+        {
+            string status = "";
+            if(statusType == aUUserType.staff)
+                status = "Staff";
+            else if (statusType == aUUserType.student)
+                status = "Student";
+            return status;
+        }
+        public static string touserAccountControlName(this userAccountControl statusType)
         {
             string status = "";
             switch (statusType)
             {
-                case IDMUserType.staff:
-                    status = "Staff";
+                case userAccountControl.Disable:
+                    status = "Disable";
                     break;
-                case IDMUserType.student:
-                    status = "Student";
+                case userAccountControl.DisablePasswordNotRequired:
+                    status = "Disable";
                     break;
-                case IDMUserType.outsider:
-                    status = "Outsider";
+                case userAccountControl.Enable:
+                    status = "Enable";
                     break;
-                case IDMUserType.affiliate:
-                    status = "Affiliate";
-                    break;
-                case IDMUserType.temporary:
-                    status = "Temporary";
+                case userAccountControl.EnablePasswordNotRequired:
+                    status = "Enable";
                     break;
                 default:
                     break;
             }
+            
             return status;
         }
-
         public static Status toStatus(this string text)
         {
             var status = Status.Enable;

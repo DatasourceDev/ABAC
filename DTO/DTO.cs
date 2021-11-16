@@ -26,7 +26,7 @@ namespace ABAC.DTO
         public string text_search { get; set; }
         public string logstatus_search { get; set; }
 
-        public IDMUserType? usertype_search { get; set; }
+        public string usertype_search { get; set; }
         public string log_type_search { get; set; }
 
         public Status? status_search { get; set; }
@@ -36,8 +36,6 @@ namespace ABAC.DTO
         public string import_option { get; set; }
 
         public string option { get; set; }
-        public ScriptFormat script_format { get; set; }
-        public string script_param { get; set; }
 
 
         private int _pageno; // field
@@ -124,13 +122,13 @@ namespace ABAC.DTO
         [Required]
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
-        [RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
         public string Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
-        [RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
         [Compare("Password", ErrorMessage = "รหัสผ่านไม่ตรงกัน")]
         public string ConfirmPassword { get; set; }
     }
@@ -146,14 +144,14 @@ namespace ABAC.DTO
         [Required]
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
-        [RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
         public string Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "รหัสผ่านไม่ตรงกัน")]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
-        [RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
         public string ConfirmPassword { get; set; }
     }
     public class ChangePassword3DTO
@@ -164,14 +162,14 @@ namespace ABAC.DTO
         [Required]
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
-        [RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
         public string Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "รหัสผ่านไม่ตรงกัน")]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
-        [RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
+        //[RegularExpression("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,16}$", ErrorMessage = "รหัสผ่านจะต้องประกอบด้วยตัวพิมพ์ใหญ่อย่างน้อย 1 ตัว ตัวพิมพ์เล็กอย่างน้อย 1 ตัวและตัวเลขอย่างน้อย 1 ตัว")]
 
         public string ConfirmPassword { get; set; }
     }
@@ -244,22 +242,5 @@ namespace ABAC.DTO
     {
         public string Password { get; set; }
     }
-    public class script_temp
-    {
-        public Int64 id { get; set; }
-        public string displayname { get; set; }
-
-        public string login_name { get; set; }
-        public string password_initial { get; set; }
-        public string email_address { get; set; }
-        public string server_name { get; set; }
-        public string expire { get; set; }
-        public string status_id { get; set; }
-        public string org { get; set; }
-        public DateTime? create_date { get; set; }
-        public DateTime? receive_date { get; set; }
-        public string manage_by { get; set; }
-        public string ticket { get; set; }
-        public visual_fim_user visual_fim_user { get; set; }
-    }
+   
 }

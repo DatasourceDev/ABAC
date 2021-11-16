@@ -1,4 +1,4 @@
-﻿@model ABAC.Models.visual_fim_user
+﻿@model ABAC.Identity.AdUser2
 @using ABAC.DTO;
 @using ABAC.Extensions
 @{
@@ -74,14 +74,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">ชื่อ-นามสกุล(อังกฤษ)</label>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="text" asp-for="basic_givenname" required>
-                                        @Html.ValidationMessageFor(m => m.basic_givenname)
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="text" asp-for="basic_sn" required>
-                                        @Html.ValidationMessageFor(m => m.basic_sn)
+                                    <label class="col-sm-3 col-form-label text-right">Login Name</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" asp-for="SamAccountName" readonly required>
+                                        @Html.ValidationMessageFor(m => m.SamAccountName)
                                     </div>
                                 </div>
                             </div>
@@ -89,15 +85,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">ชื่อ-นามสกุล(ไทย)</label>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="text" asp-for="cu_thcn" required>
-                                        @Html.ValidationMessageFor(m => m.cu_thcn)
-
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="text" asp-for="cu_thsn" required>
-                                        @Html.ValidationMessageFor(m => m.cu_thsn)
+                                    <label class="col-sm-3 col-form-label text-right">First Name</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" asp-for="GivenName" required>
+                                        @Html.ValidationMessageFor(m => m.GivenName)
 
                                     </div>
                                 </div>
@@ -106,11 +97,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">เลขประจำตัวประชาชน</label>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="text" asp-for="cu_pplid" maxlength="13" onchange="cu_pplid_Onchange()">
-                                        @Html.ValidationMessageFor(m => m.cu_pplid)
-                                        <h5 id="cu_pplid_info" class="text-blue" style="display:none">เลขประจำตัวประชาชนซ้ำในระบบ</h5>
+                                    <label class="col-sm-3 col-form-label text-right">Last Name</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" asp-for="Surname" required>
+                                        @Html.ValidationMessageFor(m => m.Surname)
                                     </div>
                                 </div>
                             </div>
@@ -118,10 +108,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">หมายเลขโทรศัพท์</label>
-                                    <div class="col-sm-4">
-                                        <input class="form-control" type="text" asp-for="basic_telephonenumber">
-                                        @Html.ValidationMessageFor(m => m.basic_telephonenumber)
+                                    <label class="col-sm-3 col-form-label text-right">Email</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" asp-for="EmailAddress" readonly required>
+                                        @Html.ValidationMessageFor(m => m.EmailAddress)
                                     </div>
                                 </div>
                             </div>
@@ -129,10 +119,10 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">รหัสพนักงาน/รหัสนิสิต</label>
-                                    <div class="col-sm-4 mt-2">
-                                        <input class="form-control" type="text" asp-for="cu_jobcode" maxlength="10">
-                                        @Html.ValidationMessageFor(m => m.cu_jobcode)
+                                    <label class="col-sm-3 col-form-label text-right">Employee Code</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" asp-for="aUEmpcode">
+                                        @Html.ValidationMessageFor(m => m.aUEmpcode)
                                     </div>
                                 </div>
                             </div>
@@ -140,103 +130,56 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">วันหมดอายุ</label>
-                                    <div class="col-sm-2 mt-2">
-                                        <div class="checkbox">
-                                            <input type="checkbox" asp-for="cu_CUexpire_select" onchange="CUexpire_Onchange()">
-                                            <label for="cu_CUexpire_select">
-                                                ไม่มีวันหมดอายุ
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-2 CUexpire">
-                                        <select class="form-control" asp-for="cu_CUexpire_day">
-                                            @for (var i = 1; i <= 31; i++)
-                                            {
-                                                <option value="@i">@i.ToString("00")</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2 CUexpire">
-                                        <select class="form-control" asp-for="cu_CUexpire_month">
-                                            @for (var i = 1; i <= 12; i++)
-                                            {
-                                                <option value="@i">@DateUtil.GetShortMonth(i)</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2 CUexpire">
-                                        <select class="form-control" asp-for="cu_CUexpire_year">
-                                            @for (var i = DateUtil.Now().Year; i <= DateUtil.Now().Year + 5; i++)
-                                            {
-                                                <option value="@i">@i.ToString("0000")</option>
-                                            }
-                                        </select>
+                                    <label class="col-sm-3 col-form-label text-right">Citizen ID</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" asp-for="aUIDCard" maxlength="13">
+                                        @Html.ValidationMessageFor(m => m.aUIDCard)
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @*<div class="row">
-            <div class="col-lg-12">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right">ชื่อหน่วยงาน</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" asp-for="system_faculty_id" asp-items="@(ViewBag.ListFaculty)" onchange="FacultyOnchange(this)" relatedto="system_sub_office_id" required>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right">ชื่อหน่วยย่อย</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" asp-for="system_sub_office_id">
-                            <option value=""></option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>*@
 
                         @*<div class="row">
             <div class="col-lg-12">
                 <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right">Organizarion Level 1</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" asp-for="system_ou_lvl1" onchange="Lvl1Onchange(this)" relatedto="system_ou_lvl2" required>
-                            @foreach (Organization item in ViewBag.ListOrganization)
+                    <label class="col-sm-3 col-form-label text-right">วันหมดอายุ</label>
+                    <div class="col-sm-2 mt-2">
+                        <div class="checkbox">
+                            <input type="checkbox" asp-for="cu_CUexpire_select" onchange="CUexpire_Onchange()">
+                            <label for="cu_CUexpire_select">
+                                ไม่มีวันหมดอายุ
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-2 CUexpire">
+                        <select class="form-control" asp-for="cu_CUexpire_day">
+                            @for (var i = 1; i <= 31; i++)
                             {
-                                <option value="@item.ou">@item.ouname</option>
+                                <option value="@i">@i.ToString("00")</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-2 CUexpire">
+                        <select class="form-control" asp-for="cu_CUexpire_month">
+                            @for (var i = 1; i <= 12; i++)
+                            {
+                                <option value="@i">@DateUtil.GetShortMonth(i)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-2 CUexpire">
+                        <select class="form-control" asp-for="cu_CUexpire_year">
+                            @for (var i = DateUtil.Now().Year; i <= DateUtil.Now().Year + 5; i++)
+                            {
+                                <option value="@i">@i.ToString("0000")</option>
                             }
                         </select>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right">Organizarion Level 2</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" asp-for="system_ou_lvl2" onchange="Lvl2Onchange(this)" relatedto="system_ou_lvl3">
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right">Organizarion Level 3</label>
-                    <div class="col-sm-4">
-                        <select class="form-control" asp-for="system_ou_lvl3">
-                        </select>
-                    </div>
-                </div>
-            </div>
         </div>*@
+
+
 
                         <div class="row">
                             <div class="col-lg-12">
@@ -256,7 +199,7 @@
     </form>
 </div><!-- container -->
 @section scripts{
-    <script>
+    @*<script>
         $(document).ready(function () {
             CUexpire_Onchange();
             if ($('#system_ou_lvl1').val() != null)
@@ -370,5 +313,5 @@
                 $('.CUexpire').show();
             }
         }
-    </script>
+    </script>*@
 }

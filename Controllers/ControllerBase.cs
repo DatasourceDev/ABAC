@@ -35,19 +35,17 @@ namespace ABAC.Controllers
         public ILoginServices _loginServices;
         public SystemConf _conf;
         public IUserProvider _provider;
-        public ILDAPUserProvider _providerldap;
 
         public ControllerBase()
         {
         }
-        public ControllerBase(SpuContext context, ILogger<ControllerBase> logger, ILoginServices loginServices, IOptions<SystemConf> conf, IUserProvider provider, ILDAPUserProvider providerldap)
+        public ControllerBase(SpuContext context, ILogger<ControllerBase> logger, ILoginServices loginServices, IOptions<SystemConf> conf, IUserProvider provider)
         {
             this._context = context;
             this._logger = logger;
             this._loginServices = loginServices;
             this._conf = conf.Value;
             this._provider = provider;
-            this._providerldap = providerldap;
 
         }
 
@@ -206,42 +204,42 @@ namespace ABAC.Controllers
         //    return msg.ToString();
         //}
 
-        ////public bool checkrole()
-        ////{
-        ////    var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
-        ////    if (group == null)
-        ////        return false;
-
-        ////    return true;
-        ////}
-        //public bool checkrole(string[] role)
+        //public bool checkrole()
         //{
-        //    var group = _context.table_group.Where(w => role.Contains(w.group_name) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
+        //    var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
         //    if (group == null)
         //        return false;
 
         //    return true;
         //}
-        //public string RandomPassword(int length = 8, bool includenumber = true, bool includelower = true, bool includeupper = false)
-        //{
-        //    string valid = "";
-        //    string number = "1234567890";
-        //    string lower = "abcdefghijklmnopqrstuvwxyz";
-        //    string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        //    if (includenumber)
-        //        valid += number;
-        //    if (includelower)
-        //        valid += lower;
-        //    if (includeupper)
-        //        valid += upper;
-        //    StringBuilder res = new StringBuilder();
-        //    Random rnd = new Random();
-        //    while (0 < length--)
-        //    {
-        //        res.Append(valid[rnd.Next(valid.Length)]);
-        //    }
-        //    return res.ToString();
-        //}
+        public bool checkrole(string[] role)
+        {
+            //var group = _context.table_group.Where(w => role.Contains(w.group_name) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
+            //if (group == null)
+            //    return false;
+
+            return true;
+        }
+        public string RandomPassword(int length = 8, bool includenumber = true, bool includelower = true, bool includeupper = false)
+        {
+            string valid = "";
+            string number = "1234567890";
+            string lower = "abcdefghijklmnopqrstuvwxyz";
+            string upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            if (includenumber)
+                valid += number;
+            if (includelower)
+                valid += lower;
+            if (includeupper)
+                valid += upper;
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            while (0 < length--)
+            {
+                res.Append(valid[rnd.Next(valid.Length)]);
+            }
+            return res.ToString();
+        }
 
         //public IDMUserType getIdmUserType(string ou)
         //{

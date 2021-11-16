@@ -99,7 +99,6 @@ namespace ABAC
             }
             services.Configure<SystemConf>(Configuration.GetSection("SystemConf"));
             services.AddScoped<IUserProvider, AdUserProvider>();
-            services.AddScoped<ILDAPUserProvider, LDAPUserProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

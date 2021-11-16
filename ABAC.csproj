@@ -11,6 +11,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Account\ChangePassword.cshtml" />
+    <Content Remove="Views\Account\CheckMenuPermission.cshtml" />
+    <Content Remove="Views\Account\CreateAccountFromFile.cshtml" />
+    <Content Remove="Views\Account\DeleteAccount.cshtml" />
+    <Content Remove="Views\Account\DeleteAccountFromFile.cshtml" />
+    <Content Remove="Views\Account\EnableAccount.cshtml" />
+    <Content Remove="Views\Account\EnableAccountFromFile.cshtml" />
+    <Content Remove="Views\Account\OneDayPassword.cshtml" />
+    <Content Remove="Views\Account\ResetPassword.cshtml" />
+    <Content Remove="Views\Account\Search.cshtml" />
     <Content Remove="Views\Auth\ForgotPassword.cshtml" />
     <Content Remove="Views\Auth\ForgotPassword2.cshtml" />
     <Content Remove="Views\Auth\ForgotPasswordOTP.cshtml" />
@@ -21,6 +31,11 @@
     <Content Remove="Views\Profile\Guest.cshtml" />
     <Content Remove="Views\Profile\Staff.cshtml" />
     <Content Remove="Views\Profile\Student.cshtml" />
+    <Content Remove="Views\System\OU.cshtml" />
+    <Content Remove="Views\System\OUInfo.cshtml" />
+    <Content Remove="Views\System\PasswordGenerator.cshtml" />
+    <Content Remove="Views\System\Role.cshtml" />
+    <Content Remove="Views\System\RoleInfo.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

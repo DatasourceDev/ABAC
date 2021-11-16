@@ -1,4 +1,4 @@
-﻿@model ABAC.Models.visual_fim_user
+﻿@model ABAC.Identity.AdUser2
 @using ABAC.Extensions
 @{
     ViewData["Title"] = "แก้ไขบัญชีข้อมูลส่วนบุคคล";
@@ -39,9 +39,8 @@
     <!-- end page title end breadcrumb -->
     <!--end row-->
     <form class="form-horizontal form-parsley" asp-action="AccountInfo" asp-controller="Account">
-        @Html.HiddenFor(m => m.id)
-        @Html.HiddenFor(m => m.ad_created)
-        @Html.HiddenFor(m => m.ldap_created)
+        @Html.HiddenFor(m => m.aUUserType)
+        @Html.HiddenFor(m => m.isnew)
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -49,14 +48,21 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-right">User Type</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" value="@Model.aUUserType.toUserTypeName()" readonly>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Login Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_uid" readonly>
-                                        @Html.ValidationMessageFor(m => m.basic_uid)
-                                    </div>
-                                    <label class="col-sm-2 col-form-label text-right">Organizarion Level 1</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" value="@AppUtil.getOuName(Model.system_ou_lvl1)" readonly>
+                                        <input class="form-control" type="text" asp-for="SamAccountName" readonly required>
+                                        @Html.ValidationMessageFor(m => m.SamAccountName)
                                     </div>
                                 </div>
                             </div>
@@ -66,13 +72,9 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">First Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_givenname" required>
-                                        @Html.ValidationMessageFor(m => m.basic_givenname)
+                                        <input class="form-control" type="text" asp-for="GivenName" required>
+                                        @Html.ValidationMessageFor(m => m.GivenName)
 
-                                    </div>
-                                    <label class="col-sm-2 col-form-label text-right">Organizarion Level 2</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" value="@AppUtil.getOuName(Model.system_ou_lvl2)" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -82,12 +84,8 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Last Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_sn" required>
-                                        @Html.ValidationMessageFor(m => m.basic_sn)
-                                    </div>
-                                    <label class="col-sm-2 col-form-label text-right">Organizarion Level 3</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" value="@AppUtil.getOuName(Model.system_ou_lvl3)" readonly>
+                                        <input class="form-control" type="text" asp-for="Surname" required>
+                                        @Html.ValidationMessageFor(m => m.Surname)
                                     </div>
                                 </div>
                             </div>
@@ -97,64 +95,8 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Display Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_displayname" readonly>
-                                        @Html.ValidationMessageFor(m => m.basic_displayname)
-                                    </div>
-                                    <label class="col-sm-2 col-form-label text-right">AD</label>
-                                    <div class="col-sm-3 mt-2">
-                                        @if (Model.ad_created)
-                                        {
-                                            <span class="badge badge-success">Account have been created</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="badge badge-danger">Account has not found </span>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Name Thai</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_thcn" required>
-                                        @Html.ValidationMessageFor(m => m.cu_thcn)
-                                    </div>
-                                    <label class="col-sm-2 col-form-label text-right">LDAP</label>
-                                    <div class="col-sm-3 mt-2">
-                                        @if (Model.ldap_created)
-                                        {
-                                            <span class="badge badge-success">Account have been created</span>
-                                        }
-                                        else
-                                        {
-                                    <span class="badge badge-danger">Account has not found </span>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Surname Thai</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_thsn" required>
-                                        @Html.ValidationMessageFor(m => m.cu_thsn)
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Display Name</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_displayname" readonly>
-                                        @Html.ValidationMessageFor(m => m.basic_displayname)
+                                        <input class="form-control" type="text" asp-for="DisplayName" readonly>
+                                        @Html.ValidationMessageFor(m => m.DisplayName)
                                     </div>
                                 </div>
                             </div>
@@ -164,89 +106,53 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Email</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_mail" readonly>
-                                        @Html.ValidationMessageFor(m => m.basic_mail)
+                                        <input class="form-control" type="text" asp-for="EmailAddress" readonly required>
+                                        @Html.ValidationMessageFor(m => m.EmailAddress)
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Mobile Phone</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_mobile">
-                                        @Html.ValidationMessageFor(m => m.basic_mobile)
+                        @if (Model.aUUserType == aUUserType.staff)
+                        {
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Employee Code</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" asp-for="aUEmpcode">
+                                            @Html.ValidationMessageFor(m => m.aUEmpcode)
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Telephone Number</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="basic_telephonenumber"  >
-                                        @Html.ValidationMessageFor(m => m.basic_telephonenumber)
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Student ID</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" asp-for="aUStudentId">
+                                            @Html.ValidationMessageFor(m => m.aUStudentId)
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Jobcode</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_jobcode"  maxlength="10">
-                                        @Html.ValidationMessageFor(m => m.cu_jobcode)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        }
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Citizen ID</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_pplid" maxlength="13">
-                                        @Html.ValidationMessageFor(m => m.cu_pplid)
+                                        <input class="form-control" type="text" asp-for="aUIDCard" maxlength="13">
+                                        @Html.ValidationMessageFor(m => m.aUIDCard)
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Internet Access</label>
-                                    <div class="col-sm-3">
-                                        <select class="form-control" asp-for="internetaccess">
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                        </select>
-                                        @Html.ValidationMessageFor(m => m.internetaccess)
 
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">VPN</label>
-                                    <div class="col-sm-3">
-                                        <select class="form-control" asp-for="unix_inetCOS">
-                                            <option value="novpn-500">novpn-500</option>
-                                            <option value="vpn-500">vpn-500</option>
-                                            <option value="novpn-200">novpn-200</option>
-                                            <option value="vpn-200">vpn-200</option>
-                                        </select>
-                                        @Html.ValidationMessageFor(m => m.internetaccess)
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
+                        @*<div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">วันหมดอายุ</label>
@@ -284,58 +190,15 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        @*<div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">mailhost(LDAP)</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_mailhost" readonly>
-                                        @Html.ValidationMessageFor(m => m.cu_mailhost)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">maildrop(LDAP)</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_maildrop" readonly>
-                                        @Html.ValidationMessageFor(m => m.cu_maildrop)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">miWmprefEmailAddress(LDAP)</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="mail_miWmprefEmailAddress" readonly>
-                                        @Html.ValidationMessageFor(m => m.mail_miWmprefEmailAddress)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Name Surname, OU, Tel.</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="cu_gecos" readonly>
-                                        @Html.ValidationMessageFor(m => m.cu_gecos)
-                                    </div>
-                                </div>
-                            </div>
                         </div>*@
+
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right"></label>
                                     <div class="col-sm-3">
                                         <button class="btn btn-dark" type="submit">บันทึก</button>
-                                        <a href="@Url.Action("ManageAccount","Account")" class="btn btn-light" type="button">กลับ</a>
+                                        <a href="@Url.Action("CheckAccount","Account")" class="btn btn-light" type="button">กลับ</a>
                                     </div>
                                 </div>
                             </div>

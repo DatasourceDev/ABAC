@@ -34,7 +34,7 @@ namespace ABAC.Controllers
 {
     public class AuthController : ControllerBase
     {
-        public AuthController(SpuContext context, ILogger<AuthController> logger, ILoginServices loginServices, IUserProvider provider, ILDAPUserProvider providerldap, IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider, providerldap)
+        public AuthController(SpuContext context, ILogger<AuthController> logger, ILoginServices loginServices, IUserProvider provider, IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider)
         {
         }
 

@@ -6,6 +6,7 @@ using System.DirectoryServices.AccountManagement;
 using System.Security.Principal;
 using System.DirectoryServices;
 using ABAC.DTO;
+using System.ComponentModel.DataAnnotations;
 
 namespace ABAC.Identity
 {
@@ -126,37 +127,22 @@ namespace ABAC.Identity
         public string description { get; set; }
         public string givenName { get; set; }
         public string distinguishedName { get; set; }
-        public string instanceType { get; set; }
-        public string whenCreated { get; set; }
-        public string whenChanged { get; set; }
         public string displayName { get; set; }
-        public DateTime? uSNCreated { get; set; }
-        public DateTime? uSNChanged { get; set; }
         public string department { get; set; }
-        public string nTSecurityDescriptor { get; set; }
+        public string departmentNumber { get; set; }
         public string name { get; set; }
-        //public string objectGUID { get; set; }
         public string userAccountControl { get; set; }
         public string codePage { get; set; }
         public string countryCode { get; set; }
         public DateTime? pwdLastSet { get; set; }
         public string primaryGroupID { get; set; }
-        //public string objectSid { get; set; }
         public string accountExpires { get; set; }
         public string sAMAccountName { get; set; }
         public string division { get; set; }
         public string sAMAccountType { get; set; }
         public string userPrincipalName { get; set; }
         public string objectCategory { get; set; }
-        public string dSCorePropagationData { get; set; }
         public string mail { get; set; }
-        public string jobcode { get; set; }
-        public string pplid { get; set; }
-        public string CUexpire { get; set; }
-        public string pwdchangedloc { get; set; }
-        public string pwdchangedby { get; set; }
-        public string internetaccess { get; set; }
-        public string thaidescription { get; set; }
 
         public string title { get; set; }
         public string postalCode { get; set; }
@@ -164,15 +150,25 @@ namespace ABAC.Identity
         public string telephoneNumber { get; set; }
         public string company { get; set; }
         public string postOfficeBox { get; set; }
-        public string memberOf { get; set; }
-        //public string employeeID { get; set; }
-        //public string flags { get; set; }
+               
         public string comment { get; set; }
         public string lastLogonTimestamp { get; set; }
 
         public DateTime? lastLogon { get; set; }
         public string logonCount { get; set; }
-
+        
+        public string aUEmpcode { get; set; }
+        public string aUEmpType { get; set; }
+        public string aUIDCard { get; set; }
+        public string aUFactCode { get; set; }
+        public string aUFaculty { get; set; }
+        public string aUMetier { get; set; }
+        public string aUOffice365 { get; set; }
+        public string aUPosition { get; set; }
+        public string aUUserType { get; set; }
+        public string aUStudentId { get; set; }
+        public string aUSex { get; set; }
+        
         private static string getpropertyvalue(PropertyCollection Properties, string PropertyName)
         {
             if (Properties.Contains(PropertyName))
@@ -202,19 +198,14 @@ namespace ABAC.Identity
                 telephoneNumber = user.VoiceTelephoneNumber,
                 department = getpropertyvalue(d.Properties, "department"),
                 title = getpropertyvalue(d.Properties, "title"),
-                jobcode = user.EmployeeId,
                 uid = getpropertyvalue(d.Properties, "uid"),
-                pplid = getpropertyvalue(d.Properties, "pplid"),
-                pwdchangedloc = getpropertyvalue(d.Properties, "pwdchangedloc"),
-                pwdchangedby = getpropertyvalue(d.Properties, "pwdchangedby"),
-                internetaccess = getpropertyvalue(d.Properties, "internetaccess"),
-                thaidescription = getpropertyvalue(d.Properties, "thaidescription"),
-                CUexpire = getpropertyvalue(d.Properties, "CUexpire"),
+                //jobcode = user.EmployeeId,
             };
         }
     }
     public class AdUser2
     {
+        public bool isnew { get; set; }
         public DateTime? AccountExpirationDate { get; set; }
         public DateTime? AccountLockoutTime { get; set; }
         public int BadLogonCount { get; set; }
@@ -222,9 +213,13 @@ namespace ABAC.Identity
         public string DisplayName { get; set; }
         public string DistinguishedName { get; set; }
         public string Domain { get; set; }
+
+        [Required]
         public string EmailAddress { get; set; }
         public string EmployeeId { get; set; }
         public bool? Enabled { get; set; }
+
+        [Required]
         public string GivenName { get; set; }
         public Guid? Guid { get; set; }
         public string HomeDirectory { get; set; }
@@ -236,16 +231,33 @@ namespace ABAC.Identity
         public string Name { get; set; }
         public bool PasswordNeverExpires { get; set; }
         public bool PasswordNotRequired { get; set; }
+        [Required]
         public string SamAccountName { get; set; }
         public string ScriptPath { get; set; }
         public SecurityIdentifier Sid { get; set; }
+
+        [Required]
         public string Surname { get; set; }
         public bool UserCannotChangePassword { get; set; }
         public string UserPrincipalName { get; set; }
         public string VoiceTelephoneNumber { get; set; }
+        public string aUEmpcode { get; set; }
+        public string aUEmpType { get; set; }
+        public string aUIDCard { get; set; }
+        public string aUUserType { get; set; }
+        public string aUStudentId { get; set; }
+
+        public string Reference { get; set; }
+        public string PassportID { get; set; }
+
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+
 
         public static AdUser2 CastToAdUser(UserPrincipal user)
         {
+            DirectoryEntry d = user.GetUnderlyingObject() as DirectoryEntry;
+
             return new AdUser2
             {
                 AccountExpirationDate = user.AccountExpirationDate,
@@ -274,10 +286,25 @@ namespace ABAC.Identity
                 Surname = user.Surname,
                 UserCannotChangePassword = user.UserCannotChangePassword,
                 UserPrincipalName = user.UserPrincipalName,
-                VoiceTelephoneNumber = user.VoiceTelephoneNumber
+                VoiceTelephoneNumber = user.VoiceTelephoneNumber,
+                aUIDCard = getpropertyvalue(d.Properties, "aUIDCard"),
+                aUEmpcode = getpropertyvalue(d.Properties, "aUEmpcode"),
+                aUStudentId = getpropertyvalue(d.Properties, "aUStudentId"),
+                aUUserType = getpropertyvalue(d.Properties, "aUUserType"),
+                PassportID = getpropertyvalue(d.Properties, "departmentNumber"),
+                Reference = getpropertyvalue(d.Properties, "department"),
             };
         }
 
+        private static string getpropertyvalue(PropertyCollection Properties, string PropertyName)
+        {
+            if (Properties.Contains(PropertyName))
+            {
+                if (Properties[PropertyName].Value != null)
+                    return Properties[PropertyName].Value.ToString();
+            }
+            return "";
+        }
         public string GetDomainPrefix() => DistinguishedName
             .Split(',')
             .FirstOrDefault(x => x.ToLower().Contains("dc"))

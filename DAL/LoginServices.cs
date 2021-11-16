@@ -79,7 +79,7 @@ namespace ABAC.Services
         {
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.SamAccountName));
-            identity.AddClaim(new Claim(ClaimTypes.Role, IDMUserType.staff.toUserTypeName()));
+            identity.AddClaim(new Claim(ClaimTypes.Role, aUUserType.staff.toUserTypeName()));
             identity.AddClaim(new Claim(ClaimTypes.Name, user.SamAccountName));
 
             // Authenticate using the identity

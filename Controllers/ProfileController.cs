@@ -22,7 +22,7 @@ namespace ABAC.Controllers
     {
         private IUserProvider provider;
 
-        public ProfileController(SpuContext context, ILogger<ProfileController> logger, ILoginServices loginServices, IUserProvider provider, ILDAPUserProvider providerldap, IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider, providerldap)
+        public ProfileController(SpuContext context, ILogger<ProfileController> logger, ILoginServices loginServices, IUserProvider provider,  IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider)
         {
             this.provider = provider;
         }
@@ -66,14 +66,11 @@ namespace ABAC.Controllers
                 ViewBag.Message = ReturnMessage.ChangePasswordFail;
                 ViewBag.ReturnCode = ReturnCode.Error;
 
-                _context.SaveChanges();                
                 var result_ad = _provider.ChangePwd(aduser, model.Password, _context);
                 if (result_ad.result == true)
                     writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
                 else
                     writelog(LogType.log_change_password, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
-
-                writelog(LogType.log_change_password, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
 
                 ViewBag.Message = ReturnMessage.ChangePasswordSuccess;
                 ViewBag.ReturnCode = ReturnCode.Success;
