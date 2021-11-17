@@ -1913,7 +1913,7 @@ namespace ABAC.Controllers
                 ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
                 return View(model);
             }
-            //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
+            //string[] roles = { model.usertype_search.toUserTypeName() };
             var adusers = await _provider.FindUser(model, null, _context);
 
 

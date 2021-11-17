@@ -165,10 +165,10 @@ namespace ABAC.Identity
                 var setup = spucontext.table_setup.FirstOrDefault();
                 var adusers = new List<AdUser4>();
 
-                if (model.usertype_search == aUUserType.staff | model.usertype_search == aUUserType.student)
+                if (!string.IsNullOrEmpty(model.usertype_search))
                 {
                     if (adusers.Count < 100)
-                        adusers.AddRange(FindUser(model.usertype_search.toUserTypeName().ToLower(), "", model.text_search, setup, spucontext));
+                        adusers.AddRange(FindUser(model.usertype_search.toOUName().ToLower(), "", model.text_search, setup, spucontext));
                 }
                 else
                 {
@@ -177,7 +177,7 @@ namespace ABAC.Identity
                         foreach (var role in roles)
                         {
                             if (adusers.Count < 100)
-                                adusers.AddRange(FindUser(model.usertype_search.toUserTypeName().ToLower(), role, model.text_search, setup, spucontext));
+                                adusers.AddRange(FindUser(model.usertype_search.toOUName().ToLower(), role, model.text_search, setup, spucontext));
                         }
                     }
                     

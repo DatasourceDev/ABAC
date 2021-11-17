@@ -254,6 +254,29 @@ namespace ABAC
                 status = "Staff";
             else if (statusType == aUUserType.student)
                 status = "Student";
+            else if (statusType == aUUserType.vip)
+                status = "VIP";
+            else if (statusType == aUUserType.office)
+                status = "Office";
+            else if (statusType == aUUserType.bulk)
+                status = "Temp";
+            return status;
+        }
+        public static string toOUName(this string statusType)
+        {
+            string status = "";
+            if (statusType == aUUserType.staff)
+                status = "Staff";
+            else if (statusType == aUUserType.student)
+                status = "Student";
+            else if (statusType == aUUserType.vip)
+                status = "userVIP";
+            else if (statusType == aUUserType.office)
+                status = "userOffice";
+            else if (statusType == aUUserType.bulk)
+                status = "userTemp";
+            else if (statusType == aUUserType.admin)
+                status = "Service-user";
             return status;
         }
         public static string touserAccountControlName(this userAccountControl statusType)
