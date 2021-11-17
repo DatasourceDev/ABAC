@@ -384,7 +384,7 @@ namespace ABAC
             }
             else if (text == ((int)userAccountControl.DisablePasswordNotRequired).ToString())
             {
-                return userAccountControl.DisablePasswordNotRequired;
+                return userAccountControl.Disable;
             }
             else if (text == ((int)userAccountControl.Enable).ToString())
             {
@@ -392,7 +392,7 @@ namespace ABAC
             }
             else if (text == ((int)userAccountControl.EnablePasswordNotRequired).ToString())
             {
-                return userAccountControl.EnablePasswordNotRequired;
+                return userAccountControl.Enable;
             }
             return userAccountControl.Enable;
         }

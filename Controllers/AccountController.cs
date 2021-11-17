@@ -72,6 +72,7 @@ namespace ABAC.Controllers
             }           
             if (ModelState.IsValid)
             {
+                model.DisplayName = model.GivenName + " " + model.Surname;
                 ViewBag.Message = ReturnMessage.Error;
                 ViewBag.ReturnCode = ReturnCode.Error;
                 try
