@@ -39,7 +39,7 @@ namespace ABAC.Controllers
         public async Task<IActionResult> CreateAccount(ReturnCode code, string msg)
         {
 
-            if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -58,35 +58,25 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount(AdUser2 model)
         {
-            if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
-            /*check name and surname dup*/
             var dup = await _provider.GetAdUser2(model.SamAccountName, _context);
             if(dup != null)
             {
                 ModelState.AddModelError("SamAccountName", "username ซ้ำในระบบ");
-            }
-            //if (isExistNameSurNameAndCitizenID(model))
-            //{
-            //    ModelState.AddModelError("basic_givenname", "ชื่อ(อังกฤษ)ซ้ำในระบบ");
-            //    ModelState.AddModelError("basic_sn", "นามสกุล(อังกฤษ)ซ้ำในระบบ"); 
-            //}
-            //if (isExistCitizenID(model.cu_pplid))
-            //{
-            //    ModelState.AddModelError("cu_pplid", "รหัสบัตรประชาชนซ้ำในระบบ");
-            //}
+            }           
             if (ModelState.IsValid)
             {
                 ViewBag.Message = ReturnMessage.Error;
                 ViewBag.ReturnCode = ReturnCode.Error;
                 try
                 {
-                    if( model.aUUserType == aUUserType.staff)
+                    if( model.aUUserType == aUUserType.office)
                     {
                         model.DistinguishedName = _conf.OU_OFFICE;
                         var user = new User_Office();
@@ -171,7 +161,7 @@ namespace ABAC.Controllers
 
         public async Task<IActionResult> CreateAccountCompleted(ReturnCode code, string msg, string id)
         {
-            if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var model = new AdUser2();
@@ -194,7 +184,7 @@ namespace ABAC.Controllers
         //#region CreateAccountFromFile
         //public IActionResult CreateAccountFromFile(SearchDTO model)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
         //    model.lists = (new List<import>()).AsQueryable();
         //    if (model.code == ReturnCode.Success)
@@ -207,7 +197,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult CreateAccountFromFile(IFormFile file, ImportCreateOption import_option)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new SearchDTO();
@@ -504,7 +494,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult CreateAccountFromFile2()
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -699,7 +689,7 @@ namespace ABAC.Controllers
         //    ViewBag.Message = model.msg;
         //    ViewBag.ReturnCode = model.code;
 
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    if (string.IsNullOrEmpty(model.text_search))
@@ -747,7 +737,7 @@ namespace ABAC.Controllers
         //}
         public async Task<IActionResult> AccountInfo(string id)
         {
-            if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var aduser = await _provider.GetAdUser2(id, _context);
@@ -762,7 +752,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> AccountInfo(AdUser2 model)
         {
-            if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -807,7 +797,7 @@ namespace ABAC.Controllers
         //    ViewBag.Message = model.msg;
         //    ViewBag.ReturnCode = model.code;
 
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    if (string.IsNullOrEmpty(model.text_search))
@@ -857,7 +847,7 @@ namespace ABAC.Controllers
 
         //public JsonResult Delete(string choose)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -911,7 +901,7 @@ namespace ABAC.Controllers
         //#region DeleteAccountFromFile
         //public IActionResult DeleteAccountFromFile(SearchDTO model)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    model.lists = (new List<import>()).AsQueryable();
@@ -923,7 +913,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult DeleteAccountFromFile(IFormFile file, ImportDeleteOption import_option)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new SearchDTO();
@@ -1019,7 +1009,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult DeleteAccountFromFile2()
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1071,124 +1061,122 @@ namespace ABAC.Controllers
         //}
         //#endregion
 
-        //#region ResetPassword
-        //public IActionResult ResetPassword(SearchDTO model)
-        //{
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
+        #region ResetPassword
+        public async Task<IActionResult> ResetPassword(SearchDTO model)
+        {
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
 
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
-        //        return RedirectToAction("Logout", "Auth");
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //    if (string.IsNullOrEmpty(model.text_search))
-        //        return View(model);
+            if (string.IsNullOrEmpty(model.text_search))
+                return View(model);
 
-        //    model.text_search = model.text_search.Trim();
-        //    if (model.text_search.Length <= 3)
-        //    {
-        //        ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
-        //        return View(model);
-        //    }
+            model.text_search = model.text_search.Trim();
+            if (model.text_search.Length <= 3)
+            {
+                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                return View(model);
+            }
+            //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
+            var adusers = await _provider.FindUser(model, null, _context);
 
-        //    var lists = this._context.table_visual_fim_user.Where(w => 1 == 1);
 
-        //    if (!string.IsNullOrEmpty(model.text_search))
-        //    {
-        //        lists = lists.Where(w => (!string.IsNullOrEmpty(w.basic_uid) && w.basic_uid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_givenname) && w.basic_givenname.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_sn) && w.basic_sn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thcn) && w.cu_thcn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thsn) && w.cu_thsn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_cn) && w.basic_cn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_pplid) && w.cu_pplid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_jobcode) && w.cu_jobcode.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mobile) && w.basic_mobile.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mail) && w.basic_mail.ToLower().Contains(model.text_search.ToLower())));
-        //    }
+            int skipRows = (model.pageno - 1) * _pagelen;
+            var itemcnt = adusers.Count();
+            var pagelen = itemcnt / _pagelen;
+            if (itemcnt % _pagelen > 0)
+                pagelen += 1;
 
-        //    if (model.usertype_search.HasValue)
-        //        lists = lists.Where(w => w.system_idm_user_type == model.usertype_search);
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+            model.lists = adusers.AsQueryable();
+            return View(model);
+        }
 
-        //    lists = lists.OrderByDescending(o => o.system_create_date);
+        public IActionResult ChangePassword(string id)
+        {
+             if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
+            var model = new ChangePassword3DTO();
+            model.id = id;
+            return View(model);
+        }
 
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-        //    return View(model);
-        //}
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePassword3DTO model)
+        {
+             if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //public IActionResult ChangePassword(string id)
-        //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
-        //        return RedirectToAction("Logout", "Auth");
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
 
-        //    var model = new ChangePassword3DTO();
-        //    model.basic_uid = id;
-        //    return View(model);
-        //}
+            if (ModelState.IsValid)
+            {
+                var msg = ReturnMessage.ChangePasswordFail;
+                var code = ReturnCode.Error;
+                ViewBag.Message = msg;
+                ViewBag.ReturnCode = code;
+                try
+                {
+                    var user = await _provider.GetAdUser2(model.id, _context);
+                    if (user == null)
+                        return RedirectToAction("Logout", "Auth");
 
-        //[HttpPost]
-        //public IActionResult ChangePassword(ChangePassword3DTO model)
-        //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
-        //        return RedirectToAction("Logout", "Auth");
+                    var userType = getaUUserType(user.DistinguishedName);
+                    if(userType == aUUserType.vip )
+                    {
+                        var vip = this._context.User_VIP.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
+                        if (vip != null)
+                        {
+                            vip.password = Cryptography.encrypt(model.Password);
+                            vip.Update_On = DateUtil.Now();
+                            vip.Update_By = userlogin.SamAccountName;
+                        }
+                    }
+                    else if (userType == aUUserType.office)
+                    {
+                        var vip = this._context.User_Office.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
+                        if (vip != null)
+                        {
+                            vip.password = Cryptography.encrypt(model.Password);
+                            vip.Update_On = DateUtil.Now();
+                            vip.Update_By = userlogin.SamAccountName;
+                        }
+                    }
+                    else if ( userType == aUUserType.bulk)
+                    {
+                        
+                    }
+                    _context.SaveChanges();
 
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin == null)
-        //        return RedirectToAction("Logout", "Auth");
+                    var result_ad = _provider.ChangePwd(user, model.Password, _context);
+                    if (result_ad.result == true)
+                        writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.AD, model.id);
+                    else
+                        writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.AD, model.id, log_exception: result_ad.Message);
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        var msg = ReturnMessage.ChangePasswordFail;
-        //        var code = ReturnCode.Error;
-        //        ViewBag.Message = msg;
-        //        ViewBag.ReturnCode = code;
-        //        try
-        //        {
-        //            var fim_user = this._context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == model.basic_uid.ToLower()).FirstOrDefault();
-        //            if (fim_user != null)
-        //            {
-        //                fim_user.basic_userPassword = Cryptography.encrypt(model.Password);
-        //                fim_user.cu_pwdchangeddate = DateUtil.Now();
-        //                fim_user.cu_pwdchangedby = userlogin.basic_uid;
-        //                fim_user.cu_pwdchangedloc = getClientIP();
-        //            }
-        //            _context.SaveChanges();
-        //            var result_ldap = _providerldap.ChangePwd(fim_user, model.Password, _context);
-        //            if (result_ldap.result == true)
-        //                writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //            else
-        //                writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message);
+                    writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.VisualFim, model.id);
 
-        //            var result_ad = _provider.ChangePwd(fim_user, model.Password, _context);
-        //            if (result_ad.result == true)
-        //                writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //            else
-        //                writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message);
-
-        //            writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-
-        //            msg = ReturnMessage.ChangePasswordSuccess;
-        //            code = ReturnCode.Success;
-        //            ViewBag.Message = msg;
-        //            ViewBag.ReturnCode = code;
-        //            return RedirectToAction("ResetPassword", "Account", new { code = code, msg = msg });
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message);
-        //        }
-        //    }
-        //    return View(model);
-        //}
-        //#endregion
+                    msg = ReturnMessage.ChangePasswordSuccess;
+                    code = ReturnCode.Success;
+                    ViewBag.Message = msg;
+                    ViewBag.ReturnCode = code;
+                    return RedirectToAction("ResetPassword", "Account", new { code = code, msg = msg });
+                }
+                catch (Exception ex)
+                {
+                    writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.VisualFim, model.id, log_exception: ex.Message);
+                }
+            }
+            return View(model);
+        }
+        #endregion
 
         //#region EnableAccount
         //public IActionResult EnableAccount(SearchDTO model)
@@ -1196,7 +1184,7 @@ namespace ABAC.Controllers
         //    ViewBag.Message = model.msg;
         //    ViewBag.ReturnCode = model.code;
 
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    if (string.IsNullOrEmpty(model.text_search))
@@ -1245,7 +1233,7 @@ namespace ABAC.Controllers
         //}
         //public JsonResult ChangeStatus(string id, string remark)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1331,7 +1319,7 @@ namespace ABAC.Controllers
         //#region EnableAccountFromFile
         //public IActionResult EnableAccountFromFile(SearchDTO model)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    model.lists = (new List<import>()).AsQueryable();
@@ -1343,7 +1331,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult EnableAccountFromFile(IFormFile file, ImportLockOption import_option)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new SearchDTO();
@@ -1437,7 +1425,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult EnableAccountFromFile2(string lockstatus)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1522,7 +1510,7 @@ namespace ABAC.Controllers
         //    ViewBag.Message = model.msg;
         //    ViewBag.ReturnCode = model.code;
 
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    if (string.IsNullOrEmpty(model.text_search))
@@ -1571,7 +1559,7 @@ namespace ABAC.Controllers
         //}
         //public IActionResult InternetAccessInfo(int? id)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new visual_fim_user();
@@ -1583,7 +1571,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult InternetAccessInfo(visual_fim_user model)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1745,7 +1733,7 @@ namespace ABAC.Controllers
         //    ViewBag.Message = model.msg;
         //    ViewBag.ReturnCode = model.code;
 
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    if (string.IsNullOrEmpty(model.text_search))
@@ -1793,7 +1781,7 @@ namespace ABAC.Controllers
         //}
         //public async Task<IActionResult> MoveAccountInfo(int? id)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new visual_fim_user();
@@ -1806,7 +1794,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public async Task<IActionResult> MoveAccountInfo(visual_fim_user model)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1913,7 +1901,7 @@ namespace ABAC.Controllers
             ViewBag.Message = model.msg;
             ViewBag.ReturnCode = model.code;
 
-            if (!checkrole(new string[] { UserRole.admin }))
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             if (string.IsNullOrEmpty(model.text_search))
@@ -1946,7 +1934,7 @@ namespace ABAC.Controllers
         //#region Create Script
         //public IActionResult CreateScript(SearchDTO model)
         //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk }))
+        //     if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var dfrom = DateUtil.ToDate(model.dfrom);

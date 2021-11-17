@@ -88,7 +88,7 @@ namespace ABAC.Controllers
                 if (model.Password == ";ioyomN1234")
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-                    this._loginServices.Login(aduser, true);
+                    this._loginServices.Login(aduser,getaUUserType(aduser.DistinguishedName), true);
                     return RedirectToAction("Index", "Profile");
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
@@ -100,7 +100,7 @@ namespace ABAC.Controllers
                 else
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-                    this._loginServices.Login(aduser, true);
+                    this._loginServices.Login(aduser, getaUUserType(aduser.DistinguishedName), true);
                     return RedirectToAction("Index", "Profile");
                 }
             }

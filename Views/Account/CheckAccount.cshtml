@@ -37,10 +37,7 @@
             </div>
         </div><!--end col-->
     </div>
-    <!-- end page title end breadcrumb -->
-    <!--end row-->
     <form class="form-horizontal form-parsley" asp-action="CheckAccount" asp-controller="Account" method="get">
-        <!-- end row -->
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -49,7 +46,7 @@
                         <div class="form-group row">
                             <div class="col-lg-9">
                                 <label class="col-form-label">คำค้น</label>
-                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, โทรศัพท์, อีเมล์" asp-for="text_search" required>
+                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, รหัสนักศึกษา, อีเมล์" asp-for="text_search" required>
                                 @Html.ValidationMessageFor(m => m.text_search)
 
                             </div>
@@ -140,5 +137,4 @@
             <!-- end col -->
         </div>
     </form>
-
 </div><!-- container -->

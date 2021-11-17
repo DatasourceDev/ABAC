@@ -112,7 +112,7 @@ namespace ABAC.Identity
                 filter.Append("(& (objectClass=user)(objectCategory=person)");
                 if (!string.IsNullOrEmpty(text_search))
                 {
-                    filter.Append("(| (sAMAccountName=" + text_search + "*) (cn=" + text_search + "*) (sn=" + text_search + "*) (givenName=" + text_search + "*) (mail=" + text_search + "*) (mobile=" + text_search + "*) )");
+                    filter.Append("(| (sAMAccountName=" + text_search + "*) (cn=" + text_search + "*) (sn=" + text_search + "*) (givenName=" + text_search + "*) (mail=" + text_search + "*) (aUStudentId=" + text_search + "*) (aUEmpcode=" + text_search + "*) (aUIDCard=" + text_search + "*) )");
                 }
                 filter.Append(")");
                 nDS.Filter = filter.ToString();

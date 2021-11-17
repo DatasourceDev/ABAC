@@ -29,6 +29,8 @@ namespace ABAC
         public static string student = "s";
         public static string vip = "vip";
         public static string bulk = "bulk";
+        public static string office = "office";
+        public static string admin = "admin";
     }
     
     public enum Status

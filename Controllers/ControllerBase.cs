@@ -49,6 +49,33 @@ namespace ABAC.Controllers
 
         }
 
+        public string getaUUserType(string DistinguishedName)
+        {
+            if (DistinguishedName.Contains("Staff"))
+            {
+                return aUUserType.staff;
+            }
+            else if (DistinguishedName.Contains("Student"))
+            {
+                return aUUserType.student;
+            }
+            else if (DistinguishedName.Contains("UserOffice"))
+            {
+                return aUUserType.office;
+            }
+            else if (DistinguishedName.Contains("UserVip"))
+            {
+                return aUUserType.vip;
+            }
+            else if (DistinguishedName.Contains("UserTemp"))
+            {
+                return aUUserType.bulk;
+            }
+            else
+            {
+                return null;
+            }
+        }
         //protected SelectList ListFaculty()
         //{
         //    var list = new List<faculty>();
@@ -212,8 +239,10 @@ namespace ABAC.Controllers
 
         //    return true;
         //}
-        public bool checkrole(string[] role)
+        public bool checkrole()
         {
+            if (this._loginServices.UserRole() != aUUserType.admin)
+                return false;
             //var group = _context.table_group.Where(w => role.Contains(w.group_name) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
             //if (group == null)
             //    return false;

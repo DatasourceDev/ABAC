@@ -157,7 +157,7 @@ namespace ABAC.DTO
     public class ChangePassword3DTO
     {
         [Required]
-        public string basic_uid { get; set; }
+        public string id { get; set; }
 
         [Required]
         [DataType(DataType.Password)]

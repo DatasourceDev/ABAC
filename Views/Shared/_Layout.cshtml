@@ -10,7 +10,7 @@
 
     var portal = Configuration["SystemConf:Portal"];
     //var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve | w.group_name == UserRole.view) & w.group_username_list.Contains(loginServices.AuthenName().ToLower())).FirstOrDefault();
-    var groupname = UserRole.admin;
+    var groupname = loginServices.UserRole().ToLower();
     //if (group != null)
     //{
     //    groupname = group.group_name;
@@ -82,48 +82,36 @@
             </div>
         </div>
         <ul class="metismenu left-sidenav-menu slimscroll">
-            @if (portal == Portal.admin && (groupname == UserRole.admin | groupname == UserRole.helpdesk | groupname == UserRole.approve))
+            @if (portal == Portal.admin && (groupname == aUUserType.admin))
             {
                 <li class="leftbar-menu-item">
                     <a class="menu-link" href="@Url.Action("CheckAccount", "Account")"><i data-feather="search" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ค้นหาผุ้ใช้</a>
                 </li>
-                if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
-                {
-                    <li class="leftbar-menu-item">
+                <li class="leftbar-menu-item">
 
-                        <a href="javascript: void(0);" class="menu-link">
-                            <i data-feather="plus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                            <span>สร้างบัญชีผู้ใช้</span>
-                            <span class="menu-arrow">
-                                <i class="mdi mdi-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="nav-second-level" aria-expanded="false">
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จากไฟล์</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จำนวนมาก</a></li>
-                            <li class="nav-item">@*<a class="nav-link" href="@Url.Action("CreateAccount", "AccountTemp")"><i data-feather="plus-circle" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้แบบชั่วคราว</a>*@</li>
-                        </ul>
-                    </li>
-                }
-                if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
-                {
-                    <li class="leftbar-menu-item">
-                        <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขรหัสผ่าน</a>
-                    </li>
-                    <li class="leftbar-menu-item">
-                        <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock</a>
-                    </li>
-                    <li class="leftbar-menu-item">
-                        <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีผู้ใช้</a>
-                    </li>
-                }
-                @*<li class="leftbar-menu-item">
-                <a href="@Url.Action("ApproveChangePassword", "Account")" class="menu-link">
-                    <i data-feather="check" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                    <span>อนุมัติขอเปลี่ยนรหัสผ่าน</span>
-                </a>
-            </li>*@
+                    <a href="javascript: void(0);" class="menu-link">
+                        <i data-feather="plus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>สร้างบัญชีผู้ใช้</span>
+                        <span class="menu-arrow">
+                            <i class="mdi mdi-chevron-right"></i>
+                        </span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จากไฟล์</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จำนวนมาก</a></li>
+                        <li class="nav-item">@*<a class="nav-link" href="@Url.Action("CreateAccount", "AccountTemp")"><i data-feather="plus-circle" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้แบบชั่วคราว</a>*@</li>
+                    </ul>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขรหัสผ่าน</a>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock</a>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีผู้ใช้</a>
+                </li>
                 <li class="leftbar-menu-item">
                     <a href="javascript: void(0);" class="menu-link">
                         <i data-feather="pie-chart" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
@@ -140,8 +128,6 @@
                     </ul>
                 </li>
 
-                if (groupname == UserRole.admin)
-                {
                     <li class="leftbar-menu-item">
                         <a href="javascript: void(0);" class="menu-link">
                             <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
@@ -156,7 +142,6 @@
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
                         </ul>
                     </li>
-                }
             }
             else
             {

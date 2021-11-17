@@ -16,7 +16,7 @@ namespace ABAC.Services
         bool isAuthen();
         bool isInAdminRoles(string[] roles);
         bool isInRoles(string[] roles);
-        void Login(AdUser2 user, bool isPersistent);
+        void Login(AdUser2 user,string role, bool isPersistent);
         void Logout();
         string UserRole();
     }
@@ -75,11 +75,11 @@ namespace ABAC.Services
         {
             this.httpContext = httpContext;
         }
-        public async void Login(AdUser2 user, bool isPersistent)
+        public async void Login(AdUser2 user, string role, bool isPersistent)
         {
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.SamAccountName));
-            identity.AddClaim(new Claim(ClaimTypes.Role, aUUserType.staff.toUserTypeName()));
+            identity.AddClaim(new Claim(ClaimTypes.Role, role));
             identity.AddClaim(new Claim(ClaimTypes.Name, user.SamAccountName));
 
             // Authenticate using the identity
