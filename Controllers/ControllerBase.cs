@@ -71,6 +71,14 @@ namespace ABAC.Controllers
             {
                 return aUUserType.bulk;
             }
+            else if (DistinguishedName.Contains("Service-user"))
+            {
+                return aUUserType.admin;
+            }
+            else if (DistinguishedName.Contains("GroupAdmin"))
+            {
+                return aUUserType.admin;
+            }
             else
             {
                 return null;
@@ -243,10 +251,6 @@ namespace ABAC.Controllers
         {
             if (this._loginServices.UserRole() != aUUserType.admin)
                 return false;
-            //var group = _context.table_group.Where(w => role.Contains(w.group_name) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
-            //if (group == null)
-            //    return false;
-
             return true;
         }
         public string RandomPassword(int length = 8, bool includenumber = true, bool includelower = true, bool includeupper = false)
