@@ -109,46 +109,21 @@
                 if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
                 {
                     <li class="leftbar-menu-item">
-                        <a href="javascript: void(0);" class="menu-link">
-                            <i data-feather="edit" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                            <span>แก้ไขบัญชีผู้ใช้</span>
-                            <span class="menu-arrow">
-                                <i class="mdi mdi-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="nav-second-level" aria-expanded="false">
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขรหัสผ่าน</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("ManageAccount", "Account")"><i data-feather="edit-2" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขบัญชีผู้ใช้</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock</a></li>
-                            @*<li class="nav-item"><a class="nav-link" href="@Url.Action("EnableAccountFromFile", "Account")"><i data-feather="toggle-left" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock บัญชีผู้ใช้จากไฟล์</a></li>
-                                <li class="nav-item"><a class="nav-link" href="@Url.Action("MoveAccount", "Account")"><i data-feather="move" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ย้ายกลุ่มของบัญชีรายชื่อผู้ใช้</a></li>
-                                <li class="nav-item"><a class="nav-link" href="@Url.Action("InternetAccess", "Account")"><i data-feather="wifi" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไข Internet access</a></li>*@
-
-                        </ul>
+                        <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขรหัสผ่าน</a>
                     </li>
-                }
-                if (groupname == UserRole.admin | groupname == UserRole.helpdesk)
-                {
                     <li class="leftbar-menu-item">
-                        <a href="javascript: void(0);" class="menu-link">
-                            <i data-feather="minus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                            <span>ลบบัญชีผู้ใช้</span>
-                            <span class="menu-arrow">
-                                <i class="mdi mdi-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="nav-second-level" aria-expanded="false">
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีผู้ใช้</a></li>
-                            <li class="nav-item">@*<a class="nav-link" href="@Url.Action("DeleteAccountFromFile", "Account")"><i data-feather="file-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีรายชื่อผู้ใช้จากไฟล์</a>*@</li>
-                        </ul>
+                        <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock</a>
+                    </li>
+                    <li class="leftbar-menu-item">
+                        <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีผู้ใช้</a>
                     </li>
                 }
                 @*<li class="leftbar-menu-item">
-                        <a href="@Url.Action("ApproveChangePassword", "Account")" class="menu-link">
-                            <i data-feather="check" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                            <span>อนุมัติขอเปลี่ยนรหัสผ่าน</span>
-                        </a>
-                    </li>*@
+                <a href="@Url.Action("ApproveChangePassword", "Account")" class="menu-link">
+                    <i data-feather="check" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>อนุมัติขอเปลี่ยนรหัสผ่าน</span>
+                </a>
+            </li>*@
                 <li class="leftbar-menu-item">
                     <a href="javascript: void(0);" class="menu-link">
                         <i data-feather="pie-chart" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>

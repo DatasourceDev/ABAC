@@ -47,6 +47,7 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var model = new AdUser2();
+            model.aUUserType = aUUserType.vip;
             //model.system_faculty_id = 0;
             //model.cu_CUexpire_day = DateUtil.Now().Day;
             //model.cu_CUexpire_month = DateUtil.Now().Month;
@@ -65,6 +66,11 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             /*check name and surname dup*/
+            var dup = await _provider.GetAdUser2(model.SamAccountName, _context);
+            if(dup != null)
+            {
+                ModelState.AddModelError("SamAccountName", "username ซ้ำในระบบ");
+            }
             //if (isExistNameSurNameAndCitizenID(model))
             //{
             //    ModelState.AddModelError("basic_givenname", "ชื่อ(อังกฤษ)ซ้ำในระบบ");
@@ -82,6 +88,7 @@ namespace ABAC.Controllers
                 {
                     if( model.aUUserType == aUUserType.staff)
                     {
+                        model.DistinguishedName = _conf.OU_OFFICE;
                         var user = new User_Office();
                         user.username = model.SamAccountName;
                         user.password = Cryptography.encrypt(model.Password);
@@ -95,7 +102,7 @@ namespace ABAC.Controllers
                         user.Create_On = DateUtil.Now();
                         user.Update_By = userlogin.SamAccountName;
                         user.Update_On = DateUtil.Now();
-                        _context.User_Offices.Add(user);
+                        _context.User_Office.Add(user);
                         _context.SaveChanges();
 
                         var result_ad = _provider.CreateUser(model, _context);
@@ -111,6 +118,7 @@ namespace ABAC.Controllers
                     }
                     else if (model.aUUserType == aUUserType.vip)
                     {
+                        model.DistinguishedName = _conf.OU_VIP;
                         var user = new User_VIP();
                         user.username = model.SamAccountName;
                         user.password = Cryptography.encrypt(model.Password);
@@ -124,7 +132,8 @@ namespace ABAC.Controllers
                         user.Create_On = DateUtil.Now();
                         user.Update_By = userlogin.SamAccountName;
                         user.Update_On = DateUtil.Now();
-                        _context.User_VIPs.Add(user);
+                        _context.User_VIP.Add(user);
+                        _context.SaveChanges();
 
                         var result_ad = _provider.CreateUser(model, _context);
                         if (result_ad.result == true)
@@ -139,7 +148,12 @@ namespace ABAC.Controllers
                     }
                     else if (model.aUUserType == aUUserType.bulk)
                     {
+                        model.DistinguishedName = _conf.OU_TEMP;
 
+                    }
+                    else
+                    {
+                        return View(model);
                     }
                 }
                 catch (Exception ex)

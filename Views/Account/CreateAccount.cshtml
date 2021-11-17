@@ -39,7 +39,7 @@
     </div>
     <!-- end page title end breadcrumb -->
     <!--end row-->
-    <form class="form-horizontal form-parsley" asp-action="CreateAccount" asp-controller="Account">
+    <form id="form-register" class="form-horizontal form-parsley" asp-action="CreateAccount" asp-controller="Account" autocomplete="off" role="presentation">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -51,20 +51,20 @@
                                     <div class="col-md-9">
                                         <div class="form-check-inline my-1">
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id="customRadio7" name="customRadio" class="custom-control-input">
-                                                <label class="custom-control-label" for="customRadio7">VIP</label>
+                                                <input type="radio" id="vip" name="aUUserType" value="@aUUserType.vip" class="custom-control-input" @(Model.aUUserType == aUUserType.vip ? "checked" : "")>
+                                                <label class="custom-control-label" for="vip">VIP</label>
                                             </div>
                                         </div>
                                         <div class="form-check-inline my-1">
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id="customRadio8" name="customRadio" class="custom-control-input">
-                                                <label class="custom-control-label" for="customRadio8">Office</label>
+                                                <input type="radio" id="office" name="aUUserType" value="@aUUserType.staff" class="custom-control-input"  @(Model.aUUserType == aUUserType.staff ? "checked" : "")>
+                                                <label class="custom-control-label" for="office">Staff</label>
                                             </div>
                                         </div>
                                         <div class="form-check-inline my-1">
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id="customRadio9" name="customRadio" class="custom-control-input">
-                                                <label class="custom-control-label" for="customRadio9">Guest</label>
+                                                <input type="radio" id="bulk" name="aUUserType" value="@aUUserType.bulk" class="custom-control-input"  @(Model.aUUserType == aUUserType.bulk ? "checked" : "")>
+                                                <label class="custom-control-label" for="bulk">Temp</label>
                                             </div>
                                         </div>
                                     </div>
@@ -76,7 +76,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Username</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="SamAccountName" required>
+                                        <input class="form-control" type="text" asp-for="SamAccountName" required autocomplete="SamAccountName">
                                         @Html.ValidationMessageFor(m => m.SamAccountName)
                                     </div>
                                 </div>
@@ -87,7 +87,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Password</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="password" asp-for="Password" required>
+                                        <input class="form-control" type="password" asp-for="Password" required autocomplete="new-password">
                                         @Html.ValidationMessageFor(m => m.Password)
                                     </div>
                                 </div>
@@ -132,7 +132,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Email</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="EmailAddress" required>
+                                        <input class="form-control" type="email" asp-for="EmailAddress" required>
                                         @Html.ValidationMessageFor(m => m.EmailAddress)
                                     </div>
                                 </div>
@@ -143,7 +143,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Employee Code</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="aUEmpcode">
+                                        <input class="form-control" type="text" asp-for="aUEmpcode" required>
                                         @Html.ValidationMessageFor(m => m.aUEmpcode)
                                     </div>
                                 </div>
@@ -154,7 +154,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Citizen ID</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="aUIDCard" maxlength="13">
+                                        <input class="form-control" type="text" asp-for="aUIDCard"  maxlength="13" required>
                                         @Html.ValidationMessageFor(m => m.aUIDCard)
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Passport ID</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="PassportID" maxlength="13">
+                                        <input class="form-control" type="text" asp-for="PassportID" required>
                                         @Html.ValidationMessageFor(m => m.PassportID)
                                     </div>
                                 </div>
@@ -176,51 +176,51 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Reference</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="Reference " maxlength="13">
+                                        <input class="form-control" type="text" asp-for="Reference" required>
                                         @Html.ValidationMessageFor(m => m.Reference)
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @*<div class="row">
-            <div class="col-lg-12">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label text-right">วันหมดอายุ</label>
-                    <div class="col-sm-2 mt-2">
-                        <div class="checkbox">
-                            <input type="checkbox" asp-for="cu_CUexpire_select" onchange="CUexpire_Onchange()">
-                            <label for="cu_CUexpire_select">
-                                ไม่มีวันหมดอายุ
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col-sm-2 CUexpire">
-                        <select class="form-control" asp-for="cu_CUexpire_day">
-                            @for (var i = 1; i <= 31; i++)
-                            {
-                                <option value="@i">@i.ToString("00")</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-2 CUexpire">
-                        <select class="form-control" asp-for="cu_CUexpire_month">
-                            @for (var i = 1; i <= 12; i++)
-                            {
-                                <option value="@i">@DateUtil.GetShortMonth(i)</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-sm-2 CUexpire">
-                        <select class="form-control" asp-for="cu_CUexpire_year">
-                            @for (var i = DateUtil.Now().Year; i <= DateUtil.Now().Year + 5; i++)
-                            {
-                                <option value="@i">@i.ToString("0000")</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>*@
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">วันหมดอายุ</label>
+                                        <div class="col-sm-2 mt-2">
+                                            <div class="checkbox">
+                                                <input type="checkbox" asp-for="cu_CUexpire_select" onchange="CUexpire_Onchange()">
+                                                <label for="cu_CUexpire_select">
+                                                    ไม่มีวันหมดอายุ
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2 CUexpire">
+                                            <select class="form-control" asp-for="cu_CUexpire_day">
+                                                @for (var i = 1; i <= 31; i++)
+                                                {
+                                                    <option value="@i">@i.ToString("00")</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2 CUexpire">
+                                            <select class="form-control" asp-for="cu_CUexpire_month">
+                                                @for (var i = 1; i <= 12; i++)
+                                                {
+                                                    <option value="@i">@DateUtil.GetShortMonth(i)</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2 CUexpire">
+                                            <select class="form-control" asp-for="cu_CUexpire_year">
+                                                @for (var i = DateUtil.Now().Year; i <= DateUtil.Now().Year + 5; i++)
+                                                {
+                                                    <option value="@i">@i.ToString("0000")</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
 
 
 
@@ -229,7 +229,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right"></label>
                                     <div class="col-sm-8">
-                                        <button class="btn btn-dark" type="submit">บันทึก</button>
+                                        <button class="btn btn-dark" type="submit" >บันทึก</button>
                                     </div>
                                 </div>
                             </div>
@@ -241,120 +241,124 @@
         </div> <!-- end row -->
     </form>
 </div><!-- container -->
-@section scripts{
-    @*<script>
-        $(document).ready(function () {
-            CUexpire_Onchange();
-            if ($('#system_ou_lvl1').val() != null)
-                Lvl1Onchange(document.getElementById("system_ou_lvl1"), '@Model.system_ou_lvl2','@Model.system_ou_lvl3');
 
-            if ($('#system_faculty_id').val() != null)
-                FacultyOnchange(document.getElementById("system_faculty_id"), '@Model.system_sub_office_id');
-        });
-        function cu_pplid_Onchange() {
-            var pplid = $('#cu_pplid').val();
-             $.ajax({
-                type: 'get',
-                url: '@Url.Action("LoadIsExistCitizenID", "Account")',
-                contentType: 'application/json; charset=utf-8',
-                data: { pplid: pplid },
-                dataType: 'json',
-                 success: function (data) {
-                     $('#cu_pplid_info').hide();
-                    if (data != null) {
-                        if (data.result == true) {
-                            $('#cu_pplid_info').show();
+@section scripts{
+    <script>
+       
+    </script>
+    @*<script>
+            $(document).ready(function () {
+                CUexpire_Onchange();
+                if ($('#system_ou_lvl1').val() != null)
+                    Lvl1Onchange(document.getElementById("system_ou_lvl1"), '@Model.system_ou_lvl2','@Model.system_ou_lvl3');
+
+                if ($('#system_faculty_id').val() != null)
+                    FacultyOnchange(document.getElementById("system_faculty_id"), '@Model.system_sub_office_id');
+            });
+            function cu_pplid_Onchange() {
+                var pplid = $('#cu_pplid').val();
+                 $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("LoadIsExistCitizenID", "Account")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: { pplid: pplid },
+                    dataType: 'json',
+                     success: function (data) {
+                         $('#cu_pplid_info').hide();
+                        if (data != null) {
+                            if (data.result == true) {
+                                $('#cu_pplid_info').show();
+                            }
                         }
                     }
-                }
-            });
-        }
-
-        function FacultyOnchange (obj, sID) {
-         if (obj.attributes.relatedto == null)
-               return;
-            $.ajax({
-                type: 'get',
-                url: '@Url.Action("LoadSubFaculty", "Auth")',
-                contentType: 'application/json; charset=utf-8',
-                data: { fID: obj.value },
-                dataType: 'json',
-                success: function (data) {
-                    var relatedto = obj.attributes.relatedto.value;
-                    var result = '';
-                    for (var i = 0, iL = data.length; i < iL; i++) {
-                        if (sID == data[i].value)
-                            result += '<option selected value="' + data[i].value + '">' + data[i].text + '</option>';
-                        else
-                            result += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
-                    }
-                    $('#' + relatedto).html(result);
-                }
-            });
-        }
-
-        function Lvl1Onchange(obj,  system_ou_lvl2, system_ou_lvl3) {
-            if (obj.attributes.relatedto == null)
-                return;
-            $.ajax({
-                type: 'get',
-                url: '@Url.Action("LoadGetOrganizationLvl2", "Auth")',
-                contentType: 'application/json; charset=utf-8',
-                data: { ou1: obj.value },
-                dataType: 'json',
-                success: function (data) {
-                    var relatedto = obj.attributes.relatedto.value;
-                    var result = '';
-                    for (var i = 0, iL = data.length; i < iL; i++) {
-                        if (system_ou_lvl2 == data[i].ou)
-                            result += '<option selected value="' + data[i].ou + '">' + data[i].ouname + '</option>';
-                        else
-                            result += '<option value="' + data[i].ou + '">' + data[i].ouname + '</option>';
-                    }
-                    $('#' + relatedto).html(result);
-                    Lvl2Onchange(document.getElementById(relatedto), system_ou_lvl3);
-
-                }
-            });
-        }
-
-        function Lvl2Onchange(obj, system_ou_lvl3) {
-            if (obj.attributes.relatedto == null)
-                return;
-
-            var ou1 = $('#system_ou_lvl1').val();
-            var ou2 = obj.value;
-            if (ou1 == null || ou1 == "" || ou2 == null || ou2 == ""  ) {
-                $('#' + obj.attributes.relatedto.value).html('');
-                return;
+                });
             }
-            $.ajax({
-                type: 'get',
-                url: '@Url.Action("LoadGetOrganizationLvl3", "Auth")',
-                contentType: 'application/json; charset=utf-8',
-                data: { ou1: ou1, ou2: ou2 },
-                dataType: 'json',
-                success: function (data) {
-                    var relatedto = obj.attributes.relatedto.value;
-                    var result = '';
-                    for (var i = 0, iL = data.length; i < iL; i++) {
-                        if (system_ou_lvl3 == data[i].ou)
-                            result += '<option selected value="' + data[i].ou + '">' + data[i].ouname + '</option>';
-                        else
-                            result += '<option value="' + data[i].ou + '">' + data[i].ouname + '</option>';
-                    }
-                    $('#' + relatedto).html(result);
-                }
-            });
-        }
 
-        function CUexpire_Onchange() {
-            if ($('#cu_CUexpire_select').get(0).checked == true) {
-                $('.CUexpire').hide();
+            function FacultyOnchange (obj, sID) {
+             if (obj.attributes.relatedto == null)
+                   return;
+                $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("LoadSubFaculty", "Auth")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: { fID: obj.value },
+                    dataType: 'json',
+                    success: function (data) {
+                        var relatedto = obj.attributes.relatedto.value;
+                        var result = '';
+                        for (var i = 0, iL = data.length; i < iL; i++) {
+                            if (sID == data[i].value)
+                                result += '<option selected value="' + data[i].value + '">' + data[i].text + '</option>';
+                            else
+                                result += '<option value="' + data[i].value + '">' + data[i].text + '</option>';
+                        }
+                        $('#' + relatedto).html(result);
+                    }
+                });
             }
-            else {
-                $('.CUexpire').show();
+
+            function Lvl1Onchange(obj,  system_ou_lvl2, system_ou_lvl3) {
+                if (obj.attributes.relatedto == null)
+                    return;
+                $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("LoadGetOrganizationLvl2", "Auth")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: { ou1: obj.value },
+                    dataType: 'json',
+                    success: function (data) {
+                        var relatedto = obj.attributes.relatedto.value;
+                        var result = '';
+                        for (var i = 0, iL = data.length; i < iL; i++) {
+                            if (system_ou_lvl2 == data[i].ou)
+                                result += '<option selected value="' + data[i].ou + '">' + data[i].ouname + '</option>';
+                            else
+                                result += '<option value="' + data[i].ou + '">' + data[i].ouname + '</option>';
+                        }
+                        $('#' + relatedto).html(result);
+                        Lvl2Onchange(document.getElementById(relatedto), system_ou_lvl3);
+
+                    }
+                });
             }
-        }
-    </script>*@
+
+            function Lvl2Onchange(obj, system_ou_lvl3) {
+                if (obj.attributes.relatedto == null)
+                    return;
+
+                var ou1 = $('#system_ou_lvl1').val();
+                var ou2 = obj.value;
+                if (ou1 == null || ou1 == "" || ou2 == null || ou2 == ""  ) {
+                    $('#' + obj.attributes.relatedto.value).html('');
+                    return;
+                }
+                $.ajax({
+                    type: 'get',
+                    url: '@Url.Action("LoadGetOrganizationLvl3", "Auth")',
+                    contentType: 'application/json; charset=utf-8',
+                    data: { ou1: ou1, ou2: ou2 },
+                    dataType: 'json',
+                    success: function (data) {
+                        var relatedto = obj.attributes.relatedto.value;
+                        var result = '';
+                        for (var i = 0, iL = data.length; i < iL; i++) {
+                            if (system_ou_lvl3 == data[i].ou)
+                                result += '<option selected value="' + data[i].ou + '">' + data[i].ouname + '</option>';
+                            else
+                                result += '<option value="' + data[i].ou + '">' + data[i].ouname + '</option>';
+                        }
+                        $('#' + relatedto).html(result);
+                    }
+                });
+            }
+
+            function CUexpire_Onchange() {
+                if ($('#cu_CUexpire_select').get(0).checked == true) {
+                    $('.CUexpire').hide();
+                }
+                else {
+                    $('.CUexpire').show();
+                }
+            }
+        </script>*@
 }

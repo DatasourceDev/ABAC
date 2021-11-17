@@ -16,7 +16,7 @@ namespace ABAC.DAL
         public static void EnsureSeedData(this SpuContext context)
         {
             SeedMasterData(context);
-            UpdateDatabaseDescriptions(context);
+            //UpdateDatabaseDescriptions(context);
         }
         /*
          *    update Aumphurs SET

@@ -240,7 +240,7 @@ namespace ABAC.Identity
             try
             {
                 var setup = spucontext.table_setup.FirstOrDefault();
-                var oufilter = getOufromDistinguishedName(model.DistinguishedName);
+                var oufilter = model.DistinguishedName;
 
                 PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, oufilter, setup.Username, setup.Password);
                 UserPrincipal old = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
@@ -249,7 +249,7 @@ namespace ABAC.Identity
                     return new Result() { result = false, Message = "Account is duplicated" };
                 }
 
-                UserPrincipal principal = new UserPrincipal(context, model.SamAccountName, Cryptography.decrypt(model.Password), true);
+                UserPrincipal principal = new UserPrincipal(context, model.SamAccountName, model.Password, true);
                 principal.SamAccountName = model.SamAccountName;
                 principal.GivenName = model.GivenName;
                 principal.Surname = model.Surname;
@@ -288,6 +288,9 @@ namespace ABAC.Identity
                     d.Properties["departmentNumber"].Value = model.PassportID;
                 else
                     d.Properties["departmentNumber"].Value = null;
+
+                d.Properties["aUUserType"].Value = model.aUUserType;
+                d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;
                 principal.Save();
                 return new Result() { result = true };
             }

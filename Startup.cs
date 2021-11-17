@@ -168,30 +168,10 @@ namespace ABAC
     public class SystemConf
     {
         public string Portal { get; set; }
-        public string DefaultValue_emailDomain { get; set; }
-        public string DefaultValue_emailDomainForStudent { get; set; }
-        public string DefaultValue_userprincipalname { get; set; }
-        public string DefaultValue_mailhost { get; set; }
-        public string DefaultValue_mailhostForStudent { get; set; }
-        public string DefaultValue_mailRoutingAddress { get; set; }
-        public string DefaultValue_mailRoutingAddressForStudent { get; set; }
-        public string DefaultValue_maildrop { get; set; }
-        public string DefaultValue_maildropForStudent { get; set; }
-        public string DefaultValue_homeDirectory { get; set; }
-        public string DefaultValue_loginShell { get; set; }
-        public string DefaultValue_nsaccountlock { get; set; }
-        public string DefaultValue_nsaccountlockForTemporaryAccount { get; set; }
-        public string DefaultValue_nsaccountlockForOneDayAccount { get; set; }
-        public string DefaultValue_miWmprefCharset { get; set; }
-        public string DefaultValue_miWmprefReplyOption { get; set; }
-        public string DefaultValue_miWmprefTimezone { get; set; }
-        public string DefaultValue_inetCOS { get; set; }
-        public string DefaultValue_inetCOSForStudent { get; set; }
-        public string DefaultValue_inetCOSForTemporaryAccount { get; set; }
-        public string DefaultValue_SCE_Package { get; set; }
-        public string DefaultValue_OU_Filter { get; set; }
-
-        public string TableReceiveAccount_ServerName { get; set; }
+        public string OU_VIP { get; set; }
+        public string OU_TEMP { get; set; }
+        public string OU_OFFICE { get; set; }
+        
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@model ABAC.Models.visual_fim_user
+﻿@model ABAC.Identity.AdUser2
 @using ABAC.DTO;
 @using ABAC.Extensions
 @using ABAC;
@@ -49,17 +49,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-3 col-form-label text-right">รหัสผู้ใช้</label>
                                 <div class="col-sm-4">
-                                    <label class="col-form-label ">@Model.basic_uid</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label text-right">รหัสผ่าน</label>
-                                <div class="col-sm-4">
-                                    <label class="col-form-label ">@Cryptography.decrypt(Model.basic_userPassword)</label>
+                                    <label class="col-form-label ">@Model.SamAccountName</label>
                                 </div>
                             </div>
                         </div>
@@ -81,5 +71,5 @@
     </div>
 </div><!-- container -->
 @section scripts{
-    
+
 }

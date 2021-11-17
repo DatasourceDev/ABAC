@@ -17,8 +17,8 @@ namespace ABAC.DAL
         }
         public DbSet<setup>table_setup { get; set; }
 
-        public DbSet<User_VIP> User_VIPs { get; set; }
-        public DbSet<User_Office> User_Offices { get; set; }
+        public DbSet<User_VIP> User_VIP { get; set; }
+        public DbSet<User_Office> User_Office { get; set; }
         //public DbSet<group> table_group { get; set; }
         //public DbSet<group_user> table_group_user { get; set; }
         //public DbSet<faculty> table_cu_faculty { get; set; }
