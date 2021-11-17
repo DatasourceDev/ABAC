@@ -40,7 +40,6 @@
     <!-- end page title end breadcrumb -->
     <!--end row-->
     <form class="form-horizontal form-parsley" asp-action="DeleteAccount" asp-controller="Account" id="theForm" method="get">
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -49,20 +48,18 @@
                         <div class="form-group row">
                             <div class="col-lg-9">
                                 <label class="col-form-label">คำค้น</label>
-                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, โทรศัพท์, อีเมล์" asp-for="text_search" required>
+                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, รหัสนักศึกษา, อีเมล์" asp-for="text_search" required>
                                 @Html.ValidationMessageFor(m => m.text_search)
 
                             </div>
                             <div class="col-lg-2">
                                 <label class="col-form-label">ประเภทผู้ใช้</label>
                                 <select class="form-control" asp-for="usertype_search">
-                                    <option value="">All</option>
-
-                                    <option value="@IDMUserType.affiliate">@IDMUserType.affiliate.toUserTypeName()</option>
-                                    <option value="@IDMUserType.outsider">@IDMUserType.outsider.toUserTypeName()</option>
-                                    <option value="@IDMUserType.staff">@IDMUserType.staff.toUserTypeName()</option>
-                                    <option value="@IDMUserType.student">@IDMUserType.student.toUserTypeName()</option>
-                                    <option value="@IDMUserType.temporary">@IDMUserType.temporary.toUserTypeName()</option>
+                                    <option value="@aUUserType.staff">@aUUserType.staff.toUserTypeName()</option>
+                                    <option value="@aUUserType.student">@aUUserType.student.toUserTypeName()</option>
+                                    <option value="@aUUserType.vip">@aUUserType.vip.toUserTypeName()</option>
+                                    <option value="@aUUserType.office">@aUUserType.office.toUserTypeName()</option>
+                                    <option value="@aUUserType.bulk">@aUUserType.bulk.toUserTypeName()</option>
                                 </select>
                             </div>
                             <div class="col-lg-1">
@@ -72,14 +69,9 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-lg-12">
-                                <button class="btn btn-danger" type="button" onclick="OnDelete()">ลบ</button>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-lg-12">
                                 <div class="table-rep-plugin">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="tech-companies-1" class="table table-striped mb-0">
+                                        <table class="table table-striped mb-0 font-12">
                                             <thead>
                                                 <tr>
                                                     <th width="30px">
@@ -88,40 +80,58 @@
                                                             <label class="custom-control-label" for="chkall"></label>
                                                         </div>
                                                     </th>
-                                                    <th>Login Name</th>
-                                                    <th>Display Name</th>
+                                                    <th>Sam Account Name</th>
+                                                    <th>Employee/Student Code</th>
+                                                    <th>User Principal Name</th>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
                                                     <th>Mail</th>
-                                                    <th>Mobile</th>
-                                                    <th>Jobcode</th>
-                                                    <th>Citizen ID</th>
-                                                    <th>Create Date</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if (Model.lists != null)
                                                 {
-                                                    foreach (visual_fim_user item in Model.lists)
+                                                    foreach (AdUser4 item in Model.lists)
                                                     {
                                                         <tr>
                                                             <td>
                                                                 <div class="custom-control custom-checkbox">
-                                                                    <input type="checkbox" class="custom-control-input chk" id="chk-@item.basic_uid" value="@item.basic_uid">
-                                                                    <label class="custom-control-label" for="chk-@item.basic_uid"></label>
+                                                                    <input type="checkbox" class="custom-control-input chk" id="chk-@item.sAMAccountName" value="@item.sAMAccountName">
+                                                                    <label class="custom-control-label" for="chk-@item.sAMAccountName"></label>
                                                                 </div>
                                                             </td>
-                                                            <td>@item.basic_uid</td>
-                                                            <td>@item.basic_displayname</td>
-                                                            <td>@item.basic_mail</td>
-                                                            <td>@item.basic_mobile</td>
-                                                            <td>@item.cu_jobcode</td>
-                                                            <td>@item.cu_pplid</td>
-                                                            <td>@item.system_create_date</td>
                                                             <td>
-                                                                <a href="#" onclick="deleteaccount('@item.basic_uid')"><i class="far fa-trash-alt text-danger font-16"></i></a>
+                                                                @item.sAMAccountName
+                                                            </td>
+                                                            <td>
+                                                                @if (item.aUUserType == aUUserType.student)
+                                                                {
+                                                                    @item.aUStudentId
+                                                                }
+                                                                else
+                                                                {
+                                                                    @item.aUEmpcode
+                                                                }
+                                                            </td>
+                                                            <td>@item.userPrincipalName</td>
+                                                            <td>@item.givenName</td>
+                                                            <td>@item.sn</td>
+                                                            <td>@item.mail</td>
+                                                            <td>
+                                                                @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
+                                                                {
+                                                                    <span id="stutus-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span id="stutus-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
+                                                                }
                                                             </td>
                                                         </tr>
                                                     }
+
                                                 }
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
@@ -130,6 +140,7 @@
                                                     </tr>
                                                 }
                                             </tbody>
+
                                         </table>
                                     </div>
                                 </div>
@@ -142,6 +153,7 @@
             </div> <!-- end col -->
             <!-- end col -->
         </div>
+        
     </form>
 </div><!-- container -->
 @section scripts{

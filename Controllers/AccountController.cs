@@ -39,7 +39,7 @@ namespace ABAC.Controllers
         public async Task<IActionResult> CreateAccount(ReturnCode code, string msg)
         {
 
-             if (!checkrole())
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -58,7 +58,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAccount(AdUser2 model)
         {
-             if (!checkrole())
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -66,17 +66,17 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var dup = await _provider.GetAdUser2(model.SamAccountName, _context);
-            if(dup != null)
+            if (dup != null)
             {
                 ModelState.AddModelError("SamAccountName", "username ซ้ำในระบบ");
-            }           
+            }
             if (ModelState.IsValid)
             {
                 ViewBag.Message = ReturnMessage.Error;
                 ViewBag.ReturnCode = ReturnCode.Error;
                 try
                 {
-                    if( model.aUUserType == aUUserType.office)
+                    if (model.aUUserType == aUUserType.office)
                     {
                         model.DistinguishedName = _conf.OU_OFFICE;
                         var user = new User_Office();
@@ -737,7 +737,7 @@ namespace ABAC.Controllers
         //}
         public async Task<IActionResult> AccountInfo(string id)
         {
-             if (!checkrole())
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var aduser = await _provider.GetAdUser2(id, _context);
@@ -752,7 +752,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> AccountInfo(AdUser2 model)
         {
-             if (!checkrole())
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -791,117 +791,113 @@ namespace ABAC.Controllers
         }
         #endregion
 
-        //#region DeleteAccount
-        //public IActionResult DeleteAccount(SearchDTO model)
-        //{
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
+        #region DeleteAccount
+        public async Task<IActionResult> DeleteAccount(SearchDTO model)
+        {
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
 
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //    if (string.IsNullOrEmpty(model.text_search))
-        //        return View(model);
+            if (string.IsNullOrEmpty(model.text_search))
+                return View(model);
 
-        //    model.text_search = model.text_search.Trim();
-        //    if (model.text_search.Length <= 3)
-        //    {
-        //        ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
-        //        return View(model);
-        //    }
-
-        //    var lists = this._context.table_visual_fim_user.Where(w => 1 == 1);
-
-        //    if (!string.IsNullOrEmpty(model.text_search))
-        //    {
-        //        lists = lists.Where(w => (!string.IsNullOrEmpty(w.basic_uid) && w.basic_uid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_givenname) && w.basic_givenname.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_sn) && w.basic_sn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thcn) && w.cu_thcn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thsn) && w.cu_thsn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_cn) && w.basic_cn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_pplid) && w.cu_pplid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_jobcode) && w.cu_jobcode.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mobile) && w.basic_mobile.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mail) && w.basic_mail.ToLower().Contains(model.text_search.ToLower())));
-        //    }
-
-        //    if (model.usertype_search.HasValue)
-        //        lists = lists.Where(w => w.system_idm_user_type == model.usertype_search);
-
-        //    lists = lists.OrderByDescending(o => o.system_create_date);
-
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
-
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-
-        //    return View(model);
-        //}
-
-        //public JsonResult Delete(string choose)
-        //{
-        //     if (!checkrole())
-        //        return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
-
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin != null)
-        //    {
-        //        if (!string.IsNullOrEmpty(choose))
-        //        {
-        //            var lists = choose.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
-        //            if (lists.Count() > 0)
-        //            {
-        //                var fim_users = _context.table_visual_fim_user.Where(w => lists.Contains(w.basic_uid));
-        //                if (fim_users.Count() > 0)
-        //                {
-        //                    foreach (var model in fim_users.ToList())
-        //                    {
-        //                        try
-        //                        {
-        //                            var result_ldap = _providerldap.DeleteUser(model, _context);
-        //                            if (result_ldap.result == true)
-        //                                writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //                            else
-        //                                writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message);
-
-        //                            var result_ad = _provider.DeleteUser(model, _context);
-        //                            if (result_ad.result == true)
-        //                                writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //                            else
-        //                                writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message);
-
-        //                            _context.Remove(model);
-        //                            _context.SaveChanges();
-        //                            writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-        //                        }
-        //                        catch (Exception ex)
-        //                        {
-        //                            writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message);
-        //                        }
-
-        //                    }
+            model.text_search = model.text_search.Trim();
+            if (model.text_search.Length <= 3)
+            {
+                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                return View(model);
+            }
+            //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
+            var adusers = await _provider.FindUser(model, null, _context);
 
 
-        //                    return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
-        //}
-        //#endregion
+            int skipRows = (model.pageno - 1) * _pagelen;
+            var itemcnt = adusers.Count();
+            var pagelen = itemcnt / _pagelen;
+            if (itemcnt % _pagelen > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+            model.lists = adusers.AsQueryable();
+            return View(model);
+        }
+
+        public async Task<JsonResult> Delete(string choose)
+        {
+            if (!checkrole())
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            if (!string.IsNullOrEmpty(choose))
+            {
+                var lists = choose.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (lists.Count() > 0)
+                {
+                    foreach (var id in lists)
+                    {
+                        try
+                        {
+                            var model = await _provider.GetAdUser2(id, _context);
+                            if(model != null)
+                            {
+                                var userType = getaUUserType(model.DistinguishedName);
+                                if (userType == aUUserType.vip)
+                                {
+                                    var vip = this._context.User_VIP.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                                    if (vip != null)
+                                    {
+                                        _context.Remove(vip);
+                                        _context.SaveChanges();
+                                    }
+                                }
+                                else if (userType == aUUserType.office)
+                                {
+                                    var office = this._context.User_Office.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                                    if (office != null)
+                                    {
+                                        _context.Remove(office);
+                                        _context.SaveChanges();
+                                    }
+                                }
+                                else if (userType == aUUserType.bulk)
+                                {
+
+                                }
+                                var result_ad = _provider.DeleteUser(model, _context);
+                                if (result_ad.result == true)
+                                    writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                                else
+                                    writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                            
+                                writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                            }
+                            
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.VisualFim, id, log_exception: ex.Message);
+                        }
+                    }
+                    return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success });
+                }
+            }
+            return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+        }
+        #endregion
 
         //#region DeleteAccountFromFile
         //public IActionResult DeleteAccountFromFile(SearchDTO model)
         //{
-        //     if (!checkrole())
+        //    if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    model.lists = (new List<import>()).AsQueryable();
@@ -913,7 +909,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult DeleteAccountFromFile(IFormFile file, ImportDeleteOption import_option)
         //{
-        //     if (!checkrole())
+        //    if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new SearchDTO();
@@ -1009,7 +1005,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult DeleteAccountFromFile2()
         //{
-        //     if (!checkrole())
+        //    if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1098,7 +1094,7 @@ namespace ABAC.Controllers
 
         public IActionResult ChangePassword(string id)
         {
-             if (!checkrole())
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var model = new ChangePassword3DTO();
@@ -1109,7 +1105,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePassword3DTO model)
         {
-             if (!checkrole())
+            if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -1129,7 +1125,7 @@ namespace ABAC.Controllers
                         return RedirectToAction("Logout", "Auth");
 
                     var userType = getaUUserType(user.DistinguishedName);
-                    if(userType == aUUserType.vip )
+                    if (userType == aUUserType.vip)
                     {
                         var vip = this._context.User_VIP.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
                         if (vip != null)
@@ -1141,17 +1137,17 @@ namespace ABAC.Controllers
                     }
                     else if (userType == aUUserType.office)
                     {
-                        var vip = this._context.User_Office.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
-                        if (vip != null)
+                        var office = this._context.User_Office.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
+                        if (office != null)
                         {
-                            vip.password = Cryptography.encrypt(model.Password);
-                            vip.Update_On = DateUtil.Now();
-                            vip.Update_By = userlogin.SamAccountName;
+                            office.password = Cryptography.encrypt(model.Password);
+                            office.Update_On = DateUtil.Now();
+                            office.Update_By = userlogin.SamAccountName;
                         }
                     }
-                    else if ( userType == aUUserType.bulk)
+                    else if (userType == aUUserType.bulk)
                     {
-                        
+
                     }
                     _context.SaveChanges();
 
@@ -1178,148 +1174,127 @@ namespace ABAC.Controllers
         }
         #endregion
 
-        //#region EnableAccount
-        //public IActionResult EnableAccount(SearchDTO model)
-        //{
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
+        #region EnableAccount
+        public async Task<IActionResult> EnableAccount(SearchDTO model)
+        {
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
 
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //    if (string.IsNullOrEmpty(model.text_search))
-        //        return View(model);
+            if (string.IsNullOrEmpty(model.text_search))
+                return View(model);
 
-        //    model.text_search = model.text_search.Trim();
-        //    if (model.text_search.Length <= 3)
-        //    {
-        //        ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
-        //        return View(model);
-        //    }
-
-        //    var lists = this._context.table_visual_fim_user.Where(w => 1 == 1);
-
-        //    if (!string.IsNullOrEmpty(model.text_search))
-        //    {
-        //        lists = lists.Where(w => (!string.IsNullOrEmpty(w.basic_uid) && w.basic_uid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_givenname) && w.basic_givenname.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_sn) && w.basic_sn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thcn) && w.cu_thcn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thsn) && w.cu_thsn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_cn) && w.basic_cn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_pplid) && w.cu_pplid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_jobcode) && w.cu_jobcode.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mobile) && w.basic_mobile.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mail) && w.basic_mail.ToLower().Contains(model.text_search.ToLower())));
-        //    }
-
-        //    if (model.usertype_search.HasValue)
-        //        lists = lists.Where(w => w.system_idm_user_type == model.usertype_search);
-
-        //    lists = lists.OrderByDescending(o => o.system_create_date);
-
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
-
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-
-        //    return View(model);
-        //}
-        //public JsonResult ChangeStatus(string id, string remark)
-        //{
-        //     if (!checkrole())
-        //        return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
-
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin != null)
-        //    {
-        //        if (!string.IsNullOrEmpty(id))
-        //        {
-        //            var model = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == id.ToLower()).FirstOrDefault();
-        //            if (model != null)
-        //            {
-        //                model.system_modify_date = DateUtil.Now();
-        //                model.system_modify_by_uid = userlogin.basic_uid;
-        //                if (!string.IsNullOrEmpty(model.lock_remark) & !string.IsNullOrEmpty(remark))
-        //                    model.lock_remark += Environment.NewLine + remark;
-        //                else
-        //                    model.lock_remark = remark;
-        //                if (model.cu_nsaccountlock == LockStaus.Lock)
-        //                {
-        //                    try
-        //                    {
-        //                        model.cu_nsaccountlock = LockStaus.Unlock;
-        //                        model.system_modify_by_uid = userlogin.basic_uid;
-        //                        model.system_modify_date = DateUtil.Now();
-        //                        _context.SaveChanges();
-        //                        var result_ldap = _providerldap.NsLockUser(model, _context);
-        //                        if (result_ldap.result == true)
-        //                            writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //                        else
-        //                            writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message);
-
-        //                        var result_ad = _provider.EnableUser(model, _context);
-        //                        if (result_ad.result == true)
-        //                            writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //                        else
-        //                            writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message);
-
-        //                        writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message);
-
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    try
-        //                    {
-        //                        model.cu_nsaccountlock = LockStaus.Lock;
-        //                        model.system_modify_by_uid = userlogin.basic_uid;
-        //                        model.system_modify_date = DateUtil.Now();
-        //                        _context.SaveChanges();
-        //                        var result_ldap = _providerldap.NsLockUser(model, _context);
-        //                        if (result_ldap.result == true)
-        //                            writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //                        else
-        //                            writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message);
-
-        //                        var result_ad = _provider.DisableUser(model, _context);
-        //                        if (result_ad.result == true)
-        //                            writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //                        else
-        //                            writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message);
-
-        //                        writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message);
-        //                    }
-
-        //                }
-        //                return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success, status = model.cu_nsaccountlock });
-        //            }
-        //        }
-        //    }
+            model.text_search = model.text_search.Trim();
+            if (model.text_search.Length <= 3)
+            {
+                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                return View(model);
+            }
+            //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
+            var adusers = await _provider.FindUser(model, null, _context);
 
 
-        //    return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
-        //}
-        //#endregion
+            int skipRows = (model.pageno - 1) * _pagelen;
+            var itemcnt = adusers.Count();
+            var pagelen = itemcnt / _pagelen;
+            if (itemcnt % _pagelen > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+            model.lists = adusers.AsQueryable();
+            return View(model);
+        }
+        public async Task<JsonResult> ChangeStatus(string id, string remark)
+        {
+            if (!checkrole())
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                var model = await _provider.GetAdUser2(id, _context);
+                if (model != null)
+                {
+                    var userType = getaUUserType(model.DistinguishedName);
+                    if (userType == aUUserType.vip)
+                    {
+                        var vip = this._context.User_VIP.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                        if (vip != null)
+                        {
+                            vip.Update_On = DateUtil.Now();
+                            vip.Update_By = userlogin.SamAccountName;
+                        }
+                    }
+                    else if (userType == aUUserType.office)
+                    {
+                        var office = this._context.User_Office.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                        if (office != null)
+                        {
+                            office.Update_On = DateUtil.Now();
+                            office.Update_By = userlogin.SamAccountName;
+                        }
+                    }
+                    else if (userType == aUUserType.bulk)
+                    {
+
+                    }
+                    _context.SaveChanges();
+
+
+                    if (NumUtil.ParseInteger(model.userAccountControl) == (int)userAccountControl.Disable || NumUtil.ParseInteger(model.userAccountControl) == (int)userAccountControl.DisablePasswordNotRequired)
+                    {
+                        try
+                        {
+                            var result_ad = _provider.EnableUser(model, _context);
+                            if (result_ad.result == true)
+                                writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                            else
+                                writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                            writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.VisualFim, model.SamAccountName, log_exception: ex.Message);
+                        }
+                        return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success, status = userAccountControl.EnablePasswordNotRequired });
+                    }
+                    else
+                    {
+                        try
+                        {
+
+                            var result_ad = _provider.DisableUser(model, _context);
+                            if (result_ad.result == true)
+                                writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                            else
+                                writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                            writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.VisualFim, model.SamAccountName, log_exception: ex.Message);
+                        }
+                        return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success, status = userAccountControl.DisablePasswordNotRequired });
+                    }
+                }
+            }
+            return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+        }
+        #endregion
 
         //#region EnableAccountFromFile
         //public IActionResult EnableAccountFromFile(SearchDTO model)
         //{
-        //     if (!checkrole())
+        //    if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    model.lists = (new List<import>()).AsQueryable();
@@ -1331,7 +1306,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult EnableAccountFromFile(IFormFile file, ImportLockOption import_option)
         //{
-        //     if (!checkrole())
+        //    if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var model = new SearchDTO();
@@ -1425,7 +1400,7 @@ namespace ABAC.Controllers
         //[HttpPost]
         //public IActionResult EnableAccountFromFile2(string lockstatus)
         //{
-        //     if (!checkrole())
+        //    if (!checkrole())
         //        return RedirectToAction("Logout", "Auth");
 
         //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
@@ -1502,398 +1477,7 @@ namespace ABAC.Controllers
         //    code = ReturnCode.Success;
         //    return RedirectToAction("EnableAccountFromFile", new { code = code, msg = msg });
         //}
-        //#endregion
-
-        //#region InternetAccess
-        //public IActionResult InternetAccess(SearchDTO model)
-        //{
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
-
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    if (string.IsNullOrEmpty(model.text_search))
-        //        return View(model);
-
-        //    model.text_search = model.text_search.Trim();
-        //    if (model.text_search.Length <= 3)
-        //    {
-        //        ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
-        //        return View(model);
-        //    }
-
-        //    var lists = this._context.table_visual_fim_user.Where(w => 1 == 1);
-
-        //    if (!string.IsNullOrEmpty(model.text_search))
-        //    {
-        //        lists = lists.Where(w => (!string.IsNullOrEmpty(w.basic_uid) && w.basic_uid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_givenname) && w.basic_givenname.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_sn) && w.basic_sn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thcn) && w.cu_thcn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thsn) && w.cu_thsn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_cn) && w.basic_cn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_pplid) && w.cu_pplid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_jobcode) && w.cu_jobcode.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mobile) && w.basic_mobile.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mail) && w.basic_mail.ToLower().Contains(model.text_search.ToLower())));
-        //    }
-
-        //    if (model.usertype_search.HasValue)
-        //        lists = lists.Where(w => w.system_idm_user_type == model.usertype_search);
-
-        //    lists = lists.OrderByDescending(o => o.system_create_date);
-
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
-
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-
-        //    return View(model);
-        //}
-        //public IActionResult InternetAccessInfo(int? id)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var model = new visual_fim_user();
-        //    if (id.HasValue)
-        //        model = _context.table_visual_fim_user.Where(w => w.id == id).FirstOrDefault();
-
-        //    return View(model);
-        //}
-        //[HttpPost]
-        //public IActionResult InternetAccessInfo(visual_fim_user model)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin == null)
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        ViewBag.Message = ReturnMessage.Error;
-        //        ViewBag.ReturnCode = ReturnCode.Error;
-
-        //        if (model.id > 0)
-        //        {
-        //            var fim_user = _context.table_visual_fim_user.Where(w => w.id == model.id).FirstOrDefault();
-        //            if (fim_user != null)
-        //            {
-        //                try
-        //                {
-        //                    model.basic_uid = fim_user.basic_uid;
-        //                    fim_user.internetaccess = model.internetaccess;
-        //                    fim_user.system_modify_by_uid = userlogin.basic_uid;
-        //                    fim_user.system_modify_date = DateUtil.Now();
-        //                    _context.SaveChanges();
-
-        //                    var result_ldap = _providerldap.UpdateUser(fim_user, _context);
-        //                    if (result_ldap.result == true)
-        //                        writelog(LogType.log_edit_internetaccess, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //                    else
-        //                        writelog(LogType.log_edit_internetaccess, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message);
-
-        //                    var result_ad = _provider.UpdateUser(fim_user, _context);
-        //                    if (result_ad.result == true)
-        //                        writelog(LogType.log_edit_internetaccess, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //                    else
-        //                        writelog(LogType.log_edit_internetaccess, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message);
-
-        //                    writelog(LogType.log_edit_internetaccess, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    writelog(LogType.log_edit_account, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message);
-
-        //                }
-        //            }
-        //            return RedirectToAction("InternetAccess", "Account", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
-
-        //        }
-        //    }
-        //    return View(model);
-        //}
-        //#endregion
-
-        //#region Approve Change Password
-        //public IActionResult ApproveChangePassword(SearchDTO model)
-        //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk, UserRole.approve }))
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var lists = this._context.table_reset_password_temp.Where(w => 1 == 1);
-
-        //    var dfrom = DateUtil.ToDate(model.dfrom);
-        //    var dto = DateUtil.ToDate(model.dto);
-
-        //    if (!dfrom.HasValue)
-        //    {
-        //        dfrom = DateUtil.Now();
-        //        model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
-        //    }
-        //    if (!dto.HasValue)
-        //    {
-        //        dto = DateUtil.Now();
-        //        model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
-        //    }
-        //    lists = lists.Where(w => w.reset_date.Value.Date >= dfrom.Value.Date);
-        //    lists = lists.Where(w => w.reset_date.Value.Date <= dto.Value.Date);
-        //    lists = lists.OrderBy(o => o.status).ThenByDescending(o => o.reset_date);
-
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
-
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
-        //    return View(model);
-        //}
-
-        //public JsonResult Approve(string choose)
-        //{
-        //    if (!checkrole(new string[] { UserRole.admin, UserRole.helpdesk, UserRole.approve }))
-        //        return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
-
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin != null)
-        //    {
-        //        if (!string.IsNullOrEmpty(choose))
-        //        {
-        //            var lists = choose.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
-        //            if (lists.Count() > 0)
-        //            {
-        //                var resets = _context.table_reset_password_temp.Where(w => lists.Contains(w.temp_id.ToString()));
-        //                if (resets.Count() > 0)
-        //                {
-        //                    foreach (var model in resets.ToList())
-        //                    {
-        //                        string basic_uid = model.username;
-        //                        try
-        //                        {
-        //                            string newPassword = Cryptography.decrypt(model.password);
-
-        //                            var fim_user = this._context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == basic_uid.ToLower()).FirstOrDefault();
-        //                            if (fim_user != null)
-        //                            {
-        //                                fim_user.basic_userPassword = newPassword;
-        //                                fim_user.cu_pwdchangeddate = DateUtil.Now();
-        //                                fim_user.cu_pwdchangedby = userlogin.basic_uid;
-        //                                fim_user.cu_pwdchangedloc = getClientIP();
-        //                            }
-        //                            model.status = "approved";
-        //                            _context.SaveChanges();
-        //                            var result_ldap = _providerldap.ChangePwd(fim_user, newPassword, _context);
-        //                            if (result_ldap.result == true)
-        //                                writelog(LogType.log_approved_reset_password, LogStatus.successfully, IDMSource.LDAP, basic_uid);
-        //                            else
-        //                                writelog(LogType.log_approved_reset_password, LogStatus.failed, IDMSource.LDAP, basic_uid, log_exception: result_ldap.Message);
-
-        //                            var result_ad = _provider.ChangePwd(fim_user, newPassword, _context);
-        //                            if (result_ad.result == true)
-        //                                writelog(LogType.log_approved_reset_password, LogStatus.successfully, IDMSource.AD, basic_uid);
-        //                            else
-        //                                writelog(LogType.log_approved_reset_password, LogStatus.failed, IDMSource.AD, basic_uid, log_exception: result_ad.Message);
-
-        //                            writelog(LogType.log_approved_reset_password, LogStatus.successfully, IDMSource.VisualFim, basic_uid);
-        //                        }
-        //                        catch (Exception ex)
-        //                        {
-        //                            writelog(LogType.log_approved_reset_password, LogStatus.failed, IDMSource.VisualFim, basic_uid, log_exception: ex.Message);
-        //                        }
-        //                    }
-        //                    return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success });
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
-        //}
-        //#endregion
-
-
-        //#region ManageAccount
-        //public IActionResult MoveAccount(SearchDTO model)
-        //{
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
-
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    if (string.IsNullOrEmpty(model.text_search))
-        //        return View(model);
-
-        //    model.text_search = model.text_search.Trim();
-        //    if (model.text_search.Length <= 3)
-        //    {
-        //        ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
-        //        return View(model);
-        //    }
-
-        //    var lists = this._context.table_visual_fim_user.Where(w => 1 == 1);
-
-        //    if (!string.IsNullOrEmpty(model.text_search))
-        //    {
-        //        lists = lists.Where(w => (!string.IsNullOrEmpty(w.basic_uid) && w.basic_uid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_givenname) && w.basic_givenname.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_sn) && w.basic_sn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thcn) && w.cu_thcn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_thsn) && w.cu_thsn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_cn) && w.basic_cn.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_pplid) && w.cu_pplid.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.cu_jobcode) && w.cu_jobcode.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mobile) && w.basic_mobile.ToLower().Contains(model.text_search.ToLower()))
-        //      | (!string.IsNullOrEmpty(w.basic_mail) && w.basic_mail.ToLower().Contains(model.text_search.ToLower())));
-        //    }
-
-        //    if (model.usertype_search.HasValue)
-        //        lists = lists.Where(w => w.system_idm_user_type == model.usertype_search);
-
-        //    lists = lists.OrderByDescending(o => o.system_create_date);
-
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
-
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-        //    return View(model);
-        //}
-        //public async Task<IActionResult> MoveAccountInfo(int? id)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var model = new visual_fim_user();
-        //    if (id.HasValue)
-        //        model = _context.table_visual_fim_user.Where(w => w.id == id).FirstOrDefault();
-        //    //var orgs = await _providerldap.GetOrganizationLvl1(_context, _conf);
-        //    //ViewBag.ListOrganization = orgs;
-        //    return View(model);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> MoveAccountInfo(visual_fim_user model)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin == null)
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        ViewBag.Message = ReturnMessage.Error;
-        //        ViewBag.ReturnCode = ReturnCode.Error;
-
-        //        if (model.id > 0)
-        //        {
-        //            var fim_user = _context.table_visual_fim_user.Where(w => w.id == model.id).FirstOrDefault();
-        //            if (fim_user != null)
-        //            {
-        //                try
-        //                {
-        //                    var olddn = fim_user.basic_dn;
-
-        //                    var system_ou_lvl1 = AppUtil.getOuName(model.system_ou_lvl1);
-        //                    var system_ou_lvl2 = AppUtil.getOuName(model.system_ou_lvl2);
-        //                    var system_ou_lvl3 = AppUtil.getOuName(model.system_ou_lvl3);
-
-        //                    fim_user.basic_dn = "uid=[uid]";
-        //                    if (!string.IsNullOrEmpty(model.system_ou_lvl3))
-        //                        fim_user.basic_dn += "," + model.system_ou_lvl3.ToLower();
-        //                    if (!string.IsNullOrEmpty(model.system_ou_lvl2))
-        //                        fim_user.basic_dn += "," + model.system_ou_lvl2.ToLower();
-        //                    if (!string.IsNullOrEmpty(model.system_ou_lvl1))
-        //                        fim_user.basic_dn += "," + model.system_ou_lvl1.ToLower();
-        //                    fim_user.basic_dn = fim_user.basic_dn.Replace("[uid]", fim_user.basic_uid);
-        //                    fim_user.system_ou_lvl1 = model.system_ou_lvl1;
-        //                    fim_user.system_ou_lvl2 = model.system_ou_lvl2;
-        //                    fim_user.system_ou_lvl3 = model.system_ou_lvl3;
-        //                    fim_user.system_idm_user_type = getIdmUserType(system_ou_lvl1);
-
-        //                    if (olddn != fim_user.basic_dn)
-        //                    {
-        //                        var officeShotName = "";
-        //                        if (system_ou_lvl1 == "internet")
-        //                        {
-        //                            officeShotName = system_ou_lvl1.ToUpper();
-        //                        }
-        //                        if (!string.IsNullOrEmpty(system_ou_lvl2))
-        //                        {
-        //                            officeShotName = AppUtil.getOuName(fim_user.system_ou_lvl2, false).ToUpper();
-        //                        }
-        //                        fim_user.cu_gecos = "";
-        //                        if (string.IsNullOrEmpty(fim_user.basic_cn) == false)
-        //                        {
-        //                            fim_user.cu_gecos = fim_user.basic_cn;
-        //                            if (string.IsNullOrEmpty(officeShotName) == false)
-        //                            {
-        //                                fim_user.cu_gecos += ", " + officeShotName;
-        //                                if (string.IsNullOrEmpty(fim_user.basic_telephonenumber) == false)
-        //                                {
-        //                                    fim_user.cu_gecos += ", " + fim_user.basic_telephonenumber;
-        //                                }
-        //                            }
-        //                        }
-
-        //                        fim_user.system_modify_by_uid = userlogin.basic_uid;
-        //                        fim_user.system_modify_date = DateUtil.Now();
-        //                        _context.SaveChanges();
-
-        //                        var result_ldap = _providerldap.MoveOU(fim_user, _context);
-        //                        if (result_ldap.result == true)
-        //                            writelog(LogType.log_move_account, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //                        else
-        //                            writelog(LogType.log_move_account, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message);
-
-        //                        var result_ad = _provider.MoveOU(fim_user, _context);
-        //                        if (result_ad.result == true)
-        //                            writelog(LogType.log_move_account, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //                        else
-        //                            writelog(LogType.log_move_account, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message);
-
-        //                        writelog(LogType.log_move_account, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-        //                    }
-
-        //                    return RedirectToAction("MoveAccount", "Account", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    writelog(LogType.log_move_account, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message);
-        //                }
-
-        //            }
-
-        //        }
-        //    }
-        //    var orgs = await _providerldap.GetOrganizationLvl1(_context, _conf);
-        //    if (orgs.Count() > 0)
-        //        model.system_ou_lvl1 = orgs[0].ouname;
-        //    ViewBag.ListOrganization = orgs;
-        //    return View(model);
-        //}
-        //#endregion
+        //#endregion       
 
         #region CheckAccount
         public async Task<IActionResult> CheckAccount(SearchDTO model)
@@ -1929,287 +1513,6 @@ namespace ABAC.Controllers
             model.lists = adusers.AsQueryable();
             return View(model);
         }
-        #endregion
-
-        //#region Create Script
-        //public IActionResult CreateScript(SearchDTO model)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var dfrom = DateUtil.ToDate(model.dfrom);
-        //    var dto = DateUtil.ToDate(model.dto);
-
-        //    if (!dfrom.HasValue)
-        //    {
-        //        dfrom = DateUtil.Now();
-        //        model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
-        //    }
-        //    if (!dto.HasValue)
-        //    {
-        //        dto = DateUtil.Now();
-        //        model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
-        //    }
-
-        //    var script_temps = new List<script_temp>();
-
-        //    var staffs = this._context.table_receive_staff.Where(w => 1 == 1);
-        //    staffs = staffs.Where(w => w.create_date.Value.Date >= dfrom.Value.Date);
-        //    staffs = staffs.Where(w => w.create_date.Value.Date <= dto.Value.Date);
-
-        //    foreach (var item in staffs)
-        //    {
-        //        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == item.login_name.ToLower()).FirstOrDefault();
-        //        if (fim_user != null)
-        //        {
-        //            var script_temp = new script_temp();
-        //            script_temp.id = item.id;
-        //            script_temp.displayname = item.displayname;
-        //            script_temp.login_name = item.login_name;
-        //            script_temp.password_initial = item.password_initial;
-        //            script_temp.email_address = item.email_address;
-        //            script_temp.server_name = item.server_name;
-        //            script_temp.expire = item.expire;
-        //            script_temp.status_id = item.status_id;
-        //            script_temp.org = item.org;
-        //            script_temp.create_date = item.create_date;
-        //            script_temp.receive_date = item.receive_date;
-        //            script_temp.manage_by = item.manage_by;
-        //            script_temp.ticket = item.ticket;
-        //            script_temp.visual_fim_user = fim_user;
-        //            script_temps.Add(script_temp);
-        //        }
-        //    }
-
-        //    var students = this._context.table_receive_student.Where(w => 1 == 1);
-        //    students = students.Where(w => w.create_date.Value.Date >= dfrom.Value.Date);
-        //    students = students.Where(w => w.create_date.Value.Date <= dto.Value.Date);
-
-        //    foreach (var item in students)
-        //    {
-        //        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == item.login_name.ToLower()).FirstOrDefault();
-        //        if (fim_user != null)
-        //        {
-        //            var script_temp = new script_temp();
-        //            script_temp.id = item.id;
-        //            script_temp.displayname = item.displayname;
-        //            script_temp.login_name = item.login_name;
-        //            script_temp.password_initial = item.password_initial;
-        //            script_temp.email_address = item.email_address;
-        //            script_temp.server_name = item.server_name;
-        //            script_temp.expire = item.expire;
-        //            script_temp.status_id = item.status_id;
-        //            script_temp.org = item.org;
-        //            script_temp.create_date = item.create_date;
-        //            script_temp.receive_date = item.receive_date;
-        //            script_temp.manage_by = item.manage_by;
-        //            script_temp.ticket = item.ticket;
-        //            script_temp.visual_fim_user = fim_user;
-        //            script_temps.Add(script_temp);
-        //        }
-        //    }
-        //    var temps = this._context.table_receive_temp.Where(w => 1 == 1);
-        //    temps = temps.Where(w => w.create_date.Value.Date >= dfrom.Value.Date);
-        //    temps = temps.Where(w => w.create_date.Value.Date <= dto.Value.Date);
-
-        //    foreach (var item in temps)
-        //    {
-        //        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == item.login_name.ToLower()).FirstOrDefault();
-        //        if (fim_user != null)
-        //        {
-        //            var script_temp = new script_temp();
-        //            script_temp.id = item.id;
-        //            script_temp.displayname = item.displayname;
-        //            script_temp.login_name = item.login_name;
-        //            script_temp.password_initial = item.password_initial;
-        //            script_temp.email_address = item.email_address;
-        //            script_temp.server_name = item.server_name;
-        //            script_temp.expire = item.expire;
-        //            script_temp.status_id = item.status_id;
-        //            script_temp.org = item.org;
-        //            script_temp.create_date = item.create_date;
-        //            script_temp.receive_date = item.receive_date;
-        //            script_temp.manage_by = item.manage_by;
-        //            script_temp.ticket = item.ticket;
-        //            script_temp.visual_fim_user = fim_user;
-        //            script_temps.Add(script_temp);
-        //        }
-        //    }
-
-        //    script_temps = script_temps.OrderByDescending(o => o.create_date).ToList();
-
-        //    var Indicator = ":";
-        //    String[] sparams = null;
-        //    if (model.script_format == ScriptFormat.UNIX1)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.UNIX1;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.Print)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.Print;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.GW1)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.GW1;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.GW2)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.GW2;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.pigeon)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.pigeon;
-        //        sparams = model.script_param.Split(",");
-        //        Indicator = ",";
-        //    }
-        //    else if (model.script_format == ScriptFormat.cano)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.cano;
-        //        sparams = model.script_param.Split(",");
-        //        Indicator = ",";
-        //    }
-        //    else if (model.script_format == ScriptFormat.BB)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.BB;
-        //        sparams = model.script_param.Split("|");
-        //        Indicator = "|";
-        //    }
-        //    else if (model.script_format == ScriptFormat.EDMS)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.EDMS;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.Info)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.Info;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.pommo)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.pommo;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    else if (model.script_format == ScriptFormat.Other)
-        //    {
-        //        if (string.IsNullOrEmpty(model.script_param))
-        //            model.script_param = ScriptFormatParam.Other;
-        //        sparams = model.script_param.Split(":");
-        //    }
-        //    var texts = new List<string>();
-        //    foreach (var script in script_temps)
-        //    {
-        //        Type t = script.GetType();
-        //        Type t2 = script.visual_fim_user.GetType();
-
-        //        var text = new StringBuilder();
-        //        foreach (var sparam in sparams)
-        //        {
-        //            var name = sparam;
-        //            var name2 = name;
-        //            var startindex = name.IndexOf("[");
-        //            var endindex = name.IndexOf("]");
-        //            if (startindex >= 0 & endindex >= 0)
-        //            {
-        //                name = name.Substring(startindex, (endindex - startindex) + 1);
-        //                name2 = name;
-        //                name2 = name2.Replace("[", "");
-        //                name2 = name2.Replace("]", "");
-        //            }
-        //            PropertyInfo pro1 = t.GetProperty(name2);
-        //            PropertyInfo pro2 = t2.GetProperty(name2);
-        //            if (pro1 != null)
-        //            {
-        //                var val = pro1.GetValue(script);
-        //                if (name2 == "password_initial" | name2 == "ticket")
-        //                    val = Cryptography.decrypt(val.ToString());
-
-        //                if (name != sparam)
-        //                {
-        //                    var newval = sparam.Replace(name, val.ToString());
-        //                    text.Append(newval);
-        //                    text.Append(Indicator);
-        //                }
-        //                else
-        //                {
-        //                    var newval = "";
-        //                    if (val.GetType().Name == "DateTime")
-        //                        newval = DateUtil.ToDisplayDate4((DateTime)val);
-        //                    else
-        //                    {
-        //                        if (val != null)
-        //                            newval = val.ToString();
-        //                    }
-        //                    text.Append(newval);
-        //                    text.Append(Indicator);
-        //                }
-
-
-        //            }
-        //            else if (pro2 != null)
-        //            {
-        //                var val = pro2.GetValue(script.visual_fim_user);
-        //                if (name2 == "password_initial" | name2 == "ticket")
-        //                    val = Cryptography.decrypt(val.ToString());
-        //                if (name != sparam)
-        //                {
-        //                    var newval = sparam.Replace(name, val.ToString());
-        //                    text.Append(newval);
-        //                    text.Append(Indicator);
-        //                }
-        //                else
-        //                {
-        //                    text.Append(val);
-        //                    text.Append(Indicator);
-        //                }
-
-        //            }
-        //            else if (string.IsNullOrEmpty(name2))
-        //            {
-        //                text.Append(Indicator);
-        //            }
-        //            else
-        //            {
-        //                text.Append(name2);
-        //                text.Append(Indicator);
-        //            }
-        //        }
-        //        texts.Add(text.ToString().Substring(0, text.ToString().Length - 1));
-        //    }
-        //    var lists = texts;
-
-        //    int skipRows = (model.pageno - 1) * _pagelen;
-        //    var itemcnt = lists.Count();
-        //    var pagelen = itemcnt / _pagelen;
-        //    if (itemcnt % _pagelen > 0)
-        //        pagelen += 1;
-
-        //    model.itemcnt = itemcnt;
-        //    model.pagelen = pagelen;
-        //    //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
-        //    model.lists = lists.AsQueryable();
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
-
-        //    string webRootPath = _env.WebRootPath;
-        //    var filename = webRootPath + "\\createscript.csv";
-        //    writeTextToFile(filename, texts.ToArray());
-
-        //    return View(model);
-        //}
-        //#endregion
+        #endregion       
     }
 }

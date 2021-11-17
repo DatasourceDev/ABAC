@@ -34,13 +34,13 @@ namespace ABAC.Identity
         //Result MoveOU(AdUser2 model, SpuContext spucontext);
         Result ChangePwd(AdUser2 model, string pwd, SpuContext spucontext);
 
-        //Result DeleteUser(AdUser2 model, SpuContext spucontext);
+        Result DeleteUser(AdUser2 model, SpuContext spucontext);
 
         //Task<Result> RemoveStaffUser(string samAccountName, SpuContext spucontext);
 
-        //Result EnableUser(AdUser2 model, SpuContext spucontext);
+        Result EnableUser(AdUser2 model, SpuContext spucontext);
 
-        //Result DisableUser(AdUser2 model, SpuContext spucontext);
+        Result DisableUser(AdUser2 model, SpuContext spucontext);
 
         //Task<Result> CreateOU(string name, SpuContext spucontext);
     }
@@ -395,33 +395,29 @@ namespace ABAC.Identity
         //    }
 
         //}
-        //public Result DeleteUser(AdUser2 model, SpuContext spucontext)
-        //{
-        //    try
-        //    {
-        //        var setup = spucontext.table_setup.FirstOrDefault();
-        //        var oufilter = model.system_ou_lvl1.Replace("o=", "ou=") + ",";
-        //        if (!string.IsNullOrEmpty(model.system_ou_lvl2))
-        //            oufilter = model.system_ou_lvl2.Replace("o=", "ou=") + "," + oufilter;
-        //        if (!string.IsNullOrEmpty(model.system_ou_lvl3))
-        //            oufilter = model.system_ou_lvl3.Replace("o=", "ou=") + "," + oufilter;
+        public Result DeleteUser(AdUser2 model, SpuContext spucontext)
+        {
+            try
+            {
+                var setup = spucontext.table_setup.FirstOrDefault();
+                var oufilter = getOufromDistinguishedName(model.DistinguishedName);
 
-        //        PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, oufilter + setup.Base, setup.Username, setup.Password);
-        //        UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
-        //        if (principal == null)
-        //        {
-        //            return new Result() { result = false, Message = "Account has not found" };
-        //        }
-        //        principal.Delete();
-        //        //principal.Save();
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, oufilter, setup.Username, setup.Password);
+                UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
+                if (principal == null)
+                {
+                    return new Result() { result = false, Message = "Account has not found" };
+                }
+                principal.Delete();
+                //principal.Save();
 
-        //        return new Result() { result = true };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Result() { result = false, Message = ex.Message };
-        //    }
-        //}
+                return new Result() { result = true };
+            }
+            catch (Exception ex)
+            {
+                return new Result() { result = false, Message = ex.Message };
+            }
+        }
         private string getOufromDistinguishedName(string distinguishedName)
         {
             var oufilter = "";
@@ -467,56 +463,56 @@ namespace ABAC.Identity
 
         }
 
-        //public Result EnableUser(AdUser2 model, SpuContext spucontext)
-        //{
+        public Result EnableUser(AdUser2 model, SpuContext spucontext)
+        {
 
-        //    try
-        //    {
-        //        var setup = spucontext.table_setup.FirstOrDefault();
+            try
+            {
+                var setup = spucontext.table_setup.FirstOrDefault();
 
-        //        PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, setup.Base, setup.Username, setup.Password);
-        //        UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
-        //        if (principal == null)
-        //        {
-        //            return new Result() { result = false, Message = "Account has not found" };
-        //        }
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, setup.Base, setup.Username, setup.Password);
+                UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
+                if (principal == null)
+                {
+                    return new Result() { result = false, Message = "Account has not found" };
+                }
 
-        //        DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;
-        //        d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;
-        //        principal.Save();
+                DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;
+                d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;
+                principal.Save();
 
-        //        return new Result() { result = true };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Result() { result = false, Message = ex.Message };
-        //    }
+                return new Result() { result = true };
+            }
+            catch (Exception ex)
+            {
+                return new Result() { result = false, Message = ex.Message };
+            }
 
-        //}
-        //public Result DisableUser(AdUser2 model, SpuContext spucontext)
-        //{
-        //    try
-        //    {
-        //        var setup = spucontext.table_setup.FirstOrDefault();
+        }
+        public Result DisableUser(AdUser2 model, SpuContext spucontext)
+        {
+            try
+            {
+                var setup = spucontext.table_setup.FirstOrDefault();
 
-        //        PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, setup.Base, setup.Username, setup.Password);
-        //        UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
-        //        if (principal == null)
-        //        {
-        //            return new Result() { result = false, Message = "Account has not found" };
-        //        }
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, setup.Base, setup.Username, setup.Password);
+                UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
+                if (principal == null)
+                {
+                    return new Result() { result = false, Message = "Account has not found" };
+                }
 
-        //        DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;
-        //        d.Properties["userAccountControl"].Value = userAccountControl.DisablePasswordNotRequired;
-        //        principal.Save();
+                DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;
+                d.Properties["userAccountControl"].Value = userAccountControl.DisablePasswordNotRequired;
+                principal.Save();
 
-        //        return new Result() { result = true };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Result() { result = false, Message = ex.Message };
-        //    }
-        //}
+                return new Result() { result = true };
+            }
+            catch (Exception ex)
+            {
+                return new Result() { result = false, Message = ex.Message };
+            }
+        }
 
         //public Task<Result> RemoveStaffUser(string samAccountName, SpuContext spucontext)
         //{

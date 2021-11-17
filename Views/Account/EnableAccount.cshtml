@@ -81,10 +81,10 @@
                     <div class="modal-body">
                         <div class="form-group row">
                             <div class="col-lg-12">
-                               <span id="lblRemark"></span>
+                                <span id="lblRemark"></span>
                             </div>
                         </div>
-                      
+
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -97,20 +97,18 @@
                         <div class="form-group row">
                             <div class="col-lg-9">
                                 <label class="col-form-label">คำค้น</label>
-                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, โทรศัพท์, อีเมล์" asp-for="text_search" required>
+                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, รหัสนักศึกษา, อีเมล์" asp-for="text_search" required>
                                 @Html.ValidationMessageFor(m => m.text_search)
 
                             </div>
                             <div class="col-lg-2">
                                 <label class="col-form-label">ประเภทผู้ใช้</label>
                                 <select class="form-control" asp-for="usertype_search">
-                                    <option value="">All</option>
-
-                                    <option value="@IDMUserType.affiliate">@IDMUserType.affiliate.toUserTypeName()</option>
-                                    <option value="@IDMUserType.outsider">@IDMUserType.outsider.toUserTypeName()</option>
-                                    <option value="@IDMUserType.staff">@IDMUserType.staff.toUserTypeName()</option>
-                                    <option value="@IDMUserType.student">@IDMUserType.student.toUserTypeName()</option>
-                                    <option value="@IDMUserType.temporary">@IDMUserType.temporary.toUserTypeName()</option>
+                                    <option value="@aUUserType.staff">@aUUserType.staff.toUserTypeName()</option>
+                                    <option value="@aUUserType.student">@aUUserType.student.toUserTypeName()</option>
+                                    <option value="@aUUserType.vip">@aUUserType.vip.toUserTypeName()</option>
+                                    <option value="@aUUserType.office">@aUUserType.office.toUserTypeName()</option>
+                                    <option value="@aUUserType.bulk">@aUUserType.bulk.toUserTypeName()</option>
                                 </select>
                             </div>
                             <div class="col-lg-1">
@@ -122,66 +120,75 @@
                             <div class="col-lg-12">
                                 <div class="table-rep-plugin">
                                     <div class="table-responsive mb-0" data-pattern="priority-columns">
-                                        <table id="tech-companies-1" class="table table-striped mb-0">
+                                        <table class="table table-striped mb-0 font-12">
                                             <thead>
                                                 <tr>
-                                                    <th>Login Name</th>
-                                                    <th>Display Name</th>
-                                                    <th>nsaccountlock</th>
-                                                    <th>Remark</th>
-                                                    <th width="200px"></th>
+                                                    <th>Sam Account Name</th>
+                                                    <th>Employee/Student Code</th>
+                                                    <th>User Principal Name</th>
+                                                    <th>First Name</th>
+                                                    <th>Last Name</th>
+                                                    <th>Mail</th>
+                                                    <th></th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if (Model.lists != null)
                                                 {
-                                                    foreach (visual_fim_user item in Model.lists)
+                                                    foreach (AdUser4 item in Model.lists)
                                                     {
-                                                        <tr>
-                                                            <td>@item.basic_uid</td>
-                                                            <td>@item.basic_displayname</td>
-                                                            <td>
-                                                                @if (item.cu_nsaccountlock == LockStaus.Unlock)
-                                                                {
-                                                                    <span id="status-@item.basic_uid" class="badge badge-success">@item.cu_nsaccountlock</span>
+                                                <tr>
+                                                    <td>
+                                                        <a href="@Url.Action("AccountInfo", "Account", new { id = item.sAMAccountName })" target="_blank"><u>@item.sAMAccountName</u></a>
+                                                    </td>
+                                                    <td>
+                                                        @if (item.aUUserType == aUUserType.student)
+                                                        {
+                                                            @item.aUStudentId
+                                                        }
+                                                        else
+                                                        {
+                                                            @item.aUEmpcode
+                                                        }
+                                                    </td>
+                                                    <td>@item.userPrincipalName</td>
+                                                    <td>@item.givenName</td>
+                                                    <td>@item.sn</td>
+                                                    <td>@item.mail</td>
+                                                    <td>
+                                                        @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
+                                                        {
+                                                            <span id="stutus-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
 
-                                                                }
-                                                                else
-                                                                {
-                                                                    <span id="status-@item.basic_uid" class="badge badge-danger">@item.cu_nsaccountlock</span>
-                                                                }
-                                                            </td>
-                                                            <td>
-                                                                <span style="display:none;" id="remark-@item.basic_uid">@item.lock_remark</span>
-                                                                @if (!string.IsNullOrEmpty(item.lock_remark))
-                                                                {
-                                                                    <a href="#" id="btnremark-@item.basic_uid" onclick="showremark('@item.basic_uid'); return false;"><span style="text-decoration:underline">หมายเหตุ</span></a>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <a href="#" id="btnremark-@item.basic_uid" onclick="showremark('@item.basic_uid'); return false;" style="display:none;"><span style="text-decoration:underline">หมายเหตุ</span></a>
-                                                                }
-                                                            </td>
-                                                            <td>
-                                                                @if (item.cu_nsaccountlock == LockStaus.Unlock)
-                                                                {
-                                                                    <a href="#" onclick="lockaccont('@item.basic_uid'); return false;"><i id="icon-@item.basic_uid" class="fas fa-lock font-16"></i> <span style="text-decoration:underline">Lock</span> บัญชีผู้ใช้นี้</a>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <a href="#" onclick="lockaccont('@item.basic_uid'); return false;"><i id="icon-@item.basic_uid" class="fas fa-unlock font-16"></i> <span style="text-decoration:underline">Unlock</span> บัญชีผู้ใช้นี้</a>
-                                                                }
-                                                            </td>
-                                                        </tr>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span id="stutus-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
+                                                        {
+                                                            <a href="#" onclick="lockaccont('@item.sAMAccountName'); return false;"><i id="icon-@item.sAMAccountName" class="fas fa-lock font-16"></i> <span style="text-decoration:underline">Lock</span> บัญชีผู้ใช้นี้</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="#" onclick="lockaccont('@item.sAMAccountName'); return false;"><i id="icon-@item.sAMAccountName" class="fas fa-unlock font-16"></i> <span style="text-decoration:underline">Unlock</span> บัญชีผู้ใช้นี้</a>
+                                                        }
+                                                    </td>
+                                                </tr>
                                                     }
+
                                                 }
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="5" class="text-center">ไม่พบข้อมูล</td>
+                                                        <td colspan="8" class="text-center">ไม่พบข้อมูล</td>
                                                     </tr>
                                                 }
                                             </tbody>
+
                                         </table>
                                     </div>
                                 </div>
@@ -194,7 +201,6 @@
             </div> <!-- end col -->
             <!-- end col -->
         </div>
-
     </form>
 </div><!-- container -->
 @section scripts{

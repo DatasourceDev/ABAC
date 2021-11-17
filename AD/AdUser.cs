@@ -249,6 +249,7 @@ namespace ABAC.Identity
 
         public string Reference { get; set; }
         public string PassportID { get; set; }
+        public string userAccountControl { get; set; }
 
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
@@ -301,6 +302,8 @@ namespace ABAC.Identity
                 aUUserType = getpropertyvalue(d.Properties, "aUUserType"),
                 PassportID = getpropertyvalue(d.Properties, "departmentNumber"),
                 Reference = getpropertyvalue(d.Properties, "department"),
+                userAccountControl = getpropertyvalue(d.Properties, "userAccountControl"),
+                
             };
         }
 

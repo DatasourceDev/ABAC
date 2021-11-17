@@ -13,9 +13,7 @@
   <ItemGroup>
     <Content Remove="Views\Account\CheckMenuPermission.cshtml" />
     <Content Remove="Views\Account\CreateAccountFromFile.cshtml" />
-    <Content Remove="Views\Account\DeleteAccount.cshtml" />
     <Content Remove="Views\Account\DeleteAccountFromFile.cshtml" />
-    <Content Remove="Views\Account\EnableAccount.cshtml" />
     <Content Remove="Views\Account\EnableAccountFromFile.cshtml" />
     <Content Remove="Views\Account\OneDayPassword.cshtml" />
     <Content Remove="Views\Account\Search.cshtml" />
