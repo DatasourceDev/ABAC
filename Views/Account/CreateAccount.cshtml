@@ -63,7 +63,7 @@
                                         </div>
                                         <div class="form-check-inline my-1">
                                             <div class="custom-control custom-radio">
-                                                <input type="radio" id="bulk" name="aUUserType" value="@aUUserType.bulk" class="custom-control-input" @(Model.aUUserType == aUUserType.bulk ? "checked" : "")>
+                                                <input type="radio" id="bulk" name="aUUserType" value="@aUUserType.bulk" class="custom-control-input" @(Model.aUUserType == aUUserType.bulk ? "checked" : "") onchange="aUUserTypeOnchange()">
                                                 <label class="custom-control-label" for="bulk">Guest</label>
                                             </div>
                                         </div>
@@ -171,28 +171,31 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" id="divExpire">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Valid Date</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control dpicker" type="text" asp-for="ValidDate" placeholder="DD/MM/YYYY" required>
-                                        @Html.ValidationMessageFor(m => m.ValidDate)
+                        <div id="divExpire">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Valid Date</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control dpicker" type="text" asp-for="ValidDate" placeholder="DD/MM/YYYY" required>
+                                            @Html.ValidationMessageFor(m => m.ValidDate)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Expire Date</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control dpicker" type="text" asp-for="ExpireDate" placeholder="DD/MM/YYYY" required>
+                                            @Html.ValidationMessageFor(m => m.ExpireDate)
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row" id="divExpire">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Expire Date</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control dpicker" type="text" asp-for="ExpireDate" placeholder="DD/MM/YYYY" required>
-                                        @Html.ValidationMessageFor(m => m.ExpireDate)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
@@ -213,7 +216,14 @@
 
 @section scripts{
     <script>
-       
+        function aUUserTypeOnchange() {
+            if ($('#bulk').get(0).checked == true) {
+                $('#divExpire').show();
+            }
+            else {
+                $('#divExpire').hide();
+            }
+        }
     </script>
     @*<script>
             $(document).ready(function () {
