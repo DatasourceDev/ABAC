@@ -139,32 +139,32 @@ namespace ABAC.Controllers
                     }
                     else if (model.aUUserType == aUUserType.bulk)
                     {
-                        //model.DistinguishedName = _conf.OU_TEMP;
-                        //var user = new User_Office();
-                        //user.username = model.SamAccountName;
-                        //user.password = Cryptography.encrypt(model.Password);
-                        //user.firstname = model.GivenName;
-                        //user.lastname = model.Surname;
-                        //user.CitizenID = model.aUIDCard;
-                        //user.PassportID = model.PassportID;
-                        //user.Reference = model.Reference;
-                        //user.adminname = userlogin.SamAccountName;
-                        //user.Create_By = userlogin.SamAccountName;
-                        //user.Create_On = DateUtil.Now();
-                        //user.Update_By = userlogin.SamAccountName;
-                        //user.Update_On = DateUtil.Now();
-                        //_context.User_Office.Add(user);
-                        //_context.SaveChanges();
+                        model.DistinguishedName = _conf.OU_TEMP;
+                        var user = new User_Bulk();
+                        user.username = model.SamAccountName;
+                        user.password = Cryptography.encrypt(model.Password);
+                        user.firstname = model.GivenName;
+                        user.lastname = model.Surname;
+                        user.valid_date = DateUtil.ToDate(model.ValidDate);
+                        user.expire_date = DateUtil.ToDate(model.ExpireDate);  
+                        user.today = DateUtil.Now();
+                        user.adminname = userlogin.SamAccountName;
+                        user.Create_By = userlogin.SamAccountName;
+                        user.Create_On = DateUtil.Now();
+                        user.Update_By = userlogin.SamAccountName;
+                        user.Update_On = DateUtil.Now();
+                        _context.User_Bulk.Add(user);
+                        _context.SaveChanges();
 
-                        //var result_ad = _provider.CreateUser(model, _context);
-                        //if (result_ad.result == true)
-                        //    writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
-                        //else
-                        //    writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+                        var result_ad = _provider.CreateUser(model, _context);
+                        if (result_ad.result == true)
+                            writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                        else
+                            writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                        //user.ad_created = result_ad.result;
-                        //_context.SaveChanges();
-                        //writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                        user.ad_created = result_ad.result;
+                        _context.SaveChanges();
+                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
                     }
                     else
                     {

@@ -260,6 +260,8 @@ namespace ABAC.Identity
                     principal.VoiceTelephoneNumber = null;
                 principal.EmailAddress = model.EmailAddress;
                 principal.UserPrincipalName = model.UserPrincipalName;
+                if (!string.IsNullOrEmpty(model.ExpireDate))
+                    principal.AccountExpirationDate = DateUtil.ToDate( model.ExpireDate);
 
                 principal.Save();
 
@@ -289,6 +291,11 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
+                //if (!string.IsNullOrEmpty(model.ExpireDate))
+                //    d.Properties["accountExpires"].Value = model.ExpireDate;
+                //else
+                //    d.Properties["accountExpires"].Value = null;
+
                 d.Properties["aUUserType"].Value = model.aUUserType;
                 d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;
                 principal.Save();
@@ -302,7 +309,6 @@ namespace ABAC.Identity
         }
         public Result UpdateUser(AdUser2 model, SpuContext spucontext)
         {
-
             try
             {
                 var setup = spucontext.table_setup.FirstOrDefault();
@@ -320,7 +326,8 @@ namespace ABAC.Identity
                 principal.DisplayName = model.DisplayName;
                 principal.EmailAddress = model.EmailAddress;
                 principal.UserPrincipalName = model.UserPrincipalName;
-
+                if (!string.IsNullOrEmpty(model.ExpireDate))
+                    principal.AccountExpirationDate = DateUtil.ToDate(model.ExpireDate);
                 principal.Save();
 
                 DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;

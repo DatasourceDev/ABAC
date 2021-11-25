@@ -89,8 +89,7 @@ namespace ABAC.Models
 
         #endregion
 
-
-        #region 
+        #region Audit
 
         [Display(Name = "ผู้สร้าง")]
         [MaxLength(250)]
@@ -103,6 +102,7 @@ namespace ABAC.Models
         [Display(Name = "เวลาแก้ไข")]
         public Nullable<DateTime> Update_On { get; set; }
 
-        #endregion
+        #endregion       
+
     }
 }
