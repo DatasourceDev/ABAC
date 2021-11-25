@@ -2,7 +2,6 @@
 @{
     ViewData["Title"] = "กำหนดค่าหน้า Home";
 }
-
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
@@ -32,7 +31,7 @@
                         Home Configuration
                     </p>
                 </div><!--end page-title-box-->
-              
+
             </div>
         </div><!--end col-->
     </div>
@@ -40,39 +39,24 @@
     <form class="form-horizontal form-parsley" novalidate role="form" asp-action="CMS" asp-controller="System">
         @Html.HiddenFor(m => m.ID)
         <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <button class="btn btn-dark" type="submit">บันทึก</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body mt-3">
                         <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-8">
-                                        <h4 class="mt-0 header-title">Others</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label text-right">Home Student</label>
-                                    <div class="col-sm-10">
-                                        <textarea id="elm1" asp-for="HOME_Student"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right"></label>
-                                    <div class="col-sm-8">
-                                        <button class="btn btn-dark" type="submit">บันทึก</button>
+                                    <div class="col-sm-12">
+                                        <h4 class="mt-0 header-title">Home Office</h4>
+                                        <textarea asp-for="HOME_Office" rows="5" style="width:100%"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -81,6 +65,10 @@
                 </div>
             </div> <!-- end col -->
             <!-- end col -->
+        </div>
+        <div id="preview">
+            @Html.Raw(Model.HOME_Office)
+
         </div>
     </form>
 
