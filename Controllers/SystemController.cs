@@ -27,7 +27,7 @@ namespace ABAC.Controllers
             this.provider = provider;
 
         }
-        public IActionResult CMS()
+        public IActionResult CMSStaff()
         {
             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
@@ -39,7 +39,7 @@ namespace ABAC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CMS(cms model)
+        public async Task<IActionResult> CMSStaff(cms model)
         {
             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");

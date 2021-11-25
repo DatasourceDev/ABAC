@@ -26,6 +26,11 @@ namespace ABAC.Controllers
         {
             this.provider = provider;
         }
+        public <IActionResult Home()
+        {
+            return View(null);
+        }
+
         public async Task<IActionResult> Index()
         {
             var model = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
