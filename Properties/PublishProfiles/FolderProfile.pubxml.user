@@ -5,6 +5,6 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <_PublishTargetUrl>C:\web</_PublishTargetUrl>
-    <History>True|2021-11-15T07:50:57.5720304Z;</History>
+    <History>True|2021-11-17T15:34:16.4136426Z;False|2021-11-17T22:28:49.3331328+07:00;False|2021-11-17T22:11:38.7613912+07:00;True|2021-11-15T14:50:57.5720304+07:00;</History>
   </PropertyGroup>
 </Project>

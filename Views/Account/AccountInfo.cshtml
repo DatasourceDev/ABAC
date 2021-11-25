@@ -51,7 +51,6 @@
                                     <label class="col-sm-3 col-form-label text-right">User Type</label>
                                     <div class="col-sm-3">
                                         <input class="form-control" type="text" value="@Model.aUUserType.toUserTypeName()" readonly>
-
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +60,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Login Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="SamAccountName" readonly required>
+                                        <input class="form-control" type="text" asp-for="SamAccountName" readonly>
                                         @Html.ValidationMessageFor(m => m.SamAccountName)
                                     </div>
                                 </div>
@@ -72,7 +71,14 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">First Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="GivenName" required>
+                                        @if (Model.aUUserType == aUUserType.student || Model.aUUserType == aUUserType.staff)
+                                        {
+                                            <input class="form-control" type="text" asp-for="GivenName" readonly>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-control" type="text" asp-for="GivenName" required>
+                                        }
                                         @Html.ValidationMessageFor(m => m.GivenName)
 
                                     </div>
@@ -84,7 +90,14 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Last Name</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="Surname" required>
+                                        @if (Model.aUUserType == aUUserType.student || Model.aUUserType == aUUserType.staff)
+                                        {
+                                            <input class="form-control" type="text" asp-for="Surname" readonly>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-control" type="text" asp-for="Surname" required>
+                                        }
                                         @Html.ValidationMessageFor(m => m.Surname)
                                     </div>
                                 </div>
@@ -106,7 +119,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Email</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="EmailAddress" readonly required>
+                                        <input class="form-control" type="text" asp-for="EmailAddress" readonly>
                                         @Html.ValidationMessageFor(m => m.EmailAddress)
                                     </div>
                                 </div>
@@ -126,7 +139,7 @@
                                 </div>
                             </div>
                         }
-                        else
+                        else if (Model.aUUserType == aUUserType.student)
                         {
                             <div class="row">
                                 <div class="col-lg-12">
@@ -145,59 +158,64 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Citizen ID</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" asp-for="aUIDCard" maxlength="13">
+                                        @if (Model.aUUserType == aUUserType.student || Model.aUUserType == aUUserType.staff)
+                                        {
+                                            <input class="form-control" type="text" asp-for="aUIDCard" maxlength="13" readonly>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-control" type="text" asp-for="aUIDCard" maxlength="13" required>
+                                        }
                                         @Html.ValidationMessageFor(m => m.aUIDCard)
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        @*<div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">วันหมดอายุ</label>
-                                    <div class="col-sm-2 mt-2">
-                                        <div class="checkbox">
-                                            <input type="checkbox" asp-for="cu_CUexpire_select" onchange="CUexpire_Onchange()">
-                                            <label for="cu_CUexpire_select">
-                                                ไม่มีวันหมดอายุ
-                                            </label>
+                        @if (Model.aUUserType == aUUserType.student || Model.aUUserType == aUUserType.staff)
+                        {
+                        }
+                        else
+                        {
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Passport ID</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" asp-for="PassportID">
+                                            @Html.ValidationMessageFor(m => m.PassportID)
                                         </div>
-                                    </div>
-                                    <div class="col-sm-2 CUexpire">
-                                        <select class="form-control" asp-for="cu_CUexpire_day">
-                                            @for (var i = 1; i <= 31; i++)
-                                            {
-                                                <option value="@i">@i.ToString("00")</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2 CUexpire">
-                                        <select class="form-control" asp-for="cu_CUexpire_month">
-                                            @for (var i = 1; i <= 12; i++)
-                                            {
-                                                <option value="@i">@DateUtil.GetShortMonth(i)</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2 CUexpire">
-                                        <select class="form-control" asp-for="cu_CUexpire_year">
-                                            @for (var i = DateUtil.Now().Year; i <= DateUtil.Now().Year + 5; i++)
-                                            {
-                                                <option value="@i">@i.ToString("0000")</option>
-                                            }
-                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        </div>*@
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Reference</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="text" asp-for="Reference">
+                                            @Html.ValidationMessageFor(m => m.Reference)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+
+                       
 
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right"></label>
                                     <div class="col-sm-3">
-                                        <button class="btn btn-dark" type="submit">บันทึก</button>
+                                        @if (Model.aUUserType == aUUserType.student || Model.aUUserType == aUUserType.staff)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-dark" type="submit">บันทึก</button>
+                                        }
                                         <a href="@Url.Action("CheckAccount","Account")" class="btn btn-light" type="button">กลับ</a>
                                     </div>
                                 </div>

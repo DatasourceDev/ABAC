@@ -55,8 +55,6 @@
                             <div class="col-lg-2">
                                 <label class="col-form-label">ประเภทผู้ใช้</label>
                                 <select class="form-control" asp-for="usertype_search">
-                                    <option value="@aUUserType.staff">@aUUserType.staff.toUserTypeName()</option>
-                                    <option value="@aUUserType.student">@aUUserType.student.toUserTypeName()</option>
                                     <option value="@aUUserType.vip">@aUUserType.vip.toUserTypeName()</option>
                                     <option value="@aUUserType.office">@aUUserType.office.toUserTypeName()</option>
                                     <option value="@aUUserType.bulk">@aUUserType.bulk.toUserTypeName()</option>
@@ -65,6 +63,11 @@
                             <div class="col-lg-1">
                                 <label class="col-form-label"><br /></label>
                                 <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                                <button class="btn btn-danger" type="button" onclick="OnDelete()">ลบ</button>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -121,12 +124,12 @@
                                                             <td>
                                                                 @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
                                                                 {
-                                                                    <span id="stutus-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
+                                                                    <span id="status-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
 
                                                                 }
                                                                 else
                                                                 {
-                                                                    <span id="stutus-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
+                                                                    <span id="status-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
                                                                 }
                                                             </td>
                                                         </tr>

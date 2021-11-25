@@ -51,31 +51,31 @@ namespace ABAC.Controllers
 
         public string getaUUserType(string DistinguishedName)
         {
-            if (DistinguishedName.Contains("Staff"))
+            if (DistinguishedName.ToLower().Contains("staff"))
             {
                 return aUUserType.staff;
             }
-            else if (DistinguishedName.Contains("Student"))
+            else if (DistinguishedName.ToLower().Contains("student"))
             {
                 return aUUserType.student;
             }
-            else if (DistinguishedName.Contains("UserOffice"))
+            else if (DistinguishedName.ToLower().Contains("useroffice"))
             {
                 return aUUserType.office;
             }
-            else if (DistinguishedName.Contains("UserVip"))
+            else if (DistinguishedName.ToLower().Contains("uservip"))
             {
                 return aUUserType.vip;
             }
-            else if (DistinguishedName.Contains("UserTemp"))
+            else if (DistinguishedName.ToLower().Contains("usertemp"))
             {
                 return aUUserType.bulk;
             }
-            else if (DistinguishedName.Contains("Service-user"))
+            else if (DistinguishedName.ToLower().Contains("service-user"))
             {
                 return aUUserType.admin;
             }
-            else if (DistinguishedName.Contains("GroupAdmin"))
+            else if (DistinguishedName.ToLower().Contains("groupadmin"))
             {
                 return aUUserType.admin;
             }

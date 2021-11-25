@@ -28,6 +28,19 @@
                         <div class="col-lg-7">
                             <div class="form-group row">
                                 <div class="col-sm-4 text-right">
+                                    <label class="col-form-label-eng">ประเภทผู้ใช้</label>
+                                    <span class="text-eng">User Type</span>
+                                </div>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" value="@Model.aUUserType.toUserTypeName()" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="form-group row">
+                                <div class="col-sm-4 text-right">
                                     <label class="col-form-label-eng">รหัสผู้ใช้</label>
                                     <span class="text-eng">Login Name</span>
                                 </div>
@@ -77,64 +90,64 @@
                         </div>
                     </div>
                     @*<div class="row">
-                        <div class="col-lg-7">
-                            <div class="form-group row">
-                                <div class="col-sm-4 text-right">
-                                    @if (Model.system_idm_user_type == IDMUserType.student)
-                                    {
-                                        <label class="col-form-label-eng">รหัสนักศึกษา</label>
-                                    }
-                                    else
-                                    {
-                                        <label class="col-form-label-eng">รหัสพนักงาน</label>
-                                    }
-                                    <span class="text-eng">Job Code</span>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="cu_jobcode" readonly>
-                                </div>
-                            </div>
-                        </div>
-                    </div>*@
+            <div class="col-lg-7">
+                <div class="form-group row">
+                    <div class="col-sm-4 text-right">
+                        @if (Model.system_idm_user_type == IDMUserType.student)
+                        {
+                            <label class="col-form-label-eng">รหัสนักศึกษา</label>
+                        }
+                        else
+                        {
+                            <label class="col-form-label-eng">รหัสพนักงาน</label>
+                        }
+                        <span class="text-eng">Job Code</span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" asp-for="cu_jobcode" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>*@
                     @*<div class="row">
-                        <div class="col-lg-7">
-                            <div class="form-group row">
-                                <div class="col-sm-4 text-right">
-                                    <label class="col-form-label-eng">รหัสบัตรประชาชน หรือ Passport No.</label>
-                                    <span class="text-eng">Citizen ID</span>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="cu_pplid" readonly>
-                                </div>
-                            </div>
-                        </div>
+            <div class="col-lg-7">
+                <div class="form-group row">
+                    <div class="col-sm-4 text-right">
+                        <label class="col-form-label-eng">รหัสบัตรประชาชน หรือ Passport No.</label>
+                        <span class="text-eng">Citizen ID</span>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <div class="form-group row">
-                                <div class="col-sm-4 text-right">
-                                    <label class="col-form-label-eng">วันหมดอายุ</label>
-                                    <span class="text-eng">Expire Date</span>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input class="form-control" type="text" asp-for="cu_CUexpire" readonly>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" asp-for="cu_pplid" readonly>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <div class="form-group row">
-                                <div class="col-sm-4 text-right">
-                                    <label class="col-form-label-eng">เปลี่ยนรหัสผ่านล่าสุด</label>
-                                    <span class="text-eng">Last Password Changed</span>
-                                </div>
-                                <div class="col-sm-8">
-                                    <input class="form-control" type="text" value="@DateUtil.ToDisplayDateTime(Model.cu_pwdchangeddate)" readonly>
-                                </div>
-                            </div>
-                        </div>*@
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="form-group row">
+                    <div class="col-sm-4 text-right">
+                        <label class="col-form-label-eng">วันหมดอายุ</label>
+                        <span class="text-eng">Expire Date</span>
                     </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" asp-for="cu_CUexpire" readonly>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="form-group row">
+                    <div class="col-sm-4 text-right">
+                        <label class="col-form-label-eng">เปลี่ยนรหัสผ่านล่าสุด</label>
+                        <span class="text-eng">Last Password Changed</span>
+                    </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" value="@DateUtil.ToDisplayDateTime(Model.cu_pwdchangeddate)" readonly>
+                    </div>
+                </div>
+            </div>*@
+                </div>
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
         </div> <!-- end col -->

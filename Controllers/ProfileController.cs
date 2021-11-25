@@ -49,11 +49,11 @@ namespace ABAC.Controllers
             if (aduser == null)
                 return RedirectToAction("Logout", "Auth");
 
-            if (model.OldPassword == model.Password)
-            {
-                ModelState.AddModelError("OldPassword", "รหัสผ่านใหม่ต้องไม่ตรงกับรหัสผ่านเก่า กรุณาเปลี่ยนรหัสผ่านใหม่");
-                ModelState.AddModelError("Password", "รหัสผ่านใหม่ต้องไม่ตรงกับรหัสผ่านเก่า กรุณาเปลี่ยนรหัสผ่านใหม่");
-            }
+            //if (model.OldPassword == model.Password)
+            //{
+            //    ModelState.AddModelError("OldPassword", "รหัสผ่านใหม่ต้องไม่ตรงกับรหัสผ่านเก่า กรุณาเปลี่ยนรหัสผ่านใหม่");
+            //    ModelState.AddModelError("Password", "รหัสผ่านใหม่ต้องไม่ตรงกับรหัสผ่านเก่า กรุณาเปลี่ยนรหัสผ่านใหม่");
+            //}
             if (ModelState.IsValid)
             {
                 var setup = _context.table_setup.FirstOrDefault();

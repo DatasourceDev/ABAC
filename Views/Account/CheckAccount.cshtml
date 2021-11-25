@@ -107,12 +107,12 @@
                                                         <td>
                                                             @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
                                                             {
-                                                                <span id="stutus-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
+                                                                <span id="status-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
 
                                                             }
                                                             else
                                                             {
-                                                                <span id="stutus-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
+                                                                <span id="status-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
                                                             }
                                                         </td>
                                                     </tr>

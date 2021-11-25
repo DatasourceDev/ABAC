@@ -259,7 +259,7 @@ namespace ABAC
             else if (statusType == aUUserType.office)
                 status = "Office";
             else if (statusType == aUUserType.bulk)
-                status = "Temp";
+                status = "Guest";
             return status;
         }
         public static string toOUName(this string statusType)

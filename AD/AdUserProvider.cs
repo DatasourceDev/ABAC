@@ -348,6 +348,7 @@ namespace ABAC.Identity
                     d.Properties["departmentNumber"].Value = model.PassportID;
                 else
                     d.Properties["departmentNumber"].Value = null;
+
                 principal.Save();
 
                 return new Result() { result = true };

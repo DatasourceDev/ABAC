@@ -88,7 +88,7 @@ namespace ABAC.Controllers
                         user.CitizenID = model.aUIDCard;
                         user.PassportID = model.PassportID;
                         user.Reference = model.Reference;
-                        user.adminname = userlogin.SamAccountName;
+                        user.adminname = userlogin.SamAccountName;                  
                         user.Create_By = userlogin.SamAccountName;
                         user.Create_On = DateUtil.Now();
                         user.Update_By = userlogin.SamAccountName;
@@ -139,8 +139,32 @@ namespace ABAC.Controllers
                     }
                     else if (model.aUUserType == aUUserType.bulk)
                     {
-                        model.DistinguishedName = _conf.OU_TEMP;
+                        //model.DistinguishedName = _conf.OU_TEMP;
+                        //var user = new User_Office();
+                        //user.username = model.SamAccountName;
+                        //user.password = Cryptography.encrypt(model.Password);
+                        //user.firstname = model.GivenName;
+                        //user.lastname = model.Surname;
+                        //user.CitizenID = model.aUIDCard;
+                        //user.PassportID = model.PassportID;
+                        //user.Reference = model.Reference;
+                        //user.adminname = userlogin.SamAccountName;
+                        //user.Create_By = userlogin.SamAccountName;
+                        //user.Create_On = DateUtil.Now();
+                        //user.Update_By = userlogin.SamAccountName;
+                        //user.Update_On = DateUtil.Now();
+                        //_context.User_Office.Add(user);
+                        //_context.SaveChanges();
 
+                        //var result_ad = _provider.CreateUser(model, _context);
+                        //if (result_ad.result == true)
+                        //    writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                        //else
+                        //    writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                        //user.ad_created = result_ad.result;
+                        //_context.SaveChanges();
+                        //writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
                     }
                     else
                     {
@@ -775,8 +799,8 @@ namespace ABAC.Controllers
                         aduser.DisplayName = model.GivenName + " " + model.Surname;
                         aduser.EmailAddress = model.EmailAddress;
                         aduser.aUIDCard = model.aUIDCard;
-                        aduser.aUEmpcode = model.aUEmpcode;
-                        aduser.aUStudentId = model.aUStudentId;
+                        aduser.PassportID = model.PassportID;
+                        aduser.Reference = model.Reference;
                     }
                     var result_ad = _provider.UpdateUser(aduser, _context);
                     if (result_ad.result == true)
@@ -852,7 +876,7 @@ namespace ABAC.Controllers
                                 var userType = getaUUserType(model.DistinguishedName);
                                 if (userType == aUUserType.vip)
                                 {
-                                    var vip = this._context.User_VIP.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                                    var vip = _context.User_VIP.Where(w => w.username == id).FirstOrDefault();
                                     if (vip != null)
                                     {
                                         _context.Remove(vip);
@@ -861,7 +885,7 @@ namespace ABAC.Controllers
                                 }
                                 else if (userType == aUUserType.office)
                                 {
-                                    var office = this._context.User_Office.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                                    var office = _context.User_Office.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
                                     if (office != null)
                                     {
                                         _context.Remove(office);

@@ -159,12 +159,12 @@
                                                     <td>
                                                         @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
                                                         {
-                                                            <span id="stutus-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
+                                                            <span id="status-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
 
                                                         }
                                                         else
                                                         {
-                                                            <span id="stutus-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
+                                                            <span id="status-@item.sAMAccountName" class="badge badge-danger">@item.userAccountControl.toUserAccountControl()</span>
                                                         }
                                                     </td>
                                                     <td>
@@ -225,10 +225,10 @@
                 url: '@Url.Action("ChangeStatus", "Account")?id=' + id + '&remark=' + remark,
                 success: function (data) {
                     if (data.result == 1) {
-                        if (data.status == '@(LockStaus.Unlock)') {
+                        if (data.status == '@((int)userAccountControl.Enable)' || data.status == '@((int)userAccountControl.EnablePasswordNotRequired)') {
                             $('#status-' + id).removeClass();
                             $('#status-' + id).addClass('badge badge-success');
-                            $('#status-' + id).text(data.status);
+                            $('#status-' + id).text("Enable");
 
                             $('#icon-' + id).removeClass();
                             $('#icon-' + id).addClass('fas fa-lock text-primary font-16');
@@ -236,7 +236,7 @@
                         else {
                             $('#status-' + id).removeClass();
                             $('#status-' + id).addClass('badge badge-danger');
-                            $('#status-' + id).text(data.status);
+                            $('#status-' + id).text("Disable");
 
                             $('#icon-' + id).removeClass();
                             $('#icon-' + id).addClass('fas fa-unlock text-primary font-16');
