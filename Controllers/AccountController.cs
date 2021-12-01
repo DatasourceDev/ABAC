@@ -170,16 +170,14 @@ namespace ABAC.Controllers
                     {
                         return View(model);
                     }
+                    ViewBag.Message = ReturnMessage.Success;
+                    ViewBag.ReturnCode = ReturnCode.Success;
+                    return RedirectToAction("CreateAccountCompleted", new { code = ReturnCode.Success, msg = ReturnMessage.Success, id = model.SamAccountName });
                 }
                 catch (Exception ex)
                 {
                     writelog(LogType.log_create_account, LogStatus.failed, IDMSource.VisualFim, model.SamAccountName, log_exception: ex.Message);
                 }
-
-                ViewBag.Message = ReturnMessage.Success;
-                ViewBag.ReturnCode = ReturnCode.Success;
-                return RedirectToAction("CreateAccountCompleted", new { code = ReturnCode.Success, msg = ReturnMessage.Success, id = model.SamAccountName });
-
             }
             return View(model);
         }
@@ -766,6 +764,7 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var aduser = await _provider.GetAdUser2(id, _context);
+            aduser.ExpireDate = DateUtil.ToDisplayDate( aduser.accountExpires);
             //model.cu_CUexpire_select = true;
             //model.cu_CUexpire_day = DateUtil.Now().Day;
             //model.cu_CUexpire_month = DateUtil.Now().Month;
@@ -801,6 +800,7 @@ namespace ABAC.Controllers
                         aduser.aUIDCard = model.aUIDCard;
                         aduser.PassportID = model.PassportID;
                         aduser.Reference = model.Reference;
+                        aduser.accountExpires = DateUtil.ToDate( model.ExpireDate);
                     }
                     var result_ad = _provider.UpdateUser(aduser, _context);
                     if (result_ad.result == true)
