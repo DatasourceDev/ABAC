@@ -199,9 +199,35 @@
                                 </div>
                             </div>
                         }
+                        @if (Model.aUUserType == aUUserType.bulk)
+                        {
+                            <div id="divExpire">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label text-right">Valid Date</label>
+                                            <div class="col-sm-3">
+                                                <input class="form-control dpicker" type="text" asp-for="ValidDate" placeholder="DD/MM/YYYY" required>
+                                                @Html.ValidationMessageFor(m => m.ValidDate)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label text-right">Expire Date</label>
+                                            <div class="col-sm-3">
+                                                <input class="form-control dpicker" type="text" asp-for="ExpireDate" placeholder="DD/MM/YYYY" required>
+                                                @Html.ValidationMessageFor(m => m.ExpireDate)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
 
 
-                       
 
                         <div class="row">
                             <div class="col-lg-12">

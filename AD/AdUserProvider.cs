@@ -356,6 +356,10 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
+                if (model.accountExpires.HasValue)
+                    d.Properties["accountExpires"].Value = model.accountExpires;
+                else
+                    d.Properties["accountExpires"].Value = null;
                 principal.Save();
 
                 return new Result() { result = true };

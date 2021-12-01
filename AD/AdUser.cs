@@ -7,6 +7,7 @@ using System.Security.Principal;
 using System.DirectoryServices;
 using ABAC.DTO;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace ABAC.Identity
 {
@@ -252,6 +253,7 @@ namespace ABAC.Identity
         public string ExpireDate{ get; set; }
         public string PassportID { get; set; }
         public string userAccountControl { get; set; }
+        public DateTime? accountExpires { get; set; }
 
         [DataType(DataType.Password)]
         [StringLength(16, ErrorMessage = "รหัสผ่านต้องไม่น้อยกว่า {2} ตัวและไม่เกิน {1} ตัว", MinimumLength = 8)]
@@ -306,7 +308,8 @@ namespace ABAC.Identity
                 PassportID = getpropertyvalue(d.Properties, "departmentNumber"),
                 Reference = getpropertyvalue(d.Properties, "department"),
                 userAccountControl = getpropertyvalue(d.Properties, "userAccountControl"),
-                
+                //accountExpires = getpropertydatevalue(d.Properties, "accountExpires"),
+
             };
         }
 
@@ -318,6 +321,29 @@ namespace ABAC.Identity
                     return Properties[PropertyName].Value.ToString();
             }
             return "";
+        }
+        private static DateTime? getpropertydatevalue(PropertyCollection Properties, string PropertyName)
+        {
+            if (Properties.Contains(PropertyName))
+            {
+                if (Properties[PropertyName].Value != null)
+                {
+                    try
+                    {
+                        //var date = Convert.ToDateTime(Properties[PropertyName].Value);
+                        var datestr = Properties[PropertyName].Value.ToString();
+                        //var value = DateTime.ParseExact(Properties[PropertyName].Value, "ddd MMM dd yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+                        return null;
+                    }
+                    catch(Exception ex) 
+                    {
+
+                    }
+                    
+                }
+                    //return Properties[PropertyName].Value;
+            }
+            return null;
         }
         public string GetDomainPrefix() => DistinguishedName
             .Split(',')
