@@ -45,7 +45,196 @@
     <link href="~/metrica/plugins/timepicker/bootstrap-material-datetimepicker.css" rel="stylesheet">
     <link href="~/metrica/plugins/nestable/jquery.nestable.min.css" rel="stylesheet" />
 
+    <link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/standard/styles.php">
+    <link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/formal_white_custom/styles.php">
+    <style>
+        @@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"); /* Using a url */
+        @@import url("https://fonts.googleapis.com/css?family=Arimo");
+        @@import url("https://fonts.googleapis.com/css?family=Chonburi");
 
+        * {
+            box-sizing: border-box;
+        }
+
+        #preview body {
+            font-family: 'Arimo';
+        }
+
+        #preview header, #preview footer {
+            margin: 20px;
+            text-align: center;
+        }
+
+        #preview a {
+            color: #1f41c9 !important;
+            text-decoration: underline !important;
+        }
+
+        #preview h2 {
+            text-align: center;
+            font-family: 'Chonburi';
+            text-shadow: -1px -1px 3px rgba(0,0,0,0.5);
+            color: #333;
+        }
+
+        #preview h3 {
+            /* font-size: calc(1.2rem + .5vw); */
+            text-align: center;
+            background-color: aquamarine;
+        }
+
+        #preview .left {
+            text-align: left;
+        }
+
+        #preview li a:hover {
+            background-color: #ccc;
+            padding-top: 5px;
+            padding-bottom: 5px;
+        }
+
+        /* Style the header */
+        #preview .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            /* background-color: #2196F3; */
+            grid-gap: 5px;
+            padding: 10px;
+            justify-content: center;
+        }
+
+        #preview .grid-item {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.8);
+            padding: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+
+        @@media (max-width: 800px) {
+            #preview .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            #preview .grid-container2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #preview .btn {
+            text-decoration: none !important;
+            display: block;
+            background: linear-gradient(to bottom, DodgerBlue 5%, RoyalBlue 100%);
+            background-color: DodgerBlue;
+            border: none;
+            color: white !important;
+            margin: 8px auto;
+            padding: 8px;
+            cursor: pointer;
+            /* font-size: 20px; */
+            width: 75%;
+            border-radius: 5px;
+            box-shadow: 0px 3px 7px 1px rgba(0,0,0,0.5);
+            transition: all .3s;
+        }
+
+            /* Darker background on mouse-over */
+            #preview .btn:hover {
+                text-decoration: none;
+                background: linear-gradient(to bottom, RoyalBlue 5%, DodgerBlue 100%);
+                background-color: RoyalBlue;
+                transform: scale(1.1);
+            }
+
+        #preview .nobullet {
+            list-style: none;
+            padding-inline-start: 0px;
+            line-height: 2.5rem;
+        }
+
+        #preview .fs7 {
+            font-size: .7rem;
+        }
+
+        #preview .fs8 {
+            font-size: .8rem;
+        }
+
+        #preview .fs9 {
+            font-size: .9rem;
+        }
+
+        #preview .li-border {
+            border-bottom: 1px solid gray;
+        }
+
+        #preview .li-margin {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        #preview .h3-margin {
+            margin-top: 15px;
+        }
+
+        /* server Reset */
+        #preview html, #preview body, #preview div, #preview span, #preview applet, #preview object, #preview iframe, #preview h1,
+        #preview h2, #preview h3, #preview h4, #preview h5, #preview h6, #preview p, #preview blockquote, #preview pre, #preview a,
+        #preview abbr, #preview acronym, #preview address, #preview big, #preview cite, #preview code, #preview del, #preview dfn,
+        #preview em, #preview font, #preview img, #preview ins, #preview kbd, #preview q, #preview s, #preview samp, #preview
+        small, #preview strike, #preview strong, #preview sub, #preview sup, #preview tt, #preview var, #preview b, #preview u,
+        #preview i, #preview center, #preview dl, #preview dt, #preview dd, #preview ol, #preview ul, #preview li, #preview fieldset,
+        #preview form, #preview label, #preview legend, #preview table, #preview caption, #preview tbody, #preview tfoot,
+        #preview thead, #preview tr, #preview th, #preview td {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            outline: 0;
+            font-size: 100%;
+            line-height: 1.5;
+            /*vertical-align: baseline;
+            background: transparent;*/
+        }
+
+        #preview body {
+            line-height: 1;
+        }
+
+        #preview ol, #preview ul {
+            list-style: none;
+        }
+
+        #preview blockquote, #preview q {
+            quotes: none;
+        }
+
+            #preview blockquote:before, #preview blockquote:after,
+            #preview q:before, #preview q:after {
+                content: '';
+                content: none;
+            }
+
+        /* remember to define focus styles! */
+        #preview :focus {
+            outline: 0;
+        }
+
+        /* remember to highlight inserts somehow! */
+        #preview ins {
+            text-decoration: none;
+        }
+
+        #preview del {
+            text-decoration: line-through;
+        }
+
+        #preview img {
+            border: 0;
+        }
+        /*---------------------------- end reset -----------------------------------*/
+
+    </style>
 </head>
 <body class="dark-sidenav">
     <div class="loading">
@@ -82,6 +271,9 @@
             </div>
         </div>
         <ul class="metismenu left-sidenav-menu slimscroll">
+            <li class="leftbar-menu-item">
+                <a class="menu-link" href="@Url.Action("Home", "Profile")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Home</a>
+            </li>
             @if (portal == Portal.admin && (groupname == aUUserType.admin))
             {
                 <li class="leftbar-menu-item">
@@ -128,25 +320,25 @@
                     </ul>
                 </li>
 
-                    <li class="leftbar-menu-item">
-                        <a href="javascript: void(0);" class="menu-link">
-                            <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                            <span>ตั้งค่า</span>
-                            <span class="menu-arrow">
-                                <i class="mdi mdi-chevron-right"></i>
-                            </span>
-                        </a>
-                        <ul class="nav-second-level" aria-expanded="false">
-                            <li class="nav-item"><a class="nav-link" href="#"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>กำหนดสิทธิ์การใช้งาน</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStaff", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>หน้า Home Staff</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStudent", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>หน้า Home Student</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>หน้า Home VIP</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>หน้า Home Office</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>หน้า Home Guest</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Landing Page</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
-                        </ul>
-                    </li>
+                <li class="leftbar-menu-item">
+                    <a href="javascript: void(0);" class="menu-link">
+                        <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>ตั้งค่า</span>
+                        <span class="menu-arrow">
+                            <i class="mdi mdi-chevron-right"></i>
+                        </span>
+                    </a>
+                    <ul class="nav-second-level" aria-expanded="false">
+                        <li class="nav-item"><a class="nav-link" href="#"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>กำหนดสิทธิ์การใช้งาน</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStaff", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Staff</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStudent", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Student</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home VIP</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Office</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Guest</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่า Landing Page</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
+                    </ul>
+                </li>
             }
             else
             {

@@ -26,7 +26,7 @@ namespace ABAC.Controllers
         {
             this.provider = provider;
         }
-        public <IActionResult Home()
+        public IActionResult Home()
         {
             return View(null);
         }

@@ -89,7 +89,7 @@ namespace ABAC.Controllers
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
                     this._loginServices.Login(aduser,getaUUserType(aduser.DistinguishedName), true);
-                    return RedirectToAction("Index", "Profile");
+                    return RedirectToAction("Home", "Profile");
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
                 {
@@ -101,7 +101,7 @@ namespace ABAC.Controllers
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
                     this._loginServices.Login(aduser, getaUUserType(aduser.DistinguishedName), true);
-                    return RedirectToAction("Index", "Profile");
+                    return RedirectToAction("Home", "Profile");
                 }
             }
             return View(model);
