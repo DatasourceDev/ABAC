@@ -57,11 +57,111 @@ namespace ABAC.Controllers
                     var setup = _context.table_cms.Where(w => w.ID == model.ID).FirstOrDefault();
                     if (setup != null)
                     {
-                        setup.HOME_Student = model.HOME_Student;
                         setup.HOME_Staff = model.HOME_Staff;
+                        setup.Update_On = DateUtil.Now();
+                        setup.Update_By = userlogin.SamAccountName;
+                        this._context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    model.HOME_Staff = model.HOME_Staff;
+                    model.Create_On = DateUtil.Now();
+                    model.Create_By = userlogin.SamAccountName;
+                    model.Update_On = DateUtil.Now();
+                    model.Update_By = userlogin.SamAccountName;
+                    this._context.table_cms.Add(model);
+                    this._context.SaveChanges();
+                }
+                ViewBag.Message = ReturnMessage.Success;
+                ViewBag.ReturnCode = ReturnCode.Success;
+            }
+            return View(model);
+        }
+
+        public IActionResult CMSVIP()
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var model = _context.table_cms.FirstOrDefault();
+            if (model == null)
+                model = new cms();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CMSVIP(cms model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+                if (model.ID > 0)
+                {
+                    var setup = _context.table_cms.Where(w => w.ID == model.ID).FirstOrDefault();
+                    if (setup != null)
+                    {
                         setup.HOME_VIP = model.HOME_VIP;
-                        setup.HOME_Office = model.HOME_Office;
-                        setup.HOME_Guest = model.HOME_Guest;
+                        setup.Update_On = DateUtil.Now();
+                        setup.Update_By = userlogin.SamAccountName;
+                        this._context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    model.HOME_VIP = model.HOME_VIP;
+                    model.Create_On = DateUtil.Now();
+                    model.Create_By = userlogin.SamAccountName;
+                    model.Update_On = DateUtil.Now();
+                    model.Update_By = userlogin.SamAccountName;
+                    this._context.table_cms.Add(model);
+                    this._context.SaveChanges();
+                }
+                ViewBag.Message = ReturnMessage.Success;
+                ViewBag.ReturnCode = ReturnCode.Success;
+            }
+            return View(model);
+        }
+
+        public IActionResult CMSStudent()
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var model = _context.table_cms.FirstOrDefault();
+            if (model == null)
+                model = new cms();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CMSStudent(cms model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+                if (model.ID > 0)
+                {
+                    var setup = _context.table_cms.Where(w => w.ID == model.ID).FirstOrDefault();
+                    if (setup != null)
+                    {
+                        setup.HOME_Student = model.HOME_Student;
                         setup.Update_On = DateUtil.Now();
                         setup.Update_By = userlogin.SamAccountName;
                         this._context.SaveChanges();
@@ -70,9 +170,57 @@ namespace ABAC.Controllers
                 else
                 {
                     model.HOME_Student = model.HOME_Student;
-                    model.HOME_Staff = model.HOME_Staff;
-                    model.HOME_VIP = model.HOME_VIP;
-                    model.HOME_Office = model.HOME_Office;
+                    model.Create_On = DateUtil.Now();
+                    model.Create_By = userlogin.SamAccountName;
+                    model.Update_On = DateUtil.Now();
+                    model.Update_By = userlogin.SamAccountName;
+                    this._context.table_cms.Add(model);
+                    this._context.SaveChanges();
+                }
+                ViewBag.Message = ReturnMessage.Success;
+                ViewBag.ReturnCode = ReturnCode.Success;
+            }
+            return View(model);
+        }
+
+        public IActionResult CMSGuest()
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var model = _context.table_cms.FirstOrDefault();
+            if (model == null)
+                model = new cms();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CMSGuest(cms model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+                if (model.ID > 0)
+                {
+                    var setup = _context.table_cms.Where(w => w.ID == model.ID).FirstOrDefault();
+                    if (setup != null)
+                    {
+                        setup.HOME_Guest = model.HOME_Guest;
+                        setup.Update_On = DateUtil.Now();
+                        setup.Update_By = userlogin.SamAccountName;
+                        this._context.SaveChanges();
+                    }
+                }
+                else
+                {
                     model.HOME_Guest = model.HOME_Guest;
                     model.Create_On = DateUtil.Now();
                     model.Create_By = userlogin.SamAccountName;
@@ -87,6 +235,57 @@ namespace ABAC.Controllers
             return View(model);
         }
 
+        public IActionResult CMSOffice()
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var model = _context.table_cms.FirstOrDefault();
+            if (model == null)
+                model = new cms();
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CMSOffice(cms model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+                if (model.ID > 0)
+                {
+                    var setup = _context.table_cms.Where(w => w.ID == model.ID).FirstOrDefault();
+                    if (setup != null)
+                    {
+                        setup.HOME_Office = model.HOME_Office;
+                        setup.Update_On = DateUtil.Now();
+                        setup.Update_By = userlogin.SamAccountName;
+                        this._context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    model.HOME_Office = model.HOME_Office;
+                    model.Create_On = DateUtil.Now();
+                    model.Create_By = userlogin.SamAccountName;
+                    model.Update_On = DateUtil.Now();
+                    model.Update_By = userlogin.SamAccountName;
+                    this._context.table_cms.Add(model);
+                    this._context.SaveChanges();
+                }
+                ViewBag.Message = ReturnMessage.Success;
+                ViewBag.ReturnCode = ReturnCode.Success;
+            }
+            return View(model);
+        }
 
         //public IActionResult Setup()
         //{

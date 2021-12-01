@@ -1,6 +1,6 @@
 ﻿@model ABAC.Models.cms
 @{
-    ViewData["Title"] = "ตั้งค่าหน้า Home Staff";
+    ViewData["Title"] = "ตั้งค่าหน้า Home Office";
 }
 <div class="container-fluid">
     <div class="row">
@@ -26,9 +26,9 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">ตั้งค่าหน้า Home Staff</h4>
+                    <h4 class="page-title">ตั้งค่าหน้า Home Office</h4>
                     <p class="text-muted">
-                        Setup Home Staff
+                        Setup Home Office
                     </p>
                 </div><!--end page-title-box-->
 
@@ -36,7 +36,7 @@
         </div><!--end col-->
     </div>
     <!--end row-->
-    <form class="form-horizontal form-parsley" novalidate role="form" asp-action="CMSStaff" asp-controller="System">
+    <form class="form-horizontal form-parsley" novalidate role="form" asp-action="CMSOffice" asp-controller="System">
         @Html.HiddenFor(m => m.ID)
         <div class="row">
             <div class="col-lg-6">
@@ -55,8 +55,8 @@
                             <div class="col-lg-12">
                                 <div class="form-group row">
                                     <div class="col-sm-12">
-                                        <h4 class="mt-0 header-title">Home Staff</h4>
-                                        <textarea asp-for="HOME_Staff" rows="5" style="width:100%"></textarea>
+                                        <h4 class="mt-0 header-title">Home Office</h4>
+                                        <textarea asp-for="HOME_Office" rows="5" style="width:100%"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@
             <!-- end col -->
         </div>
         <div id="preview">
-            @Html.Raw(Model.HOME_Staff)
+            @Html.Raw(Model.HOME_Office)
         </div>
     </form>
 </div><!-- container -->

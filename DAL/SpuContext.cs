@@ -17,6 +17,7 @@ namespace ABAC.DAL
         }
         public DbSet<setup>table_setup { get; set; }
         public DbSet<cms> table_cms { get; set; }
+        public DbSet<landing_page> table_landing_page { get; set; }
 
         public DbSet<User_VIP> User_VIP { get; set; }
         public DbSet<User_Office> User_Office { get; set; }
