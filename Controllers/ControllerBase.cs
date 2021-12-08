@@ -931,8 +931,6 @@ namespace ABAC.Controllers
                     log_description = "แก้ไขบัญชีผู้ใช้";
                 else if (log_type_id == LogType.log_delete_account)
                     log_description = "ลบบัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_delete_account_with_file)
-                    log_description = "ลบบัญชีผู้ใช้";
                 else if (log_type_id == LogType.log_change_password)
                     log_description = "เปลี่ยนรหัสผ่านบัญชีผู้ใช้";
                 else if (log_type_id == LogType.log_reset_password)
@@ -941,20 +939,6 @@ namespace ABAC.Controllers
                     log_description = "ล็อกบัญชีผู้ใช้";
                 else if (log_type_id == LogType.log_unlock_account)
                     log_description = "ปลดล็อกบัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_lock_account_with_file)
-                    log_description = "ล็อกบัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_unlock_account_with_file)
-                    log_description = "ปลดล็อกบัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_edit_internetaccess)
-                    log_description = "แก้ไข Internet Access บัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_approve_reset_password)
-                    log_description = "ขอเปลี่ยนรหัสผ่านบัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_move_account)
-                    log_description = "ย้ายกลุ่มของบัญชีรายชื่อผู้ใช้";
-                else if (log_type_id == LogType.log_approved_reset_password)
-                    log_description = "อนุมัติการขอเปลี่ยนรหัสผ่านบัญชีผู้ใช้";
-                else if (log_type_id == LogType.log_reset_password_api)
-                    log_description = "เปลี่ยนรหัสผ่านบัญชีผู้ใช้จาก API";
 
                 log_description += " " + uid + " บน " + source.ToString();
                 if (log_status == LogStatus.successfully)
@@ -983,7 +967,7 @@ namespace ABAC.Controllers
             try
             {
                 var sql = new StringBuilder();
-                sql.AppendLine("INSERT INTO [DSM].[dbo].[" + tablename + "](");
+                sql.AppendLine("INSERT INTO [" + tablename + "](");
                 sql.AppendLine(" [log_username]");
                 sql.AppendLine(" ,[log_ip]");
                 sql.AppendLine(" ,[log_type_id]");
