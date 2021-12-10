@@ -385,6 +385,8 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var model = new Bulk();
+            ViewBag.Message = msg;
+            ViewBag.ReturnCode = code;
             model.NumberOfPeople = 1;
             //model.system_faculty_id = 0;
             //model.cu_CUexpire_day = DateUtil.Now().Day;
@@ -464,11 +466,11 @@ namespace ABAC.Controllers
 
                 _context.SaveChanges();
                 writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
-                msg = ReturnMessage.Success;
-                code = ReturnCode.Success;
-                return RedirectToAction("CreateAccountFromFile", new { code = code, msg = msg });
-            }            
-            return View(model);
+               
+            }
+            msg = ReturnMessage.Success;
+            code = ReturnCode.Success;
+            return RedirectToAction("CreateAccountBulk", new { code = code, msg = msg });
         }
         #endregion
 

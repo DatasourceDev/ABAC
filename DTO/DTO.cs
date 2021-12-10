@@ -183,7 +183,7 @@ namespace ABAC.DTO
         public string ExpireDate { get; set; }
 
     }
-   
+
     public class BaseDTO
     {
 
