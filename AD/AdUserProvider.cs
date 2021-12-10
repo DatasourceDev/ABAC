@@ -301,10 +301,10 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
-                if (!string.IsNullOrEmpty(model.ExpireDate))
-                    d.Properties["accountExpires"].Value = model.ExpireDate;
-                else
-                    d.Properties["accountExpires"].Value = null;
+                //if (!string.IsNullOrEmpty(model.ExpireDate))
+                //    d.Properties["accountExpires"].Value = model.ExpireDate;
+                //else
+                //    d.Properties["accountExpires"].Value = null;
 
                 d.Properties["aUUserType"].Value = model.aUUserType;
                 d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;
