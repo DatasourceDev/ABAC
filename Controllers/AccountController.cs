@@ -335,7 +335,6 @@ namespace ABAC.Controllers
                 model.Password = user.password;
                 model.ValidDate = DateUtil.ToDisplayDate(user.valid_date);
                 model.ExpireDate = DateUtil.ToDisplayDate(user.expire_date);
-                model.aUUserType = aUUserType.bulk;
                 setup.GuestRowNumber = runNumber;
                 _context.SaveChanges();
                 runNumber++;
