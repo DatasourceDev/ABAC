@@ -311,11 +311,13 @@ namespace ABAC.Controllers
                 while(dup == true)
                 {
                     var account = await _provider.GetAdUser2(username, _context);
-                    if (account != null)
+                    if (account == null)
                     {
-                        runNumber++;
-                        username = "guest" + runNumber.ToString("00000");
+                        dup = false;
+                        break;
                     }
+                    runNumber++;
+                    username = "guest" + runNumber.ToString("00000");
                 }
                    
                 var user = new User_Bulk_Import();
@@ -423,11 +425,13 @@ namespace ABAC.Controllers
                 while (dup == true)
                 {
                     var account = await _provider.GetAdUser2(username, _context);
-                    if (account != null)
+                    if (account == null)
                     {
-                        runNumber++;
-                        username = "guest" + runNumber.ToString("00000");
+                        dup = false;
+                        break;
                     }
+                    runNumber++;
+                    username = "guest" + runNumber.ToString("00000");
                 }
 
                 var user = new User_Bulk();
