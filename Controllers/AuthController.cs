@@ -20,6 +20,7 @@ using System.Text;
 using Newtonsoft.Json;
 using System.Net;
 using Microsoft.Extensions.Options;
+using Google.Apps.SingleSignOn;
 
 /*
 http://member.smsmkt.com/SMSLink/SendMsg/index.php
@@ -38,17 +39,48 @@ namespace ABAC.Controllers
         {
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string SAMLRequest,string RelayState)
         {
             var model = new LoginDTO();
+            model.SAMLRequest = SAMLRequest;
+            model.RelayState = RelayState;
             return View(model);
+        }
+        private bool SSO(string username, string samlRequest, string relayState)
+        {
+            if (!string.IsNullOrEmpty(samlRequest) && !string.IsNullOrEmpty(relayState))
+            {
+                if (username != "")
+                {
+                    try
+                    {
+                        string responseXml;
+                        string actionUrl;
+                        SamlParser.CreateSignedResponse(samlRequest, username, out responseXml, out actionUrl);
+                        //SAMLResponse.Value = responseXml;
+                        //RelayState.Value = relayState;
+                        //form1.Method = "post";
+                        //form1.Action = actionUrl;
+                        //Page.ClientScript.RegisterStartupScript(this.GetType(), "CallMyFunction", "javascript:form1.submit();", true);
+                        return true;
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
         }
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
         {
             model.UserName = model.UserName.Trim();
             model.Password = model.Password.Trim();
-
             if (ModelState.IsValid)
             {
                 //var user = this._context.table_visual_fim_user.Where(u => u.basic_uid.ToLower() == model.UserName.ToLower()).FirstOrDefault();
@@ -66,9 +98,17 @@ namespace ABAC.Controllers
                 //    return View(model);
                 //}
 
-                /*For Demo*/                
-                //this._loginServices.Login(user, true);
-                //return RedirectToAction("Index", "Profile");
+                /*For Demo*/
+                //var user = new AdUser2();
+                //user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
+                //user.DisplayName = "adminwebmaster";
+                //user.GivenName = "adminwebmaster";
+                //user.Name = "adminwebmaster";
+                //user.SamAccountName = "adminwebmaster";
+                //user.UserPrincipalName = "adminwebmaster@auds.au.edu";
+                //user.userAccountControl = "66048";
+                //this._loginServices.Login(user, getaUUserType(user.DistinguishedName), true);
+                //return RedirectToAction("Home", "Profile");
 
 
                 var aduser = await _provider.GetAdUser2(model.UserName, _context);
@@ -88,7 +128,7 @@ namespace ABAC.Controllers
                 if (model.Password == ";ioyomN1234")
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-                    this._loginServices.Login(aduser,getaUUserType(aduser.DistinguishedName), true);
+                    this._loginServices.Login(aduser, AppUtil.getaUUserType(aduser.DistinguishedName), true);
                     return RedirectToAction("Home", "Profile");
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
@@ -100,7 +140,7 @@ namespace ABAC.Controllers
                 else
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-                    this._loginServices.Login(aduser, getaUUserType(aduser.DistinguishedName), true);
+                    this._loginServices.Login(aduser, AppUtil.getaUUserType(aduser.DistinguishedName), true);
                     return RedirectToAction("Home", "Profile");
                 }
             }

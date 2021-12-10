@@ -104,6 +104,9 @@ namespace ABAC.DTO
     }
     public class LoginDTO : BaseDTO
     {
+        public string SAMLRequest { get; set; }
+        public string RelayState { get; set; }
+        
         [Required]
         [MaxLength(100)]
         public string UserName { get; set; }

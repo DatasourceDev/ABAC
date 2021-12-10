@@ -53,6 +53,16 @@ namespace ABAC.Identity
             {
                 try
                 {
+                    //var user = new AdUser2();
+                    //user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
+                    //user.DisplayName = "adminwebmaster";
+                    //user.GivenName = "adminwebmaster";
+                    //user.Name = "adminwebmaster";
+                    //user.SamAccountName = "adminwebmaster";
+                    //user.UserPrincipalName = "adminwebmaster@auds.au.edu";
+                    //user.userAccountControl = "66048";
+                    //return user;
+
                     var setup = spucontext.table_setup.FirstOrDefault();
 
                     PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, setup.Base, setup.Username, setup.Password);
@@ -75,7 +85,7 @@ namespace ABAC.Identity
                 }
             });
         }
-       
+
         public Result ValidateCredentials(string samAccountName, string password, SpuContext spucontext)
         {
             try
@@ -172,7 +182,7 @@ namespace ABAC.Identity
                 }
                 else
                 {
-                    if(roles != null)
+                    if (roles != null)
                     {
                         foreach (var role in roles)
                         {
@@ -180,7 +190,7 @@ namespace ABAC.Identity
                                 adusers.AddRange(FindUser(model.usertype_search.toOUName().ToLower(), role, model.text_search, setup, spucontext));
                         }
                     }
-                    
+
                 }
 
                 return adusers.OrderBy(o => o.givenName).ThenBy(o => o.sn).ToList();
@@ -261,7 +271,7 @@ namespace ABAC.Identity
                 principal.EmailAddress = model.EmailAddress;
                 principal.UserPrincipalName = model.UserPrincipalName;
                 if (!string.IsNullOrEmpty(model.ExpireDate))
-                    principal.AccountExpirationDate = DateUtil.ToDate( model.ExpireDate);
+                    principal.AccountExpirationDate = DateUtil.ToDate(model.ExpireDate);
 
                 principal.Save();
 
@@ -281,7 +291,7 @@ namespace ABAC.Identity
                 else
                     d.Properties["aUStudentId"].Value = null;
 
-                if(!string.IsNullOrEmpty(model.Reference))
+                if (!string.IsNullOrEmpty(model.Reference))
                     d.Properties["department"].Value = model.Reference;
                 else
                     d.Properties["department"].Value = null;
@@ -291,10 +301,10 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
-                //if (!string.IsNullOrEmpty(model.ExpireDate))
-                //    d.Properties["accountExpires"].Value = model.ExpireDate;
-                //else
-                //    d.Properties["accountExpires"].Value = null;
+                if (!string.IsNullOrEmpty(model.ExpireDate))
+                    d.Properties["accountExpires"].Value = model.ExpireDate;
+                else
+                    d.Properties["accountExpires"].Value = null;
 
                 d.Properties["aUUserType"].Value = model.aUUserType;
                 d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;

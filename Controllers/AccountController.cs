@@ -204,507 +204,160 @@ namespace ABAC.Controllers
         }
         #endregion
 
-        //#region CreateAccountFromFile
-        //public IActionResult CreateAccountFromFile(SearchDTO model)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-        //    model.lists = (new List<import>()).AsQueryable();
-        //    if (model.code == ReturnCode.Success)
-        //        model.lists = (_context.table_import.Where(w => w.import_Type == ImportType.create)).AsQueryable();
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
-        //    return View(model);
-        //}
+        #region CreateAccountFromFile
+        public IActionResult CreateAccountFromFile(SearchDTO model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //[HttpPost]
-        //public IActionResult CreateAccountFromFile(IFormFile file, ImportCreateOption import_option)
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
+            model.lists = (new List<temp_import>()).AsQueryable();
+            if (model.code == ReturnCode.Success)
+                model.lists = (_context.table_temp_import).AsQueryable();
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
+            return View(model);
+        }
 
-        //    var model = new SearchDTO();
-        //    var lists = new List<import>();
-        //    if (file != null)
-        //    {
-        //        _context.table_import.RemoveRange(_context.table_import.Where(w => w.import_Type == ImportType.create));
-        //        using (var reader = new StreamReader(file.OpenReadStream()))
-        //        {
-        //            string input;
-        //            var row = 1;
-        //            while ((input = reader.ReadLine()) != null)
-        //            {
-        //                if (string.IsNullOrEmpty(input))
-        //                    continue;
-        //                var columnNameList = input.Split(":");
-        //                if (import_option == ImportCreateOption.staff_hr | import_option == ImportCreateOption.staff_other)
-        //                {
-        //                    columnNameList = input.Split("\t");
-        //                }
-        //                var remark = new StringBuilder();
-        //                var imp = new import();
-        //                imp.ImportVerify = true;
-        //                imp.ImportRow = row;
-        //                imp.basic_uid = "";
-        //                imp.basic_givenname = "";
-        //                imp.basic_sn = "";
-        //                imp.cu_pplid = "";
-        //                imp.LockStaus = "";
-        //                imp.import_Type = ImportType.create;
-        //                imp.import_create_option = import_option;
-        //                try
-        //                {
-        //                    var j = 0;
-        //                    if (import_option == ImportCreateOption.student)
-        //                    {
-        //                        if (columnNameList.Length != 11)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.student;
-        //                        imp.cu_jobcode = columnNameList[j]; j++;
-        //                        /*imp.other_prename = columnNameList[j];*/
-        //                        j++;
-        //                        /*imp.prename = columnNameList[j];*/
-        //                        j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-        //                        /*imp.other_prenameth =columnNameList[j];*/
-        //                        j++;
-        //                        /*imp.prenameth = columnNameList[j];*/
-        //                        j++;
-        //                        imp.cu_thcn = columnNameList[j]; j++;
-        //                        imp.cu_thsn = columnNameList[j]; j++;
-        //                        /*imp.barcode = columnNameList[j];*/
-        //                        j++;
-        //                        imp.cu_pplid = columnNameList[j]; j++;
+        [HttpPost]
+        public async Task<IActionResult> CreateAccountFromFile(IFormFile file)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //                        if (string.IsNullOrEmpty(imp.cu_jobcode))
-        //                            continue;
+            var model = new SearchDTO();
+            var lists = new List<temp_import>();
+            if (file != null)
+            {
+                _context.table_temp_import.RemoveRange(_context.table_temp_import);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await file.CopyToAsync(memoryStream).ConfigureAwait(false);
+                    ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                    using (var package = new ExcelPackage(memoryStream))
+                    {
+                        var workbook = package.Workbook;
+                        var worksheet = workbook.Worksheets.First();
 
-        //                        imp.basic_uid = imp.cu_jobcode;
-        //                        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == imp.basic_uid.ToLower()).FirstOrDefault();
-        //                        if (fim_user != null)
-        //                        {
-        //                            imp.ImportVerify = false;
-        //                            remark.AppendLine("ผู้ใช้ซ้ำในระบบ");
-        //                        }
-        //                    }
-        //                    else if (import_option == ImportCreateOption.student_sasin)
-        //                    {
-        //                        if (columnNameList.Length != 7)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.student;
-        //                        imp.faculty_shot_name = columnNameList[j]; j++;
-        //                        imp.cu_jobcode = columnNameList[j]; j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-        //                        imp.cu_thcn = columnNameList[j]; j++;
-        //                        imp.cu_thsn = columnNameList[j]; j++;
-        //                        imp.cu_pplid = columnNameList[j]; j++;
+                        var rowCount = worksheet.Dimension?.Rows;
+                        var colCount = worksheet.Dimension?.Columns;
+                        if (rowCount.HasValue && colCount.HasValue)
+                        {
+                            for (int row = 1; row <= rowCount.Value; row++)
+                            {
+                                var remark = new StringBuilder();
+                                var guest = new temp_import();
+                                guest.ImportVerify = true;
+                                guest.ImportRow = row;
+                                try
+                                {
+                                    guest.firstname = worksheet.Cells["A" + row].Value != null ? worksheet.Cells["A" + row].Value.ToString() : "";
+                                    guest.lastname = worksheet.Cells["B" + row].Value != null ? worksheet.Cells["B" + row].Value.ToString() : "";
+                                    guest.CitizenID = worksheet.Cells["C" + row].Value != null ? worksheet.Cells["C" + row].Value.ToString() : "";
+                                    guest.PassportID = worksheet.Cells["D" + row].Value != null ? worksheet.Cells["D" + row].Value.ToString() : "";
+                                    guest.Reference = worksheet.Cells["E" + row].Value != null ? worksheet.Cells["E" + row].Value.ToString() : "";
+                                    if (string.IsNullOrEmpty(guest.firstname))
+                                    {
+                                        guest.ImportVerify = false;
+                                        remark.AppendLine("firstname ไม่สามารถเป็นค่าว่าง");
+                                    }
+                                    if (string.IsNullOrEmpty(guest.lastname))
+                                    {
+                                        guest.ImportVerify = false;
+                                        remark.AppendLine("lastname ไม่สามารถเป็นค่าว่าง");
+                                    }
+                                    guest.ImportRemark = remark.ToString();
+                                }
+                                catch (Exception ex)
+                                {
+                                    remark.AppendLine(ex.Message);
+                                    guest.ImportVerify = false;
+                                }
+                                lists.Add(guest);
+                                if (guest.ImportVerify == true)
+                                    _context.table_temp_import.Add(guest);
+                            }
+                            _context.SaveChanges();
+                        }
+                    }
+                }               
+            }
+            model.lists = lists.AsQueryable();
+            return View(model);
+        }
 
-        //                        if (string.IsNullOrEmpty(imp.cu_jobcode))
-        //                            continue;
+        [HttpPost]
+        public async Task<IActionResult> CreateAccountFromFile2()
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
 
-        //                        imp.basic_uid = imp.cu_jobcode;
-        //                        if (imp.cu_jobcode.Length > 10)
-        //                            imp.basic_uid = imp.cu_jobcode.Substring(0, 10);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
 
-        //                        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == imp.basic_uid.ToLower()).FirstOrDefault();
-        //                        if (fim_user != null)
-        //                        {
-        //                            imp.ImportVerify = false;
-        //                            remark.AppendLine("ผู้ใช้ซ้ำในระบบ");
-        //                        }
-        //                    }
-        //                    else if (import_option == ImportCreateOption.student_ppc)
-        //                    {
-        //                        if (columnNameList.Length != 7)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.student;
-        //                        imp.faculty_shot_name = columnNameList[j]; j++;
-        //                        imp.cu_jobcode = columnNameList[j]; j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-        //                        imp.cu_thcn = columnNameList[j]; j++;
-        //                        imp.cu_thsn = columnNameList[j]; j++;
-        //                        imp.cu_pplid = columnNameList[j]; j++;
+            var msg = ReturnMessage.ImportFail;
+            var code = ReturnCode.Error;
 
-        //                        if (string.IsNullOrEmpty(imp.cu_jobcode))
-        //                            continue;
+            var setup = _context.table_setup.FirstOrDefault();
+            if(setup == null)
+                return RedirectToAction("Logout", "Auth");
 
-        //                        imp.basic_uid = imp.cu_jobcode;
-        //                        if (imp.cu_jobcode.Length > 10)
-        //                            imp.basic_uid = imp.cu_jobcode.Trim().Substring(0, 9) + "p";
+            int runNumber = setup.GuestRowNumber+1;
+            var imports = _context.table_temp_import.OrderBy(o => o.ImportRow);
+            foreach (var imp in imports.ToList())
+            {
+                var user = new User_Bulk_Import();
+                user.firstname = imp.firstname;
+                user.lastname = imp.lastname;
+                user.CitizenID = imp.CitizenID;
+                user.PassportID = imp.PassportID;
+                user.Reference = imp.Reference;
+                user.username = "guest" + runNumber.ToString("00000");
+                user.password = RandomPassword(8);
+                user.adminname = userlogin.SamAccountName;
+                user.Create_By = userlogin.SamAccountName;
+                user.Create_On = DateUtil.Now();
+                user.Update_By = userlogin.SamAccountName;
+                user.Update_On = DateUtil.Now();
+                user.valid_date = imp.valid_date;
+                user.expire_date = imp.expire_date;
+                user.today = DateUtil.Now();
+                _context.User_Bulk_Import.Add(user);
 
-        //                        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == imp.basic_uid.ToLower()).FirstOrDefault();
-        //                        if (fim_user != null)
-        //                        {
-        //                            imp.ImportVerify = false;
-        //                            remark.AppendLine("ผู้ใช้ซ้ำในระบบ");
-        //                        }
-        //                    }
-        //                    else if (import_option == ImportCreateOption.student_other)
-        //                    {
-        //                        if (columnNameList.Length != 8)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.student;
-        //                        imp.faculty_shot_name = columnNameList[j]; j++;
-        //                        imp.cu_jobcode = columnNameList[j]; j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-        //                        imp.cu_thcn = columnNameList[j]; j++;
-        //                        imp.cu_thsn = columnNameList[j]; j++;
-        //                        imp.cu_pplid = columnNameList[j]; j++;
-        //                        imp.basic_uid = columnNameList[j]; j++;
+                var model = new AdUser2();
+                model.DistinguishedName = _conf.OU_TEMP;
+                model.SamAccountName = user.username;
+                model.GivenName = user.firstname;
+                model.Surname = user.lastname;
+                model.aUIDCard = user.CitizenID;
+                model.Reference = user.Reference;
+                model.PassportID = user.PassportID;
+                model.Password = user.password;
+                model.ValidDate = DateUtil.ToDisplayDate(user.valid_date);
+                model.ExpireDate = DateUtil.ToDisplayDate(user.expire_date);
+                setup.GuestRowNumber = runNumber;
+                _context.SaveChanges();
+                runNumber++;
+                var result_ad = _provider.CreateUser(model, _context);
+                if (result_ad.result == true)
+                    writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                else
+                    writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-        //                        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == imp.basic_uid.ToLower()).FirstOrDefault();
-        //                        if (fim_user != null)
-        //                        {
-        //                            imp.ImportVerify = false;
-        //                            remark.AppendLine("ผู้ใช้ซ้ำในระบบ");
-        //                        }
-        //                    }
-        //                    else if (import_option == ImportCreateOption.staff_hr)
-        //                    {
-        //                        if (columnNameList.Length != 11)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.staff;
-        //                        imp.cu_jobcode = columnNameList[j]; j++;
-        //                        imp.cu_thcn = columnNameList[j]; j++;
-        //                        imp.cu_thsn = columnNameList[j]; j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-        //                        imp.structure_1 = columnNameList[j]; j++;
-        //                        imp.structure_2 = columnNameList[j]; j++;
-        //                        imp.status = columnNameList[j]; j++;
-        //                        imp.cu_pplid = columnNameList[j]; j++;
-        //                        imp.basic_mobile = columnNameList[j]; j++;
-        //                        imp.basic_telephonenumber = columnNameList[j]; j++;
+                user.ad_created = result_ad.result;
 
-        //                    }
-        //                    else if (import_option == ImportCreateOption.staff_other)
-        //                    {
-        //                        if (columnNameList.Length != 12)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.staff;
-        //                        imp.cu_jobcode = columnNameList[j]; j++;
-        //                        imp.cu_thcn = columnNameList[j]; j++;
-        //                        imp.cu_thsn = columnNameList[j]; j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-        //                        imp.structure_1 = columnNameList[j]; j++;
-        //                        imp.structure_2 = columnNameList[j]; j++;
-        //                        imp.status = columnNameList[j]; j++;
-        //                        imp.cu_pplid = columnNameList[j]; j++;
-        //                        imp.cu_CUexpire = columnNameList[j]; j++;
-        //                        imp.basic_mobile = columnNameList[j]; j++;
-        //                        imp.basic_telephonenumber = columnNameList[j]; j++;
-        //                    }
-        //                    else if (import_option == ImportCreateOption.fixlogin)
-        //                    {
-        //                        if (columnNameList.Length != 3)
-        //                        {
-        //                            ModelState.AddModelError("format_error", "รูปแบบไฟล์ไม่ถูกต้อง");
-        //                            return View(model);
-        //                        }
-        //                        imp.system_idm_user_types = IDMUserType.outsider;
-        //                        imp.system_org = columnNameList[j]; j++;
-        //                        imp.basic_givenname = columnNameList[j]; j++;
-        //                        imp.basic_sn = columnNameList[j]; j++;
-
-        //                        imp.cu_thcn = imp.basic_givenname;
-        //                        imp.cu_thsn = imp.basic_sn;
-        //                        imp.basic_uid = imp.basic_givenname;
-        //                    }
+                _context.SaveChanges();
+                writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+            }
+            _context.table_temp_import.RemoveRange(_context.table_temp_import);
+            _context.SaveChanges();
+            msg = ReturnMessage.ImportSuccess;
+            code = ReturnCode.Success;
+            return RedirectToAction("CreateAccountFromFile", new { code = code, msg = msg });
+        }
 
 
-        //                    if (string.IsNullOrEmpty(imp.basic_givenname))
-        //                    {
-        //                        imp.ImportVerify = false;
-        //                        remark.AppendLine("First Name ไม่สามารถเป็นค่าว่าง");
-        //                    }
-        //                    if (string.IsNullOrEmpty(imp.basic_sn))
-        //                    {
-        //                        imp.ImportVerify = false;
-        //                        remark.AppendLine("Last Name ไม่สามารถเป็นค่าว่าง");
-        //                    }
-
-        //                    if (import_option == ImportCreateOption.student
-        //                        || import_option == ImportCreateOption.student_sasin
-        //                        || import_option == ImportCreateOption.student_ppc
-        //                        || import_option == ImportCreateOption.student_other
-        //                        || import_option == ImportCreateOption.staff_hr
-        //                        || import_option == ImportCreateOption.staff_other)
-        //                    {
-        //                        if (import_option != ImportCreateOption.staff_hr)
-        //                        {
-        //                            if (string.IsNullOrEmpty(imp.cu_jobcode))
-        //                            {
-        //                                imp.ImportVerify = false;
-        //                                remark.AppendLine("jobcode ไม่สามารถเป็นค่าว่าง");
-        //                            }
-        //                        }
-        //                        if (import_option == ImportCreateOption.staff_other || import_option == ImportCreateOption.staff_hr)
-        //                        {
-        //                            if (string.IsNullOrEmpty(imp.cu_pplid))
-        //                            {
-        //                                imp.ImportVerify = false;
-        //                                remark.AppendLine("Citizen ID ไม่สามารถเป็นค่าว่าง");
-        //                            }
-        //                            else
-        //                            {
-
-        //                                var fim_user = _context.table_visual_fim_user
-        //                                    .Where(w => w.cu_pplid.ToLower() == imp.cu_pplid.ToLower() & (w.system_idm_user_type == IDMUserType.staff | w.system_idm_user_type == IDMUserType.affiliate | w.system_idm_user_type == IDMUserType.outsider | w.system_idm_user_type == IDMUserType.temporary))
-        //                                    .FirstOrDefault();
-        //                                if (fim_user != null)
-        //                                {
-        //                                    imp.ImportVerify = false;
-        //                                    remark.AppendLine("Citizen ID ซ้ำในระบบ");
-        //                                }
-        //                            }
-        //                        }
-        //                    }
-        //                    else if (import_option == ImportCreateOption.fixlogin)
-        //                    {
-        //                        var fim_user = _context.table_visual_fim_user
-        //                                    .Where(w => w.basic_uid.ToLower() == imp.basic_uid.ToLower())
-        //                                    .FirstOrDefault();
-        //                        if (fim_user != null)
-        //                        {
-        //                            imp.ImportVerify = false;
-        //                            remark.AppendLine("basic_uid ซ้ำในระบบ");
-        //                        }
-        //                    }
-
-
-        //                    imp.ImportRemark = remark.ToString();
-        //                }
-        //                catch (Exception ex)
-        //                {
-        //                    remark.AppendLine(ex.Message);
-        //                    imp.ImportVerify = false;
-        //                }
-        //                lists.Add(imp);
-        //                if (imp.ImportVerify == true)
-        //                    _context.table_import.Add(imp);
-        //                row++;
-        //            }
-        //        }
-        //        _context.SaveChanges();
-        //    }
-        //    model.lists = lists.AsQueryable();
-        //    return View(model);
-        //}
-
-        //[HttpPost]
-        //public IActionResult CreateAccountFromFile2()
-        //{
-        //     if (!checkrole())
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var userlogin = this._context.table_visual_fim_user.Where(w => w.basic_uid == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (userlogin == null)
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    var msg = ReturnMessage.ImportFail;
-        //    var code = ReturnCode.Error;
-
-        //    var imports = _context.table_import.Where(w => w.import_Type == ImportType.create).OrderBy(o => o.ImportRow);
-        //    foreach (var imp in imports.ToList())
-        //    {
-        //        var fim_user = _context.table_visual_fim_user.Where(w => w.basic_uid.ToLower() == imp.basic_uid.ToLower()).FirstOrDefault();
-        //        if (fim_user != null)
-        //        {
-        //            imp.ImportVerify = false;
-        //            imp.ImportRemark = "ผู้ใช้ซ้ำในระบบ";
-        //            continue;
-        //        }
-        //        var model = new visual_fim_user();
-        //        model.cu_jobcode = imp.cu_jobcode;
-        //        model.basic_givenname = imp.basic_givenname;
-        //        model.basic_sn = imp.basic_sn;
-        //        model.cu_thcn = imp.cu_thcn;
-        //        model.cu_thsn = imp.cu_thsn;
-        //        model.cu_pplid = imp.cu_pplid;
-        //        model.cu_CUexpire = imp.cu_CUexpire;
-        //        model.basic_telephonenumber = imp.basic_telephonenumber;
-        //        model.basic_mobile = imp.basic_mobile;
-        //        if (string.IsNullOrEmpty(imp.ImportRemark))
-        //            imp.ImportRemark = "";
-        //        faculty faculty = null;
-
-        //        if (imp.import_create_option == ImportCreateOption.student | imp.import_create_option == ImportCreateOption.student_sasin | imp.import_create_option == ImportCreateOption.student_ppc | imp.import_create_option == ImportCreateOption.student_other)
-        //        {
-        //            if (imp.import_create_option == ImportCreateOption.student)
-        //            {
-        //                var faculty_id = NumUtil.ParseInteger(imp.cu_jobcode.Substring(imp.cu_jobcode.Length - 2));
-        //                faculty = _context.table_cu_faculty.Where(w => w.faculty_id == faculty_id).FirstOrDefault();
-        //            }
-        //            else if (imp.import_create_option == ImportCreateOption.student_sasin)
-        //            {
-        //                faculty = _context.table_cu_faculty.Where(w => w.faculty_shot_name.ToLower() == imp.faculty_shot_name.ToLower()).FirstOrDefault();
-        //            }
-        //            else if (imp.import_create_option == ImportCreateOption.student_ppc)
-        //            {
-        //                faculty = _context.table_cu_faculty.Where(w => w.faculty_shot_name.ToLower() == imp.faculty_shot_name.ToLower()).FirstOrDefault();
-        //            }
-        //            else if (imp.import_create_option == ImportCreateOption.student_other)
-        //            {
-        //                faculty = _context.table_cu_faculty.Where(w => w.faculty_shot_name.ToLower() == imp.faculty_shot_name.ToLower()).FirstOrDefault();
-        //            }
-
-        //        }
-        //        else if (imp.import_create_option == ImportCreateOption.staff_hr | imp.import_create_option == ImportCreateOption.staff_other)
-        //        {
-        //            faculty = _context.table_cu_faculty.Where(w => w.faculty_name.ToLower() == imp.structure_1.ToLower() | w.faculty_name.ToLower() == imp.structure_2.ToLower() | w.faculty_shot_name.ToLower() == imp.structure_1.ToLower() | w.faculty_shot_name.ToLower() == imp.structure_2.ToLower()).FirstOrDefault();
-        //            if (faculty == null)
-        //            {
-        //                var subfaculty = _context.table_cu_faculty_level2.Where(w => w.sub_office_name.ToLower() == imp.structure_1.ToLower() | w.sub_office_name.ToLower() == imp.structure_2.ToLower() | w.sub_office_shot_name.ToLower() == imp.structure_1.ToLower() | w.sub_office_shot_name.ToLower() == imp.structure_2.ToLower()).FirstOrDefault();
-        //                if (subfaculty != null)
-        //                {
-        //                    faculty = _context.table_cu_faculty.Where(w => w.faculty_id == subfaculty.faculty_id).FirstOrDefault();
-        //                }
-        //            }
-        //        }
-        //        else if (imp.import_create_option == ImportCreateOption.fixlogin)
-        //        {
-        //            faculty = _context.table_cu_faculty.Where(w => w.faculty_name.ToLower() == imp.system_org.ToLower() | w.faculty_shot_name.ToLower() == imp.system_org.ToLower()).FirstOrDefault();
-        //            if (faculty == null)
-        //            {
-        //                var subfaculty = _context.table_cu_faculty_level2.Where(w => w.sub_office_name.ToLower() == imp.system_org.ToLower() | w.sub_office_shot_name.ToLower() == imp.system_org.ToLower()).FirstOrDefault();
-        //                if (subfaculty != null)
-        //                {
-        //                    faculty = _context.table_cu_faculty.Where(w => w.faculty_id == subfaculty.faculty_id).FirstOrDefault();
-        //                }
-        //            }
-        //        }
-
-        //        if (faculty != null)
-        //        {
-        //            model.system_faculty_id = (int)faculty.faculty_id;
-        //            var distinguish_name = "";
-        //            if (imp.import_create_option == ImportCreateOption.student | imp.import_create_option == ImportCreateOption.student_sasin | imp.import_create_option == ImportCreateOption.student_ppc | imp.import_create_option == ImportCreateOption.student_other)
-        //            {
-        //                distinguish_name = faculty.faculty_distinguish_name_student;
-        //            }
-        //            else if (imp.import_create_option == ImportCreateOption.staff_hr | imp.import_create_option == ImportCreateOption.staff_other)
-        //            {
-        //                if (imp.status.ToLower().Trim() == "student".ToLower())
-        //                    distinguish_name = faculty.faculty_distinguish_name_student;
-        //                else if (imp.status.ToLower().Trim() == "staff".ToLower() || imp.status.ToLower().Trim() == "พนักงานปกติ".ToLower())
-        //                    distinguish_name = faculty.faculty_distinguish_name_staff;
-        //                else if (imp.status.ToLower().Trim() == "outsider".ToLower())
-        //                    distinguish_name = faculty.faculty_distinguish_name_outsider;
-        //                else if (imp.status.ToLower().Trim() == "affiliate".ToLower())
-        //                    distinguish_name = faculty.faculty_distinguish_name_affiliate;
-        //            }
-        //            if (imp.import_create_option == ImportCreateOption.fixlogin)
-        //            {
-        //                distinguish_name = faculty.faculty_distinguish_name_outsider;
-        //                model.basic_uid = imp.basic_uid;
-        //            }
-
-        //            if (!string.IsNullOrEmpty(distinguish_name))
-        //            {
-        //                var ous = distinguish_name.Split(",");
-        //                if (ous.Length > 3)
-        //                {
-        //                    for (var i = ous.Length - 1; i >= 0; i--)
-        //                    {
-        //                        var ou = ous[i];
-        //                        if (i < 3)
-        //                        {
-        //                            if (ous.Length == 6)
-        //                            {
-        //                                if (i == 2)
-        //                                    model.system_ou_lvl1 = ou;
-        //                                else if (i == 1)
-        //                                    model.system_ou_lvl2 = ou;
-        //                                else if (i == 0)
-        //                                    model.system_ou_lvl3 = ou;
-        //                            }
-        //                            else if (ous.Length == 5)
-        //                            {
-        //                                if (i == 1)
-        //                                    model.system_ou_lvl1 = ou;
-        //                                else if (i == 0)
-        //                                    model.system_ou_lvl2 = ou;
-        //                            }
-        //                            else if (ous.Length == 4)
-        //                            {
-        //                                if (i == 0)
-        //                                    model.system_ou_lvl1 = ou;
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //            try
-        //            {
-
-        //                genNewAccount(_context, model);
-        //                _context.SaveChanges();
-
-        //                var result_ldap = _providerldap.CreateUser(model, _context);
-        //                model.ldap_created = result_ldap.result;
-        //                if (result_ldap.result == true)
-        //                    writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.LDAP, model.basic_uid);
-        //                else
-        //                {
-        //                    imp.ImportVerify = false;
-        //                    imp.ImportRemark += writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.LDAP, model.basic_uid, log_exception: result_ldap.Message) + Environment.NewLine;
-
-        //                }
-
-        //                var result_ad = _provider.CreateUser(model, _context);
-        //                model.ad_created = result_ad.result;
-        //                if (result_ad.result == true)
-        //                    writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.AD, model.basic_uid);
-        //                else
-        //                {
-        //                    imp.ImportVerify = false;
-        //                    imp.ImportRemark += writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.AD, model.basic_uid, log_exception: result_ad.Message) + Environment.NewLine;
-        //                }
-
-        //                writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.VisualFim, model.basic_uid);
-
-        //                if (result_ldap.result == true && result_ad.result == true)
-        //                    imp.ImportRemark = "สร้างบัญชีผู้ใช้สำเร็จ";
-        //                _context.SaveChanges();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                imp.ImportRemark += writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.VisualFim, model.basic_uid, log_exception: ex.Message) + Environment.NewLine;
-        //            }
-        //        }
-        //    }
-        //    //_context.table_import.RemoveRange(_context.table_import.Where(w => w.import_Type == ImportType.create));
-        //    _context.SaveChanges();
-        //    msg = ReturnMessage.ImportSuccess;
-        //    code = ReturnCode.Success;
-        //    return RedirectToAction("CreateAccountFromFile", new { code = code, msg = msg });
-        //}
-
-
-        //#endregion
+        #endregion
 
         #region ManageAccount
         //public IActionResult ManageAccount(SearchDTO model)
@@ -856,7 +509,6 @@ namespace ABAC.Controllers
             if (!checkrole())
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
             if (userlogin == null)
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
@@ -873,7 +525,7 @@ namespace ABAC.Controllers
                             var model = await _provider.GetAdUser2(id, _context);
                             if(model != null)
                             {
-                                var userType = getaUUserType(model.DistinguishedName);
+                                var userType = AppUtil.getaUUserType(model.DistinguishedName);
                                 if (userType == aUUserType.vip)
                                 {
                                     var vip = _context.User_VIP.Where(w => w.username == id).FirstOrDefault();
@@ -1149,7 +801,7 @@ namespace ABAC.Controllers
                     if (user == null)
                         return RedirectToAction("Logout", "Auth");
 
-                    var userType = getaUUserType(user.DistinguishedName);
+                    var userType = AppUtil.getaUUserType(user.DistinguishedName);
                     if (userType == aUUserType.vip)
                     {
                         var vip = this._context.User_VIP.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
@@ -1247,7 +899,7 @@ namespace ABAC.Controllers
                 var model = await _provider.GetAdUser2(id, _context);
                 if (model != null)
                 {
-                    var userType = getaUUserType(model.DistinguishedName);
+                    var userType = AppUtil.getaUUserType(model.DistinguishedName);
                     if (userType == aUUserType.vip)
                     {
                         var vip = this._context.User_VIP.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();

@@ -35,17 +35,9 @@ namespace ABAC.DAL
             if (context.table_setup != null && !context.table_setup.Any())
             {
                 var setup = new setup();
-                setup.Host = "161.200.135.79";
-                setup.Port = "389";
-                setup.Base = "DC=win,DC=chula,DC=ac,DC=th";
-                setup.Username = "service-fim@win.chula.ac.th";
-                setup.Password = "9@fimpermit";
+                setup.GuestRowNumber = 0;
 
-                setup.LDAPHost = "LDAP://161.200.135.46:389/";
-                setup.LDAPPort = "389";
-                setup.LDAPBase = "dc=chula,dc=ac,dc=th";
-                setup.LDAPUsername = "uid=adm_fim,ou=People,dc=chula,dc=ac,dc=th";
-                setup.LDAPPassword = "vppuvr4w";
+
                 context.table_setup.Add(setup);
                 context.SaveChanges();
                 

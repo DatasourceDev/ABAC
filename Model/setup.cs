@@ -33,29 +33,7 @@ namespace ABAC.Models
         [Display(Name = "Password")]
         [MaxLength(150)]
         public string Password { get; set; }
-        #endregion
-
-        #region LDAP
-        [Display(Name = "Host")]
-        [MaxLength(150)]
-        public string LDAPHost { get; set; }
-
-        [Display(Name = "Port")]
-        [MaxLength(150)]
-        public string LDAPPort { get; set; }
-
-        [Display(Name = "Base")]
-        [MaxLength(150)]
-        public string LDAPBase { get; set; }
-
-        [Display(Name = "Username")]
-        [MaxLength(150)]
-        public string LDAPUsername { get; set; }
-
-        [Display(Name = "Password")]
-        [MaxLength(150)]
-        public string LDAPPassword { get; set; }
-        #endregion
+        #endregion        
 
         #region SMTP
 
@@ -83,9 +61,7 @@ namespace ABAC.Models
         #endregion
 
         #region setup
-        public bool change_password_otp_enable { get; set; }
-        public bool change_password_approve_enable { get; set; }
-        public string first_page_description { get; set; }
+        public int GuestRowNumber { get; set; }
 
         #endregion
 

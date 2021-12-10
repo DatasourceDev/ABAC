@@ -45,8 +45,8 @@
     <link href="~/metrica/plugins/timepicker/bootstrap-material-datetimepicker.css" rel="stylesheet">
     <link href="~/metrica/plugins/nestable/jquery.nestable.min.css" rel="stylesheet" />
 
-    <link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/standard/styles.php">
-    <link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/formal_white_custom/styles.php">
+    @*<link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/standard/styles.php">*@
+    @*<link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/formal_white_custom/styles.php">*@
     <style>
         @@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"); /* Using a url */
         @@import url("https://fonts.googleapis.com/css?family=Arimo");
@@ -237,6 +237,14 @@
     </style>
 </head>
 <body class="dark-sidenav">
+    @*<form id="FormSamlResponse" method="post" runat="server">
+        <textarea id="SAMLResponse" name="SAMLResponse" cols="130" rows="15" runat="server"></textarea><br />
+        <textarea id="RelayState" name="RelayState" cols="130" rows="5" runat="server"></textarea><br />
+        <input type="submit" value="Submit SAML Response" />
+    </form>*@
+    @*<input type="hidden" ID="SAMLResponse" />
+    <input type="hidden" ID="RelayState" />*@
+
     <div class="loading">
         <div class="loading-spin">
 
@@ -415,7 +423,7 @@
             <br />
             <br />
             <footer class="footer text-center text-sm-center">
-                @if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
+                @*@if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
                 {
                     <p>
                         @Html.Raw(setup.first_page_description)
@@ -428,7 +436,7 @@
                         <br />
                         email: ictcenter@cu.ac.th
                     </p>
-                }
+                }*@
             </footer><!--end footer-->
         </div>
     </div>

@@ -7,6 +7,41 @@ namespace ABAC.Extensions
 {
     public class AppUtil
     {
+        public static string getaUUserType(string DistinguishedName)
+        {
+            if (DistinguishedName.ToLower().Contains("staff"))
+            {
+                return aUUserType.staff;
+            }
+            else if (DistinguishedName.ToLower().Contains("student"))
+            {
+                return aUUserType.student;
+            }
+            else if (DistinguishedName.ToLower().Contains("useroffice"))
+            {
+                return aUUserType.office;
+            }
+            else if (DistinguishedName.ToLower().Contains("uservip"))
+            {
+                return aUUserType.vip;
+            }
+            else if (DistinguishedName.ToLower().Contains("usertemp"))
+            {
+                return aUUserType.bulk;
+            }
+            else if (DistinguishedName.ToLower().Contains("service-user"))
+            {
+                return aUUserType.admin;
+            }
+            else if (DistinguishedName.ToLower().Contains("groupadmin"))
+            {
+                return aUUserType.admin;
+            }
+            else
+            {
+                return null;
+            }
+        }
         public static string getNewPassword()
         {
             string newPassword = getNewPassword(8);

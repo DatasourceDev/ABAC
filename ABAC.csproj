@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Content Remove="Views\Account\CheckMenuPermission.cshtml" />
-    <Content Remove="Views\Account\CreateAccountFromFile.cshtml" />
     <Content Remove="Views\Account\DeleteAccountFromFile.cshtml" />
     <Content Remove="Views\Account\EnableAccountFromFile.cshtml" />
     <Content Remove="Views\Account\OneDayPassword.cshtml" />
@@ -32,6 +31,7 @@
     <Content Remove="Views\System\PasswordGenerator.cshtml" />
     <Content Remove="Views\System\Role.cshtml" />
     <Content Remove="Views\System\RoleInfo.cshtml" />
+    <Content Remove="Views\System\Setup.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

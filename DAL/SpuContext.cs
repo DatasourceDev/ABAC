@@ -22,6 +22,8 @@ namespace ABAC.DAL
         public DbSet<User_VIP> User_VIP { get; set; }
         public DbSet<User_Office> User_Office { get; set; }
         public DbSet<User_Bulk> User_Bulk { get; set; }
+        public DbSet<User_Bulk_Import> User_Bulk_Import { get; set; }
+        public DbSet<temp_import> table_temp_import { get; set; }
         //public DbSet<group> table_group { get; set; }
         //public DbSet<group_user> table_group_user { get; set; }
         //public DbSet<faculty> table_cu_faculty { get; set; }

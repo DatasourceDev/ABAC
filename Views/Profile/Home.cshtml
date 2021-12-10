@@ -1,4 +1,6 @@
-﻿@inject ABAC.DAL.SpuContext _context
+﻿@model ABAC.Identity.AdUser2
+@inject ABAC.DAL.SpuContext _context
+@inject ABAC.Services.LoginServices loginServices
 @using ABAC.Extensions;
 @{
     ViewData["Title"] = "Home";
@@ -7,7 +9,33 @@
 
 <div class="container-fluid">
     <div id="preview">
-        @Html.Raw(cms.HOME_Office)
+        @if (cms != null)
+        {
+            if (AppUtil.getaUUserType(Model.DistinguishedName) == aUUserType.office)
+            {
+                @Html.Raw(cms.HOME_Office)
+            }
+            else if (AppUtil.getaUUserType(Model.DistinguishedName) == aUUserType.vip)
+            {
+                @Html.Raw(cms.HOME_VIP)
+            }
+            else if (AppUtil.getaUUserType(Model.DistinguishedName) == aUUserType.bulk)
+            {
+                @Html.Raw(cms.HOME_Guest)
+            }
+            else if (AppUtil.getaUUserType(Model.DistinguishedName) == aUUserType.student)
+            {
+                @Html.Raw(cms.HOME_Student)
+            }
+            else if (AppUtil.getaUUserType(Model.DistinguishedName) == aUUserType.staff)
+            {
+                @Html.Raw(cms.HOME_Staff)
+            }
+            else
+            {
+                @Html.Raw(cms.HOME_Staff)
+            }
+        }
     </div>
 
 </div> <!-- end row -->
