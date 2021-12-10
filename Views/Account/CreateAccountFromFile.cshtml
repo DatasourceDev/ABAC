@@ -48,14 +48,19 @@
                 <div class="card-body">
                     <form class="form-horizontal form-parsley" asp-action="CreateAccountFromFile" asp-controller="Account" enctype="multipart/form-data" method="post">
                         <div class="form-group row">
-                            <div class="col-lg-3">
-                                <input type="file" id="file" name="file" accept="text/plain,.csv,application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
-                                <br />
-                                @Html.ValidationMessage("format_error")
-                            </div>
-                            <div class="col-lg-2 text-right">
-                                <button class="btn btn-dark" type="submit">ตรวจสอบไฟล์</button>
-                                @*<a href="@Url.Action("TemplatAccountFile","Guest")" class="btn btn-light" target="_blank">ตัวอย่างไฟล์</a>*@
+                            <div class="col-lg-12">
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-right">File</label>
+                                    <div class="col-lg-3">
+                                        <input type="file" id="file" name="file" accept="text/plain,.csv,application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+                                        <br />
+                                        @Html.ValidationMessage("format_error")
+                                    </div>
+                                    <div class="col-lg-2 text-right">
+                                        <button class="btn btn-dark" type="submit">ตรวจสอบไฟล์</button>
+                                        @*<a href="@Url.Action("TemplatAccountFile","Guest")" class="btn btn-light" target="_blank">ตัวอย่างไฟล์</a>*@
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -65,13 +70,36 @@
                     {
                         @if (Model.code != ReturnCode.Success)
                         {
-                            <div class="form-group row">
-                                <div class="col-lg-12">
-                                    <form class="form-horizontal form-parsley" asp-action="CreateAccountFromFile2" asp-controller="Account" method="post">
-                                        <button class="btn btn-dark" type="submit">บันทึก</button>
-                                    </form>
+                            <form class="form-horizontal form-parsley" asp-action="CreateAccountFromFile2" asp-controller="Account" method="post">
+                                <div class="form-group row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label text-right">Valid Date</label>
+                                            <div class="col-sm-3">
+                                                <input class="form-control dpicker" type="text" asp-for="dfrom" placeholder="DD/MM/YYYY" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label text-right">Expire Date</label>
+                                            <div class="col-sm-3">
+                                                <input class="form-control dpicker" type="text" asp-for="dto" placeholder="DD/MM/YYYY" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label text-right">File</label>
+                                            <div class="col-lg-3">
+                                                <button class="btn btn-dark" type="submit">บันทึก</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+
                         }
                         <div class="form-group row">
                             <div class="col-lg-12">

@@ -53,15 +53,15 @@ namespace ABAC.Identity
             {
                 try
                 {
-                    //var user = new AdUser2();
-                    //user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
-                    //user.DisplayName = "adminwebmaster";
-                    //user.GivenName = "adminwebmaster";
-                    //user.Name = "adminwebmaster";
-                    //user.SamAccountName = "adminwebmaster";
-                    //user.UserPrincipalName = "adminwebmaster@auds.au.edu";
-                    //user.userAccountControl = "66048";
-                    //return user;
+                    var user = new AdUser2();
+                    user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
+                    user.DisplayName = "adminwebmaster";
+                    user.GivenName = "adminwebmaster";
+                    user.Name = "adminwebmaster";
+                    user.SamAccountName = "adminwebmaster";
+                    user.UserPrincipalName = "adminwebmaster@auds.au.edu";
+                    user.userAccountControl = "66048";
+                    return user;
 
                     var setup = spucontext.table_setup.FirstOrDefault();
 
@@ -301,10 +301,10 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
-                if (!string.IsNullOrEmpty(model.ExpireDate))
-                    d.Properties["accountExpires"].Value = model.ExpireDate;
-                else
-                    d.Properties["accountExpires"].Value = null;
+                //if (!string.IsNullOrEmpty(model.ExpireDate))
+                //    d.Properties["accountExpires"].Value = model.ExpireDate;
+                //else
+                //    d.Properties["accountExpires"].Value = null;
 
                 d.Properties["aUUserType"].Value = model.aUUserType;
                 d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;

@@ -125,7 +125,7 @@ namespace ABAC
         log_reset_password,
         log_create_account,
         log_create_account_with_file,
-        log_add_account_to_group,
+        log_create_account_bulk,
         log_add_new_admin,
         log_edit_group,
         log_edit_account_for_admin,

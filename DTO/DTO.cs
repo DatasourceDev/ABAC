@@ -176,21 +176,14 @@ namespace ABAC.DTO
 
         public string ConfirmPassword { get; set; }
     }
-    public class MacAddressDTO : BaseDTO
+    public class Bulk : BaseDTO
     {
-        [MaxLength(17)]
-        [Display(Name = "รหัสประจำอุปกรณ์ 1")]
-        public string MacAddress1 { get; set; }
-        [MaxLength(17)]
-        [Display(Name = "รหัสประจำอุปกรณ์ 2")]
-        public string MacAddress2 { get; set; }
-        [MaxLength(17)]
-        [Display(Name = "รหัสประจำอุปกรณ์ 3")]
-        public string MacAddress3 { get; set; }
-
-        public int? MacAddressNumShow { get; set; }
+        public int NumberOfPeople { get; set; }
+        public string ValidDate { get; set; }
+        public string ExpireDate { get; set; }
 
     }
+   
     public class BaseDTO
     {
 

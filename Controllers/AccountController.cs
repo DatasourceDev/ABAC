@@ -286,7 +286,7 @@ namespace ABAC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccountFromFile2()
+        public async Task<IActionResult> CreateAccountFromFile2(SearchDTO model2)
         {
             if (!checkrole())
                 return RedirectToAction("Logout", "Auth");
@@ -299,55 +299,69 @@ namespace ABAC.Controllers
             var code = ReturnCode.Error;
 
             var setup = _context.table_setup.FirstOrDefault();
-            if(setup == null)
+            if (setup == null)
                 return RedirectToAction("Logout", "Auth");
 
             int runNumber = setup.GuestRowNumber+1;
             var imports = _context.table_temp_import.OrderBy(o => o.ImportRow);
             foreach (var imp in imports.ToList())
             {
+                var username = "guest" + runNumber.ToString("00000");
+                var dup = true;
+                while(dup == true)
+                {
+                    var account = await _provider.GetAdUser2(username, _context);
+                    if (account != null)
+                    {
+                        runNumber++;
+                        username = "guest" + runNumber.ToString("00000");
+                    }
+                }
+                   
                 var user = new User_Bulk_Import();
                 user.firstname = imp.firstname;
                 user.lastname = imp.lastname;
                 user.CitizenID = imp.CitizenID;
                 user.PassportID = imp.PassportID;
                 user.Reference = imp.Reference;
-                user.username = "guest" + runNumber.ToString("00000");
+                user.username = username;
                 user.password = RandomPassword(8);
                 user.adminname = userlogin.SamAccountName;
                 user.Create_By = userlogin.SamAccountName;
                 user.Create_On = DateUtil.Now();
                 user.Update_By = userlogin.SamAccountName;
                 user.Update_On = DateUtil.Now();
-                user.valid_date = imp.valid_date;
-                user.expire_date = imp.expire_date;
+                user.valid_date = DateUtil.ToDate(model2.dfrom);
+                user.expire_date = DateUtil.ToDate(model2.dto);
                 user.today = DateUtil.Now();
                 _context.User_Bulk_Import.Add(user);
 
-                var model = new AdUser2();
-                model.DistinguishedName = _conf.OU_TEMP;
-                model.SamAccountName = user.username;
-                model.GivenName = user.firstname;
-                model.Surname = user.lastname;
-                model.aUIDCard = user.CitizenID;
-                model.Reference = user.Reference;
-                model.PassportID = user.PassportID;
-                model.Password = user.password;
-                model.ValidDate = DateUtil.ToDisplayDate(user.valid_date);
-                model.ExpireDate = DateUtil.ToDisplayDate(user.expire_date);
+                var aduser = new AdUser2();
+                aduser.DistinguishedName = _conf.OU_TEMP;
+                aduser.SamAccountName = user.username;
+                aduser.GivenName = user.firstname;
+                aduser.Surname = user.lastname;
+                aduser.DisplayName = aduser.GivenName + " " + aduser.Surname;
+                aduser.aUIDCard = user.CitizenID;
+                aduser.Reference = user.Reference;
+                aduser.PassportID = user.PassportID;
+                aduser.Password = user.password;
+                aduser.ValidDate = DateUtil.ToDisplayDate(user.valid_date);
+                aduser.ExpireDate = DateUtil.ToDisplayDate(user.expire_date);
+                aduser.aUUserType = aUUserType.bulk;
                 setup.GuestRowNumber = runNumber;
                 _context.SaveChanges();
                 runNumber++;
-                var result_ad = _provider.CreateUser(model, _context);
+                var result_ad = _provider.CreateUser(aduser, _context);
                 if (result_ad.result == true)
-                    writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                    writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
                 else
-                    writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+                    writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
 
                 user.ad_created = result_ad.result;
 
                 _context.SaveChanges();
-                writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
             }
             _context.table_temp_import.RemoveRange(_context.table_temp_import);
             _context.SaveChanges();
@@ -357,6 +371,105 @@ namespace ABAC.Controllers
         }
 
 
+        #endregion
+
+        #region CreateAccount
+        public async Task<IActionResult> CreateAccountBulk(ReturnCode code, string msg)
+        {
+
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            var model = new Bulk();
+            model.NumberOfPeople = 1;
+            //model.system_faculty_id = 0;
+            //model.cu_CUexpire_day = DateUtil.Now().Day;
+            //model.cu_CUexpire_month = DateUtil.Now().Month;
+            //model.cu_CUexpire_year = DateUtil.Now().Year + 1;
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateAccountBulk(Bulk model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            var msg = ReturnMessage.Error;
+            var code = ReturnCode.Error;
+
+            var setup = _context.table_setup.FirstOrDefault();
+            if (setup == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (model.NumberOfPeople <= 0)
+                model.NumberOfPeople = 1;
+
+            int runNumber = setup.GuestRowNumber + 1;
+            for (var i=0; i < model.NumberOfPeople; i++)
+            {
+                var username = "guest" + runNumber.ToString("00000");
+                var dup = true;
+                while (dup == true)
+                {
+                    var account = await _provider.GetAdUser2(username, _context);
+                    if (account != null)
+                    {
+                        runNumber++;
+                        username = "guest" + runNumber.ToString("00000");
+                    }
+                }
+
+                var user = new User_Bulk();
+                user.username = username;
+                user.password = RandomPassword(8);
+                user.adminname = userlogin.SamAccountName;
+                user.Create_By = userlogin.SamAccountName;
+                user.Create_On = DateUtil.Now();
+                user.Update_By = userlogin.SamAccountName;
+                user.Update_On = DateUtil.Now();
+                user.valid_date = DateUtil.ToDate(model.ValidDate);
+                user.expire_date = DateUtil.ToDate(model.ExpireDate);
+                user.today = DateUtil.Now();
+                _context.User_Bulk.Add(user);
+
+                var aduser = new AdUser2();
+                aduser.DistinguishedName = _conf.OU_TEMP;
+                aduser.SamAccountName = user.username;
+                aduser.GivenName = user.firstname;
+                aduser.Surname = user.lastname;
+                aduser.DisplayName = aduser.GivenName + " " + aduser.Surname;
+                aduser.Password = user.password;
+                aduser.ValidDate = DateUtil.ToDisplayDate(user.valid_date);
+                aduser.ExpireDate = DateUtil.ToDisplayDate(user.expire_date);
+                aduser.aUUserType = aUUserType.bulk;
+                setup.GuestRowNumber = runNumber;
+                _context.SaveChanges();
+                runNumber++;
+                var result_ad = _provider.CreateUser(aduser, _context);
+                if (result_ad.result == true)
+                    writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
+                else
+                    writelog(LogType.log_create_account_bulk, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
+
+                user.ad_created = result_ad.result;
+
+                _context.SaveChanges();
+                writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
+                msg = ReturnMessage.Success;
+                code = ReturnCode.Success;
+                return RedirectToAction("CreateAccountFromFile", new { code = code, msg = msg });
+            }            
+            return View(model);
+        }
         #endregion
 
         #region ManageAccount

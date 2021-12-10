@@ -219,7 +219,7 @@ namespace ABAC.Controllers
                 return false;
             return true;
         }
-        public string RandomPassword(int length = 8, bool includenumber = true, bool includelower = true, bool includeupper = false)
+        public string RandomPassword(int length = 8, bool includenumber = true, bool includelower = true, bool includeupper = true)
         {
             string valid = "";
             string number = "1234567890";
@@ -892,7 +892,9 @@ namespace ABAC.Controllers
                 if (log_type_id == LogType.log_create_account)
                     log_description = "สร้างบัญชีผู้ใช้";
                 else if (log_type_id == LogType.log_create_account_with_file)
-                    log_description = "สร้างบัญชีผู้ใช้";
+                    log_description = "สร้างบัญชีผู้ใช้จากไฟล์";
+                else if (log_type_id == LogType.log_create_account_bulk)
+                    log_description = "สร้างบัญชีผู้ใช้จำนวนมาก";
                 else if (log_type_id == LogType.log_edit_account)
                     log_description = "แก้ไขบัญชีผู้ใช้";
                 else if (log_type_id == LogType.log_delete_account)
