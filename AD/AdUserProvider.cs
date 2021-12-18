@@ -53,15 +53,15 @@ namespace ABAC.Identity
             {
                 try
                 {
-                    var user = new AdUser2();
-                    user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
-                    user.DisplayName = "adminwebmaster";
-                    user.GivenName = "adminwebmaster";
-                    user.Name = "adminwebmaster";
-                    user.SamAccountName = "adminwebmaster";
-                    user.UserPrincipalName = "adminwebmaster@auds.au.edu";
-                    user.userAccountControl = "66048";
-                    return user;
+                    //var user = new AdUser2();
+                    //user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
+                    //user.DisplayName = "adminwebmaster";
+                    //user.GivenName = "adminwebmaster";
+                    //user.Name = "adminwebmaster";
+                    //user.SamAccountName = "adminwebmaster";
+                    //user.UserPrincipalName = "adminwebmaster@auds.au.edu";
+                    //user.userAccountControl = "66048";
+                    //return user;
 
                     var setup = spucontext.table_setup.FirstOrDefault();
 

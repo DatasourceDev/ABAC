@@ -17,14 +17,14 @@
     //}
 
     var setup = _context.table_setup.FirstOrDefault();
-
+    var sso = 0;
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - มหาวิทยาลัย</title>
+    <title>@TempData["Title"] - มหาวิทยาลัย</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -237,14 +237,6 @@
     </style>
 </head>
 <body class="dark-sidenav">
-    @*<form id="FormSamlResponse" method="post" runat="server">
-        <textarea id="SAMLResponse" name="SAMLResponse" cols="130" rows="15" runat="server"></textarea><br />
-        <textarea id="RelayState" name="RelayState" cols="130" rows="5" runat="server"></textarea><br />
-        <input type="submit" value="Submit SAML Response" />
-    </form>*@
-    @*<input type="hidden" ID="SAMLResponse" />
-    <input type="hidden" ID="RelayState" />*@
-
     <div class="loading">
         <div class="loading-spin">
 
@@ -268,7 +260,7 @@
         <div class="leftbar-profile p-3 w-100">
             <div class="media position-relative">
                 <div class="avatar-box thumb-md align-self-center mr-3">
-                    <a class="avatar-title bg-danger rounded-circle" href="http://gmail.google.com/a/au.edu" title="Email" target="_blank"><i class="far fa-envelope fa-2x"></i></a>
+                    <a onclick="gmail_onclick()" class="avatar-title bg-danger rounded-circle" href="http://gmail.google.com/a/au.edu" title="Email" target="_blank"><i class="far fa-envelope fa-2x"></i></a>
                 </div>
                 <div class="avatar-box thumb-md align-self-center mr-3">
                     <a class="avatar-title bg-success rounded-circle" href="http://calendar.google.com/a/au.edu" title="Calendar" target="_blank"><i class="far far fa-calendar-alt fa-2x"></i></a>
@@ -417,25 +409,44 @@
     <div class="page-wrapper">
         <!-- Page Content-->
         <div class="page-content-tab">
+            <div>
+                <form method="post" action="@TempData["actionUrl"]" id="ssoform1" target="_blank">
+                    <div id="pnlCookie" style="display:none;">
+                        <div>
+                            @if (TempData["responseXml"] != null && TempData["relayState"] != null)
+                            {
+                                sso = 1;
+                                <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20">
+                                @TempData["responseXml"]
+                            </textarea>
+                                <textarea name="RelayState" id="RelayState" cols="130" rows="5">
+                                @TempData["relayState"]
+                            </textarea>
+                            }
+                        </div>
+                    </div>
+                    <button id="btnssosubmit" type="submit" style="display:none;">Submit</button>
+                </form>
+            </div>
             @RenderBody()
             <br />
             <br />
             <br />
             <footer class="footer text-center text-sm-center">
                 @*@if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
-                {
-                    <p>
-                        @Html.Raw(setup.first_page_description)
-                    </p>
-                }
-                else
-                {
-                    <p>
-                        ศูนย์ ICT มหาวิทยาลัย
-                        <br />
-                        email: ictcenter@cu.ac.th
-                    </p>
-                }*@
+            {
+                <p>
+                    @Html.Raw(setup.first_page_description)
+                </p>
+            }
+            else
+            {
+                <p>
+                    ศูนย์ ICT มหาวิทยาลัย
+                    <br />
+                    email: ictcenter@cu.ac.th
+                </p>
+            }*@
             </footer><!--end footer-->
         </div>
     </div>
@@ -492,7 +503,17 @@
             $('.loading').hide();
         });
     </script>
+    <script>
+        function gmail_onclick() {
+            $('#btnssosubmit').click();
+            window.open('http://gmail.google.com/a/au.edu', '_blank');
+            $('.loading').hide();
 
+        }
+        $(document).ready(function () {
+            var sso = '@sso';
+        });
+    </script>
     @RenderSection("scripts", required: false)
 
 </body>

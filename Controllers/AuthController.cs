@@ -21,15 +21,7 @@ using Newtonsoft.Json;
 using System.Net;
 using Microsoft.Extensions.Options;
 using Google.Apps.SingleSignOn;
-
-/*
-http://member.smsmkt.com/SMSLink/SendMsg/index.php
-User = spusmart
-Password = sms@smart
-Msnlist = เบอร์มือถือ
-Msg = ข้อความ
-Sender = SRIPATUM.
-*/
+using System.IO;
 
 namespace ABAC.Controllers
 {
@@ -46,35 +38,86 @@ namespace ABAC.Controllers
             model.RelayState = RelayState;
             return View(model);
         }
-        private bool SSO(string username, string samlRequest, string relayState)
+        private SSODTO SSO(string username, string samlRequest, string relayState)
         {
             if (!string.IsNullOrEmpty(samlRequest) && !string.IsNullOrEmpty(relayState))
             {
                 if (username != "")
                 {
+                    List<string> result = new List<string>();
+                    using (var process = new Process())
+                    {
+                        //process.StartInfo.FileName = Path.Combine("C:\\Dthai\\SMAL\\", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        process.StartInfo.FileName = Path.Combine("C:\\Source Code\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        process.StartInfo.ArgumentList.Add($"{username}");
+                        process.StartInfo.ArgumentList.Add($"{samlRequest}");
+                        process.StartInfo.CreateNoWindow = true;
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.RedirectStandardOutput = true;
+                        process.StartInfo.RedirectStandardError = true;
+                        process.OutputDataReceived += (sender, data) => result.Add(data.Data);
+                        process.ErrorDataReceived += (sender, data) => result.Add(data.Data);
+                        process.Start();
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();     // (optional) wait up to 10 seconds
+                        do
+                        {
+                            if (!process.HasExited)
+                            {
+                                // Refresh the current process property values.
+                                process.Refresh();
+                                Console.WriteLine($"exit {process.HasExited}");
+                            }
+                        }
+                        while (!process.WaitForExit(1000));
+                    }
                     try
                     {
-                        string responseXml;
-                        string actionUrl;
-                        SamlParser.CreateSignedResponse(samlRequest, username, out responseXml, out actionUrl);
-                        //SAMLResponse.Value = responseXml;
-                        //RelayState.Value = relayState;
-                        //form1.Method = "post";
-                        //form1.Action = actionUrl;
-                        //Page.ClientScript.RegisterStartupScript(this.GetType(), "CallMyFunction", "javascript:form1.submit();", true);
-                        return true;
+                        string responseXml = "";
+                        string actionUrl = "";
+                        var actionUrlbegin = false;
+                        if (result.Count() > 0)
+                        {
+                            foreach(var row in result)
+                            {
+                                if (!string.IsNullOrEmpty(row))
+                                {
+                                    if (row.Contains("actionUrl:"))
+                                    {
+                                        actionUrl = row.Replace("actionUrl:", "");
+                                        actionUrlbegin = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        if(actionUrlbegin == false)
+                                        {
+                                            if (row.Contains("responseXml:"))
+                                                responseXml += row.Replace("responseXml:", "");
+                                            else
+                                                responseXml += Environment.NewLine + row;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var sso = new SSODTO();
+                        sso.responseXml = responseXml;
+                        sso.actionUrl = actionUrl;
+                        sso.relayState = relayState;
+                        return sso;
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        return false;
+                        return null;
                     }
                 }
                 else
                 {
-                    return false;
+                    return null;
                 }
             }
-            return false;
+            return null;
         }
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
@@ -141,6 +184,35 @@ namespace ABAC.Controllers
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
                     this._loginServices.Login(aduser, AppUtil.getaUUserType(aduser.DistinguishedName), true);
+
+                    var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
+                    var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
+                    
+                    if (string.IsNullOrEmpty(model.SAMLRequest))
+                        model.SAMLRequest = SAMLRequest;
+                    if (string.IsNullOrEmpty(model.RelayState))
+                        model.RelayState = RelayState;
+
+                    var username = model.UserName;
+                    if (string.IsNullOrEmpty(aduser.EmailAddress))
+                        username = model.UserName + _conf.DomainGmail;
+                    else
+                        username = aduser.EmailAddress;
+
+                    var responseXml = "";
+                    while (string.IsNullOrEmpty(responseXml))
+                    {
+                        var sso = SSO(username, model.SAMLRequest, model.RelayState);
+                        if (sso != null)
+                        {
+                            responseXml = sso.responseXml;
+                            TempData["responseXml"] = sso.responseXml;
+                            TempData["actionUrl"] = sso.actionUrl;
+                            TempData["relayState"] = sso.relayState;
+                        }
+                    }
+                   
+
                     return RedirectToAction("Home", "Profile");
                 }
             }

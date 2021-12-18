@@ -7,6 +7,12 @@ using System.Threading.Tasks;
 
 namespace ABAC.DTO
 {
+    public class SSODTO
+    {
+        public string responseXml { get; set; }
+        public string actionUrl { get; set; }
+        public string relayState { get; set; }
+    }
     public class Result
     {
         public bool result { get; set; }

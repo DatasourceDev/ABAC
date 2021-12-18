@@ -171,7 +171,9 @@ namespace ABAC
         public string OU_VIP { get; set; }
         public string OU_TEMP { get; set; }
         public string OU_OFFICE { get; set; }
-        
+        public string DomainGmail { get; set; }
+        public string DomainOffice365 { get; set; }
+
 
     }
 }

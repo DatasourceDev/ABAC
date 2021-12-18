@@ -18,6 +18,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Cryptography.Xml;
 using System.Xml;
 using System.Web;
+using System;
 
 namespace Google.Apps.SingleSignOn
 {
@@ -59,8 +60,11 @@ namespace Google.Apps.SingleSignOn
             xml = "C:\\Dthai\\Cert\\DthaiSSO.pfx";
             xml = HttpUtility.HtmlDecode(xml);
 
-            X509Certificate2 cert = new X509Certificate2(xml, "", X509KeyStorageFlags.MachineKeySet);
-            RSACryptoServiceProvider crypto = cert.PrivateKey as RSACryptoServiceProvider;
+            X509Certificate2 cert = new X509Certificate2(xml, "", X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.PersistKeySet);
+
+            var rsaParam = cert.GetRSAPrivateKey().ExportParameters(true);
+            var crypto = new RSACryptoServiceProvider();
+            crypto.ImportParameters(rsaParam);
 
             return crypto;
         }
