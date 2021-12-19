@@ -17,7 +17,6 @@
     //}
 
     var setup = _context.table_setup.FirstOrDefault();
-    var sso = 0;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -263,10 +262,10 @@
                     <a onclick="gmail_onclick()" class="avatar-title bg-danger rounded-circle" href="http://gmail.google.com/a/au.edu" title="Email" target="_blank"><i class="far fa-envelope fa-2x"></i></a>
                 </div>
                 <div class="avatar-box thumb-md align-self-center mr-3">
-                    <a class="avatar-title bg-success rounded-circle" href="http://calendar.google.com/a/au.edu" title="Calendar" target="_blank"><i class="far far fa-calendar-alt fa-2x"></i></a>
+                    <a onclick="cal_onclick()" class="avatar-title bg-success rounded-circle" href="http://calendar.google.com/a/au.edu" title="Calendar" target="_blank"><i class="far far fa-calendar-alt fa-2x"></i></a>
                 </div><!--end media-body-->
                 <div class="avatar-box thumb-md align-self-center mr-3">
-                    <a class="avatar-title bg-warning rounded-circle" href="http://docs.google.com/a/au.edu" title="Document" target="_blank"><i class="fas fa-folder-open fa-2x"></i></a>
+                    <a onclick="doc_onclick()" class="avatar-title bg-warning rounded-circle" href="http://docs.google.com/a/au.edu" title="Document" target="_blank"><i class="fas fa-folder-open fa-2x"></i></a>
                 </div><!--end media-body-->
             </div>
         </div>
@@ -385,7 +384,7 @@
                         <a class="dropdown-item" href="@Url.Action("Index","Profile")"><i class="dripicons-user text-muted mr-2"></i> Account Profile</a>
                         <a class="dropdown-item" href="@Url.Action("ChangePassword","Profile")"><i class="dripicons-lock text-muted mr-2"></i> Change Password</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="@Url.Action("Logout", "Auth")"><i class="dripicons-exit text-muted mr-2"></i> Logout</a>
+                        <a class="dropdown-item" href="@Url.Action("Logout", "Auth")" onclick="logout()"><i class="dripicons-exit text-muted mr-2"></i> Logout</a>
                     </div>
                 </li>
             </ul><!--end topbar-nav-->
@@ -415,13 +414,12 @@
                         <div>
                             @if (TempData["responseXml"] != null && TempData["relayState"] != null)
                             {
-                                sso = 1;
                                 <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20">
-                                @TempData["responseXml"]
-                            </textarea>
+                                    @TempData["responseXml"]
+                                </textarea>
                                 <textarea name="RelayState" id="RelayState" cols="130" rows="5">
-                                @TempData["relayState"]
-                            </textarea>
+                                    @TempData["relayState"]
+                                </textarea>
                             }
                         </div>
                     </div>
@@ -505,14 +503,41 @@
     </script>
     <script>
         function gmail_onclick() {
-            $('#btnssosubmit').click();
+            var sso = localStorage.getItem("sso");
+            if (sso != 'successed') {
+                $('#btnssosubmit').click();
+                localStorage.setItem("sso", "successed");
+            }
             window.open('http://gmail.google.com/a/au.edu', '_blank');
             $('.loading').hide();
-
         }
-        $(document).ready(function () {
-            var sso = '@sso';
+        function cal_onclick() {
+            var sso = localStorage.getItem("sso");
+            if (sso != 'successed') {
+                $('#btnssosubmit').click();
+                localStorage.setItem("sso", "successed");
+            }
+            window.open('http://calendar.google.com/a/au.edu', '_blank');
+            $('.loading').hide();
+        }
+        function doc_onclick() {
+            var sso = localStorage.getItem("sso");
+            if (sso != 'successed') {
+                $('#btnssosubmit').click();
+                localStorage.setItem("sso", "successed");
+            }
+            window.open('http://docs.google.com/a/au.edu', '_blank');
+            $('.loading').hide();
+        }
+        $(function () {
+           
         });
+        $(document).ready(function () {
+            
+        });
+        function logout() {
+            localStorage.removeItem("sso");
+        }
     </script>
     @RenderSection("scripts", required: false)
 

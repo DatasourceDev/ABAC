@@ -48,7 +48,7 @@ namespace ABAC.Controllers
                     using (var process = new Process())
                     {
                         //process.StartInfo.FileName = Path.Combine("C:\\Dthai\\SMAL\\", "ABAC-SAML.exe"); // relative path. absolute path works too. 
-                        process.StartInfo.FileName = Path.Combine("C:\\Source Code\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        process.StartInfo.FileName = Path.Combine("C:\\Work\\ABAC\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
                         process.StartInfo.ArgumentList.Add($"{username}");
                         process.StartInfo.ArgumentList.Add($"{samlRequest}");
                         process.StartInfo.CreateNoWindow = true;
@@ -172,6 +172,33 @@ namespace ABAC.Controllers
                 {
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
                     this._loginServices.Login(aduser, AppUtil.getaUUserType(aduser.DistinguishedName), true);
+
+                    var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
+                    var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
+
+                    if (string.IsNullOrEmpty(model.SAMLRequest))
+                        model.SAMLRequest = SAMLRequest;
+                    if (string.IsNullOrEmpty(model.RelayState))
+                        model.RelayState = RelayState;
+
+                    var username = model.UserName;
+                    if (string.IsNullOrEmpty(aduser.EmailAddress))
+                        username = model.UserName + _conf.DomainGmail;
+                    else
+                        username = aduser.EmailAddress;
+
+                    var responseXml = "";
+                    while (string.IsNullOrEmpty(responseXml))
+                    {
+                        var sso = SSO(username, model.SAMLRequest, model.RelayState);
+                        if (sso != null)
+                        {
+                            responseXml = sso.responseXml;
+                            TempData["responseXml"] = sso.responseXml;
+                            TempData["actionUrl"] = sso.actionUrl;
+                            TempData["relayState"] = sso.relayState;
+                        }
+                    }
                     return RedirectToAction("Home", "Profile");
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
