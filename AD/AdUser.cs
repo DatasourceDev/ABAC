@@ -215,7 +215,6 @@ namespace ABAC.Identity
         public string DistinguishedName { get; set; }
         public string Domain { get; set; }
 
-        [Required]
         public string EmailAddress { get; set; }
         public string EmployeeId { get; set; }
         public bool? Enabled { get; set; }
@@ -300,6 +299,7 @@ namespace ABAC.Identity
                 UserCannotChangePassword = user.UserCannotChangePassword,
                 UserPrincipalName = user.UserPrincipalName,
                 VoiceTelephoneNumber = user.VoiceTelephoneNumber,
+                accountExpires = user.AccountExpirationDate,
                 aUIDCard = getpropertyvalue(d.Properties, "aUIDCard"),
                 aUEmpcode = getpropertyvalue(d.Properties, "aUEmpcode"),
                 aUEmpType = getpropertyvalue(d.Properties, "aUEmpType"),

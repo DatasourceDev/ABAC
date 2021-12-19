@@ -540,12 +540,24 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var aduser = await _provider.GetAdUser2(id, _context);
-            aduser.ExpireDate = DateUtil.ToDisplayDate( aduser.accountExpires);
-            //model.cu_CUexpire_select = true;
-            //model.cu_CUexpire_day = DateUtil.Now().Day;
-            //model.cu_CUexpire_month = DateUtil.Now().Month;
-            //model.cu_CUexpire_year = DateUtil.Now().Year + 1;
-
+            if(aduser != null)
+            {
+                if(aduser.aUUserType == aUUserType.bulk)
+                {
+                    var bulk = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                    if (bulk != null)
+                        aduser.ValidDate = DateUtil.ToDisplayDate(bulk.valid_date);
+                    else
+                    {
+                        var bulkimp = _context.User_Bulk_Import.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                        if (bulkimp != null)
+                            aduser.ValidDate = DateUtil.ToDisplayDate(bulkimp.valid_date);
+                    }
+                    
+                    aduser.ExpireDate = DateUtil.ToDisplayDate(aduser.accountExpires);
+                }
+            }
+           
             return View(aduser);
         }
 
@@ -577,6 +589,76 @@ namespace ABAC.Controllers
                         aduser.PassportID = model.PassportID;
                         aduser.Reference = model.Reference;
                         aduser.accountExpires = DateUtil.ToDate( model.ExpireDate);
+
+                        if (model.aUUserType == aUUserType.office)
+                        {
+                            var user = _context.User_Office.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                            if (user != null)
+                            {
+                                user.firstname = model.GivenName;
+                                user.lastname = model.Surname;
+                                user.CitizenID = model.aUIDCard;
+                                user.PassportID = model.PassportID;
+                                user.Reference = model.Reference;
+                                user.adminname = userlogin.SamAccountName;
+                                user.Update_By = userlogin.SamAccountName;
+                                user.Update_On = DateUtil.Now();
+                                _context.SaveChanges();
+                                writelog(LogType.log_edit_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                            }
+                        }
+                        else if (model.aUUserType == aUUserType.vip)
+                        {
+                            var user = _context.User_VIP.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                            if (user != null)
+                            {
+                                user.firstname = model.GivenName;
+                                user.lastname = model.Surname;
+                                user.CitizenID = model.aUIDCard;
+                                user.PassportID = model.PassportID;
+                                user.Reference = model.Reference;
+                                user.adminname = userlogin.SamAccountName;
+                                user.Update_By = userlogin.SamAccountName;
+                                user.Update_On = DateUtil.Now();
+                                _context.SaveChanges();
+                                writelog(LogType.log_edit_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                            }
+
+                        }
+                        else if (model.aUUserType == aUUserType.bulk)
+                        {
+                            var user = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                            if(user != null)
+                            {
+                                user.firstname = model.GivenName;
+                                user.lastname = model.Surname;
+                                user.valid_date = DateUtil.ToDate(model.ValidDate);
+                                user.expire_date = DateUtil.ToDate(model.ExpireDate);                                
+                                user.today = DateUtil.Now();
+                                user.adminname = userlogin.SamAccountName;
+                                user.Update_By = userlogin.SamAccountName;
+                                user.Update_On = DateUtil.Now();
+                                _context.SaveChanges();
+                                writelog(LogType.log_edit_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                            }
+                            else
+                            {
+                                var bulkimp = _context.User_Bulk_Import.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                                if (bulkimp != null)
+                                {
+                                    bulkimp.firstname = model.GivenName;
+                                    bulkimp.lastname = model.Surname;
+                                    bulkimp.valid_date = DateUtil.ToDate(model.ValidDate);
+                                    bulkimp.expire_date = DateUtil.ToDate(model.ExpireDate);
+                                    bulkimp.today = DateUtil.Now();
+                                    bulkimp.adminname = userlogin.SamAccountName;
+                                    bulkimp.Update_By = userlogin.SamAccountName;
+                                    bulkimp.Update_On = DateUtil.Now();
+                                    _context.SaveChanges();
+                                    writelog(LogType.log_edit_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                                }
+                            }
+                        }
                     }
                     var result_ad = _provider.UpdateUser(aduser, _context);
                     if (result_ad.result == true)
@@ -584,8 +666,8 @@ namespace ABAC.Controllers
                     else
                         writelog(LogType.log_edit_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
+                    
                     return RedirectToAction("CheckAccount", "Account", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
-
                 }
             }
             return View(model);
