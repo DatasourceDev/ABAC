@@ -19,7 +19,7 @@ namespace ABAC
     }
     public enum IDMSource
     {
-        VisualFim,
+        Database,
         AD,
         LDAP
     }

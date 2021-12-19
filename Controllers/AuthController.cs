@@ -220,7 +220,7 @@ namespace ABAC.Controllers
         }
         public IActionResult Logout()
         {
-            writelog(LogType.log_logout, LogStatus.successfully, IDMSource.VisualFim, this.HttpContext.User.Identity.Name, this.HttpContext.User.Identity.Name + " ออกจากระบบสำเร็จ");
+            writelog(LogType.log_logout, LogStatus.successfully, IDMSource.Database, this.HttpContext.User.Identity.Name, this.HttpContext.User.Identity.Name + " ออกจากระบบสำเร็จ");
             this._loginServices.Logout();
             var portal = _conf.Portal;
             if (portal == Portal.admin)

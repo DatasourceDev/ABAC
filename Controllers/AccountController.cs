@@ -104,7 +104,7 @@ namespace ABAC.Controllers
 
                         user.ad_created = result_ad.result;
                         _context.SaveChanges();
-                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
 
                     }
                     else if (model.aUUserType == aUUserType.vip)
@@ -134,7 +134,7 @@ namespace ABAC.Controllers
 
                         user.ad_created = result_ad.result;
                         _context.SaveChanges();
-                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
 
                     }
                     else if (model.aUUserType == aUUserType.bulk)
@@ -164,7 +164,7 @@ namespace ABAC.Controllers
 
                         user.ad_created = result_ad.result;
                         _context.SaveChanges();
-                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                        writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                     }
                     else
                     {
@@ -176,7 +176,7 @@ namespace ABAC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    writelog(LogType.log_create_account, LogStatus.failed, IDMSource.VisualFim, model.SamAccountName, log_exception: ex.Message);
+                    writelog(LogType.log_create_account, LogStatus.failed, IDMSource.Database, model.SamAccountName, log_exception: ex.Message);
                 }
             }
             return View(model);
@@ -363,7 +363,7 @@ namespace ABAC.Controllers
                 user.ad_created = result_ad.result;
 
                 _context.SaveChanges();
-                writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
+                writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.Database, aduser.SamAccountName);
             }
             _context.table_temp_import.RemoveRange(_context.table_temp_import);
             _context.SaveChanges();
@@ -387,9 +387,13 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var model = new Bulk();
-            ViewBag.Message = msg;
-            ViewBag.ReturnCode = code;
+            if (!string.IsNullOrEmpty(msg))
+            {
+                ViewBag.Message = msg;
+                ViewBag.ReturnCode = code;
+            }
             model.NumberOfPeople = 1;
+            model.ValidDate = DateUtil.ToDisplayDate(DateUtil.Now());
             //model.system_faculty_id = 0;
             //model.cu_CUexpire_day = DateUtil.Now().Day;
             //model.cu_CUexpire_month = DateUtil.Now().Month;
@@ -469,7 +473,7 @@ namespace ABAC.Controllers
                 user.ad_created = result_ad.result;
 
                 _context.SaveChanges();
-                writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.VisualFim, aduser.SamAccountName);
+                writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.Database, aduser.SamAccountName);
                
             }
             msg = ReturnMessage.Success;
@@ -674,13 +678,13 @@ namespace ABAC.Controllers
                                     writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
                             
-                                writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                                writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                             }
                             
                         }
                         catch (Exception ex)
                         {
-                            writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.VisualFim, id, log_exception: ex.Message);
+                            writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.Database, id, log_exception: ex.Message);
                         }
                     }
                     return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success });
@@ -953,7 +957,7 @@ namespace ABAC.Controllers
                     else
                         writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.AD, model.id, log_exception: result_ad.Message);
 
-                    writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.VisualFim, model.id);
+                    writelog(LogType.log_reset_password, LogStatus.successfully, IDMSource.Database, model.id);
 
                     msg = ReturnMessage.ChangePasswordSuccess;
                     code = ReturnCode.Success;
@@ -963,7 +967,7 @@ namespace ABAC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.VisualFim, model.id, log_exception: ex.Message);
+                    writelog(LogType.log_reset_password, LogStatus.failed, IDMSource.Database, model.id, log_exception: ex.Message);
                 }
             }
             return View(model);
@@ -1054,11 +1058,11 @@ namespace ABAC.Controllers
                             else
                                 writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                            writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                            writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                         }
                         catch (Exception ex)
                         {
-                            writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.VisualFim, model.SamAccountName, log_exception: ex.Message);
+                            writelog(LogType.log_unlock_account, LogStatus.failed, IDMSource.Database, model.SamAccountName, log_exception: ex.Message);
                         }
                         return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success, status = userAccountControl.EnablePasswordNotRequired });
                     }
@@ -1073,11 +1077,11 @@ namespace ABAC.Controllers
                             else
                                 writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                            writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.VisualFim, model.SamAccountName);
+                            writelog(LogType.log_lock_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                         }
                         catch (Exception ex)
                         {
-                            writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.VisualFim, model.SamAccountName, log_exception: ex.Message);
+                            writelog(LogType.log_lock_account, LogStatus.failed, IDMSource.Database, model.SamAccountName, log_exception: ex.Message);
                         }
                         return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success, status = userAccountControl.DisablePasswordNotRequired });
                     }
