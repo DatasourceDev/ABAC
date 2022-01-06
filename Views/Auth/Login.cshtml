@@ -6,6 +6,12 @@
     Layout = "_LayoutLogin";
 
     var setup = _context.table_setup.FirstOrDefault();
+    var landing = _context.table_landing_page.OrderBy(r => Guid.NewGuid()).FirstOrDefault();
+    var landingsrc = "";
+    if(landing != null)
+    {
+        landingsrc = landing.Url;
+    }
 
 }
 <div class="container-fluid">
@@ -43,7 +49,7 @@
 
     <!-- Log In page -->
     <div class="row vh-100">
-        <div class="col-lg-9 p-0 h-100vh d-flex justify-content-center auth-bg">
+        <div class="col-lg-9 p-0 h-100vh d-flex justify-content-center auth-bg" style='background: url(@landingsrc) no-repeat center center;' >
             <div class="accountbg d-flex align-items-lg-start">
                 <div class="account-title text-center text-white">
                     @*<img src="~/images/logo.png" alt="">*@

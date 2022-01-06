@@ -14,6 +14,9 @@ using ABAC.Extensions;
 using ABAC.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace ABAC.Controllers
 {
@@ -21,12 +24,101 @@ namespace ABAC.Controllers
     public class SystemController : ControllerBase
     {
         private IUserProvider provider;
-
-        public SystemController(SpuContext context, ILogger<SystemController> logger, ILoginServices loginServices, IUserProvider provider, IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider)
+        public string _rootPath;
+        public SystemController(SpuContext context, ILogger<SystemController> logger, ILoginServices loginServices, IUserProvider provider, IOptions<SystemConf> conf, IHostingEnvironment env) : base(context, logger, loginServices, conf, provider)
         {
             this.provider = provider;
-
+            this._rootPath = env.WebRootPath;
         }
+
+        public IActionResult LandingPage()
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var model = new SearchDTO();
+            model.lists = _context.table_landing_page;
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> LandingPage(IFormFile file)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+                if (file != null)
+                {
+                    var ex = Path.GetExtension(file.FileName);
+                    var filename = Guid.NewGuid().ToString() + ex;
+                    var filePath = Path.Combine(_rootPath + "\\files\\landingpage", filename);
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+
+                    }
+                    filePath = filePath.Replace(_rootPath, "");
+                    filePath = filePath.Replace("\\", "/");
+                    var model = new landing_page();
+                    model.Url = filePath;
+                    model.File_Name = filename;
+                    model.Create_On = DateUtil.Now();
+                    model.Create_By = userlogin.SamAccountName;
+                    model.Update_On = DateUtil.Now();
+                    model.Update_By = userlogin.SamAccountName;
+                    this._context.table_landing_page.Add(model);
+                    this._context.SaveChanges();
+
+                   
+                }
+                ViewBag.Message = ReturnMessage.Success;
+                ViewBag.ReturnCode = ReturnCode.Success;
+                return RedirectToAction("LandingPage");
+            }
+            return RedirectToAction("LandingPage");
+        }
+
+        public IActionResult LandingPageDelete(int? id)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            ViewBag.Message = ReturnMessage.Error;
+            ViewBag.ReturnCode = ReturnCode.Error;
+            if (id.HasValue)
+            {
+                var model = this._context.table_landing_page.Where(a => a.ID == id).FirstOrDefault();
+                if (model == null)
+                    return RedirectToAction("LandingPage");
+                else
+                {
+                    this._context.table_landing_page.Remove(model);
+                    this._context.SaveChanges();
+
+                    var filePath = Path.Combine(_rootPath + "\\files\\landingpage", model.File_Name);
+                    if (!string.IsNullOrEmpty(filePath))
+                    {
+                        if (System.IO.File.Exists(filePath))
+                        {
+                            System.IO.File.Delete(filePath);
+                        }
+                    }
+                    this._context.SaveChanges();
+                    ViewBag.Message = ReturnMessage.Success;
+                    ViewBag.ReturnCode = ReturnCode.Success;
+                }
+            }
+            return RedirectToAction("LandingPage");
+        }
+
         public IActionResult CMSStaff()
         {
             if (!checkrole())
