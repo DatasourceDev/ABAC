@@ -47,8 +47,8 @@ namespace ABAC.Controllers
                     List<string> result = new List<string>();
                     using (var process = new Process())
                     {
-                        //process.StartInfo.FileName = Path.Combine("C:\\Dthai\\SMAL\\", "ABAC-SAML.exe"); // relative path. absolute path works too. 
-                        process.StartInfo.FileName = Path.Combine("C:\\Work\\ABAC\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        process.StartInfo.FileName = Path.Combine("C:\\Dthai\\SMAL\\", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        //process.StartInfo.FileName = Path.Combine("C:\\Work\\ABAC\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
                         process.StartInfo.ArgumentList.Add($"{username}");
                         process.StartInfo.ArgumentList.Add($"{samlRequest}");
                         process.StartInfo.CreateNoWindow = true;

@@ -129,6 +129,7 @@
                                                     <th>First Name</th>
                                                     <th>Last Name</th>
                                                     <th>Mail</th>
+                                                    <th>Remark</th>
                                                     <th></th>
                                                     <th></th>
                                                 </tr>
@@ -157,6 +158,9 @@
                                                     <td>@item.sn</td>
                                                     <td>@item.mail</td>
                                                     <td>
+                                                        
+                                                    </td>
+                                                    <td>
                                                         @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)
                                                         {
                                                             <span id="status-@item.sAMAccountName" class="badge badge-success">@item.userAccountControl.toUserAccountControl()</span>
@@ -184,7 +188,7 @@
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="8" class="text-center">ไม่พบข้อมูล</td>
+                                                        <td colspan="9" class="text-center">ไม่พบข้อมูล</td>
                                                     </tr>
                                                 }
                                             </tbody>
