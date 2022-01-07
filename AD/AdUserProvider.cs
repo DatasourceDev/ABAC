@@ -209,7 +209,7 @@ namespace ABAC.Identity
                         foreach (var role in roles)
                         {
                             if (adusers.Count < 100)
-                                adusers.AddRange(FindUser(model.usertype_search.toOUName().ToLower(), role, model.text_search, setup, spucontext));
+                                adusers.AddRange(FindUser(role.toOUName().ToLower(), "", model.text_search, setup, spucontext));
                         }
                     }
 
