@@ -154,7 +154,7 @@ namespace ABAC.Controllers
                 //return RedirectToAction("Home", "Profile");
 
 
-                var aduser = await _provider.GetAdUser2(model.UserName, _context);
+                var aduser = await _provider.GetAdUser2(model.UserName, _context, _conf.Env);
                 if (aduser == null)
                 {
                     writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "ไม่พบข้อมูลผู้ใช้ " + model.UserName + " ในระบบ AD", model.UserName);

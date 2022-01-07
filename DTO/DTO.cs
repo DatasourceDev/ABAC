@@ -70,6 +70,7 @@ namespace ABAC.DTO
 
         public ReturnCode? code { get; set; }
         public string msg { get; set; }
+        public string temp { get; set; }
 
         private IQueryable<object> _lists;
         

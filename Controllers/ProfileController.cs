@@ -28,7 +28,7 @@ namespace ABAC.Controllers
         }
         public async Task<IActionResult> Home()
         {
-            var aduser = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var aduser = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (aduser == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -37,7 +37,7 @@ namespace ABAC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var model = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var model = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (model != null)
             {
 
@@ -54,7 +54,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO model)
         {
-            var aduser = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var aduser = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (aduser == null)
                 return RedirectToAction("Logout", "Auth");
 

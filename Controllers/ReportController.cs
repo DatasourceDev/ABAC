@@ -35,7 +35,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -163,6 +163,19 @@ namespace ABAC.Controllers
 
             model.lists = lists.OrderByDescending(o => o.log_datetime).AsQueryable();
 
+            return View(model);
+        }
+
+        public IActionResult CreateUser(SearchDTO model)
+        {
+            return View(model);
+        }
+        public IActionResult UpdateUser(SearchDTO model)
+        {
+            return View(model);
+        }
+        public IActionResult DeleteUser(SearchDTO model)
+        {
             return View(model);
         }
     }

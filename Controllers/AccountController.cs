@@ -42,7 +42,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -61,11 +61,11 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
-            var dup = await _provider.GetAdUser2(model.SamAccountName, _context);
+            var dup = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
             if (dup != null)
             {
                 ModelState.AddModelError("SamAccountName", "username ซ้ำในระบบ");
@@ -190,7 +190,7 @@ namespace ABAC.Controllers
             var model = new AdUser2();
             if (!string.IsNullOrEmpty(id))
             {
-                model = await _provider.GetAdUser2(id, _context);
+                model = await _provider.GetAdUser2(id, _context, _conf.Env);
                 if (model == null)
                     return RedirectToAction("Logout", "Auth");
             }
@@ -291,7 +291,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -310,7 +310,12 @@ namespace ABAC.Controllers
                 var dup = true;
                 while(dup == true)
                 {
-                    var account = await _provider.GetAdUser2(username, _context);
+                    if(_conf.Env == "dev")
+                    {
+                        dup = false;
+                        break;
+                    }
+                    var account = await _provider.GetAdUser2(username, _context, _conf.Env);
                     if (account == null)
                     {
                         dup = false;
@@ -354,25 +359,40 @@ namespace ABAC.Controllers
                 setup.GuestRowNumber = runNumber;
                 _context.SaveChanges();
                 runNumber++;
-                var result_ad = _provider.CreateUser(aduser, _context);
-                if (result_ad.result == true)
-                    writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
-                else
-                    writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
+                if (_conf.Env != "dev")
+                {
+                    var result_ad = _provider.CreateUser(aduser, _context);
+                    if (result_ad.result == true)
+                        writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
+                    else
+                        writelog(LogType.log_create_account_with_file, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
 
-                user.ad_created = result_ad.result;
-
+                    user.ad_created = result_ad.result;
+                }
+                
+                imp.ImportRemark = "Completed";
                 _context.SaveChanges();
                 writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.Database, aduser.SamAccountName);
             }
-            _context.table_temp_import.RemoveRange(_context.table_temp_import);
+            //_context.table_temp_import.RemoveRange(_context.table_temp_import);
             _context.SaveChanges();
             msg = ReturnMessage.ImportSuccess;
             code = ReturnCode.Success;
-            return RedirectToAction("CreateAccountFromFile", new { code = code, msg = msg });
+            return RedirectToAction("CreateAccountFromFileCompleted", new { code = code, msg = msg });
         }
 
+        public IActionResult CreateAccountFromFileCompleted(SearchDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
 
+            model.lists = (new List<temp_import>()).AsQueryable();
+            if (model.code == ReturnCode.Success)
+                model.lists = (_context.table_temp_import).AsQueryable();
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
+            return View(model);
+        }
         #endregion
 
         #region CreateAccount
@@ -382,7 +402,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -407,7 +427,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -421,6 +441,7 @@ namespace ABAC.Controllers
             if (model.NumberOfPeople <= 0)
                 model.NumberOfPeople = 1;
 
+            var temp = "";
             int runNumber = setup.GuestRowNumber + 1;
             for (var i=0; i < model.NumberOfPeople; i++)
             {
@@ -428,7 +449,12 @@ namespace ABAC.Controllers
                 var dup = true;
                 while (dup == true)
                 {
-                    var account = await _provider.GetAdUser2(username, _context);
+                    if (_conf.Env == "dev")
+                    {
+                        dup = false;
+                        break;
+                    }
+                    var account = await _provider.GetAdUser2(username, _context, _conf.Env);
                     if (account == null)
                     {
                         dup = false;
@@ -464,21 +490,42 @@ namespace ABAC.Controllers
                 setup.GuestRowNumber = runNumber;
                 _context.SaveChanges();
                 runNumber++;
-                var result_ad = _provider.CreateUser(aduser, _context);
-                if (result_ad.result == true)
-                    writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
-                else
-                    writelog(LogType.log_create_account_bulk, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
 
-                user.ad_created = result_ad.result;
+                if(_conf.Env != "dev")
+                {
+                    var result_ad = _provider.CreateUser(aduser, _context);
+                    if (result_ad.result == true)
+                        writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.AD, aduser.SamAccountName);
+                    else
+                        writelog(LogType.log_create_account_bulk, LogStatus.failed, IDMSource.AD, aduser.SamAccountName, log_exception: result_ad.Message);
+
+                    user.ad_created = result_ad.result;
+                }
 
                 _context.SaveChanges();
+                temp += user.username + "|";
                 writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.Database, aduser.SamAccountName);
                
             }
             msg = ReturnMessage.Success;
             code = ReturnCode.Success;
-            return RedirectToAction("CreateAccountBulk", new { code = code, msg = msg });
+            return RedirectToAction("CreateAccountBulkCompleted", new { code = code, msg = msg, temp = temp });
+        }
+
+        public IActionResult CreateAccountBulkCompleted(SearchDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            if (!string.IsNullOrEmpty(model.temp))
+            {
+                var users = model.temp.Split("|",StringSplitOptions.RemoveEmptyEntries);
+                model.lists = users.AsQueryable(); 
+            }
+           
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
+            return View(model);
         }
         #endregion
 
@@ -488,7 +535,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var aduser = await _provider.GetAdUser2(id, _context);
+            var aduser = await _provider.GetAdUser2(id, _context, _conf.Env);
             if(aduser != null)
             {
                 if(aduser.aUUserType == aUUserType.bulk)
@@ -516,7 +563,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -527,7 +574,7 @@ namespace ABAC.Controllers
 
                 if (model.isnew == false)
                 {
-                    var aduser = await _provider.GetAdUser2(model.SamAccountName, _context);
+                    var aduser = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
                     if (aduser != null)
                     {
                         aduser.GivenName = model.GivenName;
@@ -663,7 +710,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
@@ -676,7 +723,7 @@ namespace ABAC.Controllers
                     {
                         try
                         {
-                            var model = await _provider.GetAdUser2(id, _context);
+                            var model = await _provider.GetAdUser2(id, _context, _conf.Env);
                             if(model != null)
                             {
                                 var userType = AppUtil.getaUUserType(model.DistinguishedName);
@@ -777,7 +824,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk, roleType.PasswordOperator }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -789,7 +836,7 @@ namespace ABAC.Controllers
                 ViewBag.ReturnCode = code;
                 try
                 {
-                    var user = await _provider.GetAdUser2(model.id, _context);
+                    var user = await _provider.GetAdUser2(model.id, _context, _conf.Env);
                     if (user == null)
                         return RedirectToAction("Logout", "Auth");
 
@@ -882,13 +929,13 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
             if (!string.IsNullOrEmpty(id))
             {
-                var model = await _provider.GetAdUser2(id, _context);
+                var model = await _provider.GetAdUser2(id, _context, _conf.Env);
                 if (model != null)
                 {
                     var userType = AppUtil.getaUUserType(model.DistinguishedName);

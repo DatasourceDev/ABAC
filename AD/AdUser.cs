@@ -169,7 +169,8 @@ namespace ABAC.Identity
         public string aUUserType { get; set; }
         public string aUStudentId { get; set; }
         public string aUSex { get; set; }
-        
+        public string aUOtherMail { get; set; }
+
         private static string getpropertyvalue(PropertyCollection Properties, string PropertyName)
         {
             if (Properties.Contains(PropertyName))
@@ -246,6 +247,8 @@ namespace ABAC.Identity
         public string aUIDCard { get; set; }
         public string aUUserType { get; set; }
         public string aUStudentId { get; set; }
+        public string aUOtherMail { get; set; }
+        
         public string Reference { get; set; }
         public string ValidDate { get; set; }
 
@@ -305,6 +308,7 @@ namespace ABAC.Identity
                 aUEmpType = getpropertyvalue(d.Properties, "aUEmpType"),
                 aUStudentId = getpropertyvalue(d.Properties, "aUStudentId"),
                 aUUserType = getpropertyvalue(d.Properties, "aUUserType"),
+                aUOtherMail = getpropertyvalue(d.Properties, "aUOtherMail"),
                 PassportID = getpropertyvalue(d.Properties, "departmentNumber"),
                 Reference = getpropertyvalue(d.Properties, "department"),
                 userAccountControl = getpropertyvalue(d.Properties, "userAccountControl"),

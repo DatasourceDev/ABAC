@@ -47,7 +47,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -136,7 +136,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -188,7 +188,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -240,7 +240,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -292,7 +292,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -344,7 +344,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
@@ -507,7 +507,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin }))
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
@@ -544,7 +544,7 @@ namespace ABAC.Controllers
             if (!checkrole(new string[] { roleType.Admin }))
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 

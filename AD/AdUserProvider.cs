@@ -21,7 +21,7 @@ namespace ABAC.Identity
     public interface IUserProvider
     {
 
-        Task<AdUser2> GetAdUser2(string samAccountName, SpuContext spucontext);
+        Task<AdUser2> GetAdUser2(string samAccountName, SpuContext spucontext, string env);
 
         Result ValidateCredentials(string samAccountName, string password, SpuContext spucontext);
 
@@ -47,33 +47,36 @@ namespace ABAC.Identity
     public class AdUserProvider : IUserProvider
     {
 
-        public Task<AdUser2> GetAdUser2(string samAccountName, SpuContext spucontext)
+        public Task<AdUser2> GetAdUser2(string samAccountName, SpuContext spucontext, string env)
         {
             return Task.Run(() =>
             {
                 try
                 {
-                    //var user = new AdUser2();
-                    //user.DistinguishedName = "CN=u9999999,OU=Bachelor,OU=MAJOR FIELD: DIGITAL BUSINESS MANAGEMENT,OU=BUSINESS ADMINISTRATION,OU=Student,DC=auds,DC=au,DC=edu";
-                    //user.DisplayName = "u9999999";
-                    //user.GivenName = "u9999999";
-                    //user.Name = "u9999999";
-                    //user.SamAccountName = "u9999999";
-                    //user.UserPrincipalName = "u9999999@au.edu";
-                    //user.userAccountControl = "66048";
-                    //user.EmailAddress = "u9999999@au.edu";
-                    //return user;
+                    if(env == "dev")
+                    {
+                        //var user = new AdUser2();
+                        //user.DistinguishedName = "CN=u9999999,OU=Bachelor,OU=MAJOR FIELD: DIGITAL BUSINESS MANAGEMENT,OU=BUSINESS ADMINISTRATION,OU=Student,DC=auds,DC=au,DC=edu";
+                        //user.DisplayName = "u9999999";
+                        //user.GivenName = "u9999999";
+                        //user.Name = "u9999999";
+                        //user.SamAccountName = "u9999999";
+                        //user.UserPrincipalName = "u9999999@au.edu";
+                        //user.userAccountControl = "66048";
+                        //user.EmailAddress = "u9999999@au.edu";
+                        //return user;
 
-                    var user = new AdUser2();
-                    user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
-                    user.DisplayName = "adminwebmaster";
-                    user.GivenName = "u999adminwebmaster9999";
-                    user.Name = "adminwebmaster";
-                    user.SamAccountName = "adminwebmaster";
-                    user.UserPrincipalName = "adminwebmaster@au.edu";
-                    user.userAccountControl = "66048";
-                    user.EmailAddress = "adminwebmaster@au.edu";
-                    return user;
+                        var user = new AdUser2();
+                        user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
+                        user.DisplayName = "adminwebmaster";
+                        user.GivenName = "u999adminwebmaster9999";
+                        user.Name = "adminwebmaster";
+                        user.SamAccountName = "adminwebmaster";
+                        user.UserPrincipalName = "adminwebmaster@au.edu";
+                        user.userAccountControl = "66048";
+                        user.EmailAddress = "adminwebmaster@au.edu";
+                        return user;
+                    }
 
                     var setup = spucontext.table_setup.FirstOrDefault();
 
