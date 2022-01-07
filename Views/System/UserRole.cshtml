@@ -1,4 +1,5 @@
 ﻿@model ABAC.DTO.UserRoleDTO
+@using ABAC.Identity;
 @{
     ViewData["Title"] = "กำหนดสิทธิ์การใช้งาน";
 }
@@ -36,9 +37,9 @@
         </div><!--end col-->
     </div>
     <!--end row-->
-    <form class="form-horizontal form-parsley" asp-action="UserRole" asp-controller="System" method="get">
+    <form class="form-horizontal form-parsley" asp-action="UserRole" asp-controller="System" method="get" id="theForm">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-5">
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">
@@ -51,7 +52,7 @@
                                     <option value="@roleType.WebMaster">@roleType.WebMaster</option>
                                 </select>
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-3">
                                 <label class="col-form-label"><br /></label>
                                 <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
                             </div>
@@ -63,7 +64,12 @@
                                         <table class="table table-striped mb-0 font-12">
                                             <thead>
                                                 <tr>
-                                                    <th>Sam Account Name</th>
+                                                    <th width="30px">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="chkall" onchange="OnCheckAll()">
+                                                            <label class="custom-control-label" for="chkall"></label>
+                                                        </div>
+                                                    </th>
                                                     <th>Username</th>
                                                 </tr>
                                             </thead>
@@ -73,8 +79,13 @@
                                                     foreach (user_role item in Model.lists)
                                                     {
                                                         <tr>
-                                                            <td></td>
-                                                            <td></td>
+                                                            <td>
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input type="checkbox" class="custom-control-input chk" id="chk-@item.username" value="@item.username">
+                                                                    <label class="custom-control-label" for="chk-@item.username"></label>
+                                                                </div>
+                                                            </td>
+                                                            <td>@item.username</td>
                                                         </tr>
                                                     }
 
@@ -97,16 +108,26 @@
                     </div> <!-- end card-body -->
                 </div> <!-- end card -->
             </div> <!-- end col -->
-            <div class="col-lg-6">
+            <div class="col-lg-1">
+                <div class="form-group row">
+                    <div class="col-lg-12 text-center">
+                        <button class="btn btn-dark" type="button" onclick="add_user_role()"><i class="mdi mdi-arrow-left-bold mdi-24px"></i></button>
+                        <br />
+                        <br />
+                        <button class="btn btn-dark" type="button" onclick="delete_user_role()"><i class="mdi mdi-arrow-right-bold mdi-24px"></i></button>
+                    </div>                    
+                </div>
+            </div>
+            <div class="col-lg-5">
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-lg-6">
                                 <label class="col-form-label">Username</label>
-                                <input class="form-control" type="text" placeholder="" asp-for="text_search" required>
+                                <input class="form-control" type="text" placeholder="" asp-for="text_search">
                                 @Html.ValidationMessageFor(m => m.text_search)
                             </div>
-                            <div class="col-lg-2">
+                            <div class="col-lg-3">
                                 <label class="col-form-label"><br /></label>
                                 <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
                             </div>
@@ -118,18 +139,28 @@
                                         <table class="table table-striped mb-0 font-12">
                                             <thead>
                                                 <tr>
-                                                    <th>Sam Account Name</th>
+                                                    <th width="30px">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" id="chkall2" onchange="OnCheckAll2()">
+                                                            <label class="custom-control-label" for="chkall2"></label>
+                                                        </div>
+                                                    </th>
                                                     <th>Username</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if (Model.lists2 != null)
                                                 {
-                                                    foreach (var item in Model.lists2)
+                                                    foreach (AdUser4 item in Model.lists2)
                                                     {
                                                         <tr>
-                                                            <td></td>
-                                                            <td></td>
+                                                            <td>
+                                                                <div class="custom-control custom-checkbox">
+                                                                    <input type="checkbox" class="custom-control-input chk2" id="chk2-@item.sAMAccountName" value="@item.sAMAccountName">
+                                                                    <label class="custom-control-label" for="chk2-@item.sAMAccountName"></label>
+                                                                </div>
+                                                            </td>
+                                                            <td>@item.sAMAccountName</td>
                                                         </tr>
                                                     }
 
@@ -160,9 +191,80 @@
 </div><!-- container -->
 @section scripts{
     <script>
+        function delete_user_role() {
+            var choose = '';
+            for (var i = 0; i < $('.chk').length; i++) {
+                if ($('.chk').get(i).checked == true) {
+                    choose += $('.chk').get(i).value + ';';
+                }
+            }
+            if (choose == '') {
+                alert('กรุณาระบุบัญชีผู้ใช้');
+                return;
+            }
+            $.ajax({
+                type: 'Get',
+                url: '@Url.Action("UserRoleDelete", "System")?choose=' + choose,
+                success: function (data) {
+                    if (data.result == 1) {
+                        $('#theForm').submit();
+                    }
+                },
+                error: function (XMLHttpRequest, errorThrown) {
+                }
+            });
+        }
+        function add_user_role() {
+            var choose = '';
+            for (var i = 0; i < $('.chk2').length; i++) {
+                if ($('.chk2').get(i).checked == true) {
+                    choose += $('.chk2').get(i).value + ';';
+                }
+            }
+            if (choose == '') {
+                alert('กรุณาระบุบัญชีผู้ใช้');
+                return;
+            }
+            $.ajax({
+                type: 'Get',
+                url: '@Url.Action("UserRoleAdd", "System")?choose=' + choose + '&usertype_search=@Model.userrole_search',
+                success: function (data) {
+                    if (data.result == 1) {
+                        $('#text_search').val('');
+                        $('#theForm').submit();
+                    }
+                },
+                error: function (XMLHttpRequest, errorThrown) {
+                }
+            });
+        }
         function userrole_onchange() {
             var val = $('#userrole_search').val();
             window.location.href = '@(Url.Action("UserRole","System"))?userrole_search=' + val;
+        }
+        function OnCheckAll2() {
+            if ($('#chkall2').get(0).checked == true) {
+                for (var i = 0; i < $('.chk2').length; i++) {
+                    $('.chk2').get(i).checked = true;
+                }
+            }
+            else {
+                for (var i = 0; i < $('.chk2').length; i++) {
+                    $('.chk2').get(i).checked = false;
+                }
+            }
+        }
+        function OnCheckAll() {
+            if ($('#chkall').get(0).checked == true) {
+                for (var i = 0; i < $('.chk').length; i++) {
+                    $('.chk').get(i).checked = true;
+                }
+            }
+            else {
+                for (var i = 0; i < $('.chk').length; i++) {
+                    $('.chk').get(i).checked = false;
+                }
+            }
         }
     </script>
 }

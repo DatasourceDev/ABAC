@@ -213,11 +213,16 @@ namespace ABAC.Controllers
 
         //    return true;
         //}
-        public bool checkrole()
+        public bool checkrole(string[] role)
         {
-            if (this._loginServices.UserRole() != aUUserType.admin)
-                return false;
-            return true;
+            foreach(var r in role)
+            {
+                if (this._loginServices.UserRole().Contains(r))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
         public string RandomPassword(int length = 8, bool includenumber = true, bool includelower = true, bool includeupper = true)
         {

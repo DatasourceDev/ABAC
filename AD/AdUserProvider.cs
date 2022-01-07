@@ -25,7 +25,7 @@ namespace ABAC.Identity
 
         Result ValidateCredentials(string samAccountName, string password, SpuContext spucontext);
 
-        Task<List<AdUser4>> FindUser(SearchDTO model, string[] roles, SpuContext spucontext);
+        Task<List<AdUser4>> FindUser(SearchDTO model, string[] roles, SpuContext spucontext, string env = null);
 
         Result ChangePwdGuestUser(User user, SpuContext spucontext);
         Result CreateUser(AdUser2 model, SpuContext spucontext);
@@ -180,13 +180,20 @@ namespace ABAC.Identity
             }
             return adusers;
         }
-        public Task<List<AdUser4>> FindUser(SearchDTO model, string[] roles, SpuContext spucontext)
+        public Task<List<AdUser4>> FindUser(SearchDTO model, string[] roles, SpuContext spucontext, string env = null)
         {
             return Task.Run(() =>
             {
                 var setup = spucontext.table_setup.FirstOrDefault();
                 var adusers = new List<AdUser4>();
-
+                if(env == "dev")
+                {
+                    adusers.Add(new AdUser4() { sAMAccountName = "adminwebmaster" });
+                    adusers.Add(new AdUser4() { sAMAccountName = "athiphat.hrn" });
+                    adusers.Add(new AdUser4() { sAMAccountName = "chaitadChc" });
+                    adusers.Add(new AdUser4() { sAMAccountName = "jantanaTng" });
+                    return adusers.ToList();
+                }
                 if (!string.IsNullOrEmpty(model.usertype_search))
                 {
                     if (adusers.Count < 100)

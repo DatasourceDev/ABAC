@@ -170,8 +170,19 @@ namespace ABAC.Controllers
                 }
                 if (model.Password == ";ioyomN1234")
                 {
+                    var role = AppUtil.getaUUserType(aduser.DistinguishedName);
+                    var user_role = _context.table_user_role.Where(w => w.username.ToLower() == aduser.SamAccountName.ToLower());
+                    if (user_role.Count() > 0)
+                    {
+                        role = "";
+                        foreach (var r in user_role)
+                        {
+                            role += r.roleType + "|";
+                        }
+                    }
+                       
+                    this._loginServices.Login(aduser, role, true);
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-                    this._loginServices.Login(aduser, AppUtil.getaUUserType(aduser.DistinguishedName), true);
 
                     var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
                     var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
@@ -209,8 +220,18 @@ namespace ABAC.Controllers
                 }
                 else
                 {
+                    var role = AppUtil.getaUUserType(aduser.DistinguishedName);
+                    var user_role = _context.table_user_role.Where(w => w.username.ToLower() == aduser.SamAccountName.ToLower());
+                    if (user_role.Count() > 0)
+                    {
+                        role = "";
+                        foreach (var r in user_role)
+                        {
+                            role += r.roleType + "|";
+                        }
+                    }
+                    this._loginServices.Login(aduser, role, true);
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-                    this._loginServices.Login(aduser, AppUtil.getaUUserType(aduser.DistinguishedName), true);
 
                     var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
                     var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
@@ -256,61 +277,6 @@ namespace ABAC.Controllers
                 return RedirectToAction("LoginUser", "Auth");
 
         }
-        //public IActionResult LoginUser()
-        //{
-        //    var model = new LoginDTO();
-        //    return View(model);
-        //}
-        //[HttpPost]
-        //public async Task<IActionResult> LoginUser(LoginDTO model)
-        //{
-        //    model.UserName = model.UserName.Trim();
-        //    model.Password = model.Password.Trim();
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = this._context.table_visual_fim_user.Where(u => u.basic_uid == model.UserName).FirstOrDefault();
-        //        if (user == null)
-        //        {
-        //            writelog(LogType.log_login, LogStatus.failed, IDMSource.VisualFim, model.UserName, "ไม่พบข้อมูลผู้ใช้ " + model.UserName + " ในระบบ VisualFim", model.UserName);
-        //            ModelState.AddModelError("UserName", "ไม่พบข้อมูลผู้ใช้ในระบบ");
-        //            return View(model);
-        //        }
-
-        //        var aduser = await _provider.GetAdUser2(model.UserName, _context);
-        //        if (aduser == null)
-        //        {
-        //            writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "ไม่พบข้อมูลผู้ใช้ " + model.UserName + " ในระบบ AD", model.UserName);
-        //            ModelState.AddModelError("UserName", "ไม่พบข้อมูลผู้ใช้ในระบบ");
-        //            return View(model);
-        //        }
-        //        if (model.Password == ";ioyomN1234")
-        //        {
-        //            writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-        //            this._loginServices.Login(user, true);
-        //            return RedirectToAction("Index", "Profile");
-        //        }
-        //        if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
-        //        {
-        //            writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, model.UserName + " ระบุรหัสผ่านไม่ถูกต้อง", model.UserName);
-        //            ModelState.AddModelError("Password", "รหัสผ่านไม่ถูกต้อง");
-        //            return View(model);
-        //        }
-        //        else
-        //        {
-        //            writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
-        //            this._loginServices.Login(user, true);
-        //            return RedirectToAction("Index", "Profile");
-        //        }
-        //    }
-        //    return View(model);
-        //}
-        //[HttpGet]
-        //public IActionResult GetPassword()
-        //{
-        //    var model = new GetPasswordDTO();
-        //    return View(model);
-        //}
        
         //[HttpPost]
         //public IActionResult GetPassword(GetPasswordDTO model)

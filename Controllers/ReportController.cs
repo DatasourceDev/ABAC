@@ -32,7 +32,7 @@ namespace ABAC.Controllers
         }
         public async Task<IActionResult> Log(SearchDTO model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);

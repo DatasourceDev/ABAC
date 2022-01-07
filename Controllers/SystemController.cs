@@ -33,7 +33,7 @@ namespace ABAC.Controllers
 
         public IActionResult LandingPage()
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var model = new SearchDTO();
@@ -44,7 +44,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> LandingPage(IFormFile file)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -77,7 +77,7 @@ namespace ABAC.Controllers
                     this._context.table_landing_page.Add(model);
                     this._context.SaveChanges();
 
-                   
+
                 }
                 ViewBag.Message = ReturnMessage.Success;
                 ViewBag.ReturnCode = ReturnCode.Success;
@@ -88,7 +88,7 @@ namespace ABAC.Controllers
 
         public IActionResult LandingPageDelete(int? id)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             ViewBag.Message = ReturnMessage.Error;
@@ -121,7 +121,7 @@ namespace ABAC.Controllers
 
         public IActionResult CMSStaff()
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var model = _context.table_cms.FirstOrDefault();
@@ -133,7 +133,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CMSStaff(cms model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -173,7 +173,7 @@ namespace ABAC.Controllers
 
         public IActionResult CMSVIP()
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var model = _context.table_cms.FirstOrDefault();
@@ -185,7 +185,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CMSVIP(cms model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -225,7 +225,7 @@ namespace ABAC.Controllers
 
         public IActionResult CMSStudent()
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var model = _context.table_cms.FirstOrDefault();
@@ -237,7 +237,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CMSStudent(cms model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -277,7 +277,7 @@ namespace ABAC.Controllers
 
         public IActionResult CMSGuest()
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var model = _context.table_cms.FirstOrDefault();
@@ -289,7 +289,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CMSGuest(cms model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -329,7 +329,7 @@ namespace ABAC.Controllers
 
         public IActionResult CMSOffice()
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var model = _context.table_cms.FirstOrDefault();
@@ -341,7 +341,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> CMSOffice(cms model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return RedirectToAction("Logout", "Auth");
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
@@ -474,20 +474,19 @@ namespace ABAC.Controllers
         [HttpGet]
         public async Task<IActionResult> UserRole(UserRoleDTO model)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin}))
                 return RedirectToAction("Logout", "Auth");
 
             if (string.IsNullOrEmpty(model.userrole_search))
                 model.userrole_search = roleType.Admin;
-            model.lists = _context.table_user_role.Where(w=>w.roleType == model.userrole_search);
+            model.lists = _context.table_user_role.Where(w => w.roleType == model.userrole_search);
 
             if (!string.IsNullOrEmpty(model.text_search))
             {
                 var smodel = new SearchDTO();
                 smodel.text_search = model.text_search;
                 smodel.usertype_search = aUUserType.admin;
-                //string[] roles = { aUUserType.admin.toUserTypeName() };
-                var adusers = await _provider.FindUser(smodel, null, _context);
+                var adusers = await _provider.FindUser(smodel, null, _context, _conf.Env);
                 model.lists2 = adusers.AsQueryable();
             }
             return View(model);
@@ -496,105 +495,89 @@ namespace ABAC.Controllers
         [HttpPost]
         public IActionResult UserRole(UserRoleDTO model, string userrole_search)
         {
-            if (!checkrole())
+            if (!checkrole(new string[] { roleType.Admin }))
                 return RedirectToAction("Logout", "Auth");
 
             model.lists = _context.table_landing_page;
             return View(model);
         }
+        public async Task<JsonResult> UserRoleDelete(string choose)
+        {
+            if (!checkrole(new string[] { roleType.Admin }))
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-        //public IActionResult Role(SearchDTO model)
-        //{
-        //    model.lists = this._context.Roles.Include(i => i.OU).OrderBy(o => o.Index);
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-        //    ViewBag.Message = model.msg;
-        //    ViewBag.ReturnCode = model.code;
-        //    return View(model);
-        //}
-        //public IActionResult RoleInfo(int? id)
-        //{
-        //    Role model = new Role();
-        //    if (id.HasValue)
-        //    {
-        //        model = _context.Roles.Include(i => i.OU).Where(w => w.ID == id).FirstOrDefault();
-        //        if (model != null)
-        //        {
-        //            model.SelectedAdmins = _context.AdminRoles.Where(w => w.RoleID == model.ID).Select(s => s.Admin);
-        //            model.SelectedID = model.SelectedAdmins.Select(s => s.ID).ToArray();
-        //        }
-        //    }
+            if (!string.IsNullOrEmpty(choose))
+            {
+                var lists = choose.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (lists.Count() > 0)
+                {
+                    foreach (var id in lists)
+                    {
+                        try
+                        {
+                            var userrole = _context.table_user_role.Where(w => w.username == id).FirstOrDefault();
+                            if (userrole != null)
+                            {
+                                _context.table_user_role.Remove(userrole);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog(LogType.log_delete_user_role, LogStatus.failed, IDMSource.Database, id, log_exception: ex.Message);
+                        }
+                    }
+                    _context.SaveChanges();
+                    writelog(LogType.log_delete_user_role, LogStatus.successfully, IDMSource.Database, userlogin.SamAccountName);
+                    return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success });
+                }
+            }
+            return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+        }
 
-        //    var UnSelectedAdmins = _context.table_visual_fim_user.Where(w => 1 == 1);
-        //    if (model.SelectedID != null)
-        //    {
-        //        model.UnSelecteAdmins = UnSelectedAdmins.Where(w => !model.SelectedID.Contains(w.id));
-        //        model.UnSelectedID = model.UnSelecteAdmins.Select(s => s.ID).ToArray();
-        //    }
-        //    return View(model);
-        //}
+        public async Task<JsonResult> UserRoleAdd(string choose, string usertype_search)
+        {
+            if (!checkrole(new string[] { roleType.Admin }))
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context);
+            if (userlogin == null)
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
-        //[HttpPost]
-        //public IActionResult RoleInfo(Role model)
-        //{
-        //    var user = this._context.Users.Where(w => w.UserName == this.HttpContext.User.Identity.Name).FirstOrDefault();
-        //    if (user == null)
-        //        return RedirectToAction("Logout", "Auth");
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        ViewBag.Message = ReturnMessage.Error;
-        //        ViewBag.ReturnCode = ReturnCode.Error;
-
-        //        if (model.ID > 0)
-        //        {
-        //            model.Update_On = DateUtil.Now();
-        //            model.Update_By = user.UserName;
-        //            model.OU = null;
-        //            this._context.Update(model);
-
-        //            var adminroles = _context.AdminRoles.Where(w => w.RoleID == model.ID);
-        //            if (adminroles.Count() > 0)
-        //                _context.AdminRoles.RemoveRange(adminroles);
-
-        //            if (model.SelectedID != null)
-        //            {
-        //                foreach (var id in model.SelectedID)
-        //                {
-        //                    var adminrole = new AdminRole();
-        //                    adminrole.AdminID = id;
-        //                    adminrole.RoleID = model.ID;
-        //                    _context.AdminRoles.Add(adminrole);
-        //                }
-        //            }
-        //            this._context.SaveChanges();
-        //            return RedirectToAction("Role", "System", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
-        //        }
-        //        else
-        //        {
-        //            model.Create_On = DateUtil.Now();
-        //            model.Create_By = user.UserName;
-        //            model.Update_On = DateUtil.Now();
-        //            model.Update_By = user.UserName;
-        //            model.OU = null;
-        //            if (model.SelectedID != null)
-        //            {
-        //                foreach (var id in model.SelectedID)
-        //                {
-        //                    var adminrole = new AdminRole();
-        //                    adminrole.AdminID = id;
-        //                    adminrole.Role = model;
-        //                    _context.AdminRoles.Add(adminrole);
-        //                }
-        //            }
-        //            this._context.Roles.Add(model);
-        //            this._context.SaveChanges();
-        //            return RedirectToAction("Role", "System", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
-        //        }
-        //    }
-        //    return View(model);
-        //}
-
-
+            if (!string.IsNullOrEmpty(choose))
+            {
+                var lists = choose.Split(";", StringSplitOptions.RemoveEmptyEntries).ToList();
+                if (lists.Count() > 0)
+                {
+                    foreach (var id in lists)
+                    {
+                        try
+                        {
+                            var userrole = _context.table_user_role.Where(w => w.username == id & w.roleType == usertype_search).FirstOrDefault();
+                            if (userrole == null)
+                            {
+                                var model = new user_role();
+                                model.username = id;
+                                model.roleType = usertype_search;
+                                model.Create_By = userlogin.SamAccountName;
+                                model.Create_On = DateUtil.Now();
+                                _context.table_user_role.Add(model);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            writelog(LogType.log_add_user_role, LogStatus.failed, IDMSource.Database, id, log_exception: ex.Message);
+                        }
+                    }
+                    _context.SaveChanges();
+                    writelog(LogType.log_add_user_role, LogStatus.successfully, IDMSource.Database, userlogin.SamAccountName);
+                    return Json(new { error = ReturnMessage.Success, result = ReturnCode.Success });
+                }
+            }
+            return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+        }
     }
 }
