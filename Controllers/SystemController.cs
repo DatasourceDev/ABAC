@@ -486,7 +486,8 @@ namespace ABAC.Controllers
                 var smodel = new SearchDTO();
                 smodel.text_search = model.text_search;
                 smodel.usertype_search = aUUserType.admin;
-                var adusers = await _provider.FindUser(smodel, null, _context, _conf.Env);
+                var roles = new { aUUserType.admin, aUUserType.staff};
+                var adusers = await _provider.FindUser(smodel, roles, _context, _conf.Env);
                 model.lists2 = adusers.AsQueryable();
             }
             return View(model);
