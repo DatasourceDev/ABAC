@@ -32,7 +32,13 @@ namespace ABAC
         public static string office = "office";
         public static string admin = "admin";
     }
-    
+    public class roleType
+    {
+        public static string Admin = "Admin";
+        public static string Helpdesk = "Helpdesk";
+        public static string WebMaster = "Web Master";
+        public static string PasswordOperator = "Password-Operator";
+    }
     public enum Status
     {
         Enable = 0,

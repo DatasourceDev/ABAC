@@ -471,6 +471,38 @@ namespace ABAC.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> UserRole(UserRoleDTO model)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            if (string.IsNullOrEmpty(model.userrole_search))
+                model.userrole_search = roleType.Admin;
+            model.lists = _context.table_user_role.Where(w=>w.roleType == model.userrole_search);
+
+            if (!string.IsNullOrEmpty(model.text_search))
+            {
+                var smodel = new SearchDTO();
+                smodel.text_search = model.text_search;
+                smodel.usertype_search = aUUserType.admin;
+                //string[] roles = { aUUserType.admin.toUserTypeName() };
+                var adusers = await _provider.FindUser(smodel, null, _context);
+                model.lists2 = adusers.AsQueryable();
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult UserRole(UserRoleDTO model, string userrole_search)
+        {
+            if (!checkrole())
+                return RedirectToAction("Logout", "Auth");
+
+            model.lists = _context.table_landing_page;
+            return View(model);
+        }
+
         //public IActionResult Role(SearchDTO model)
         //{
         //    model.lists = this._context.Roles.Include(i => i.OU).OrderBy(o => o.Index);

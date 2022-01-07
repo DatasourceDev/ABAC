@@ -84,7 +84,40 @@ namespace ABAC.DTO
             }
         }
     }
+    public class UserRoleDTO
+    {
+        public string text_search { get; set; }
+        public string userrole_search { get; set; }
 
+        public ReturnCode? code { get; set; }
+        public string msg { get; set; }
+
+        private IQueryable<object> _lists;
+        private IQueryable<object> _lists2;
+        public IQueryable<object> lists
+        {
+            get
+            {
+                return _lists;
+            }
+            set
+            {
+                _lists = value;
+            }
+        }
+
+        public IQueryable<object> lists2
+        {
+            get
+            {
+                return _lists2;
+            }
+            set
+            {
+                _lists2 = value;
+            }
+        }
+    }
     public class ImportDTO
     {
         public string cu_pplid { get; set; }

@@ -24,19 +24,7 @@ namespace ABAC.DAL
         public DbSet<User_Bulk> User_Bulk { get; set; }
         public DbSet<User_Bulk_Import> User_Bulk_Import { get; set; }
         public DbSet<temp_import> table_temp_import { get; set; }
-        //public DbSet<group> table_group { get; set; }
-        //public DbSet<group_user> table_group_user { get; set; }
-        //public DbSet<faculty> table_cu_faculty { get; set; }
-        //public DbSet<faculty_level2> table_cu_faculty_level2 { get; set; }
-        //public DbSet<cu_unix> table_cu_unix { get; set; }
-        //public DbSet<cu_email> table_cu_email { get; set; }
-        //public DbSet<cu_email_student> table_cu_email_student { get; set; }
-        //public DbSet<import> table_import { get; set; }
-        //public DbSet<reset_password_temp> table_reset_password_temp { get; set; }
-
-        //public DbSet<receive_staff> table_receive_staff { get; set; }
-        //public DbSet<receive_student> table_receive_student { get; set; }
-        //public DbSet<receive_temp> table_receive_temp { get; set; }
+        public DbSet<user_role> table_user_role { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
