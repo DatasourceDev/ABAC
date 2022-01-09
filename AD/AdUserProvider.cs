@@ -165,6 +165,7 @@ namespace ABAC.Identity
                     aduser.aUFaculty = getPropertyValue(propertyCollection, "aUFaculty");
                     aduser.aUMetier = getPropertyValue(propertyCollection, "aUMetier");
                     aduser.aUOffice365 = getPropertyValue(propertyCollection, "aUOffice365");
+                    aduser.aUOtherMail = getPropertyValue(propertyCollection, "aUOtherMail");
                     aduser.aUPosition = getPropertyValue(propertyCollection, "aUPosition");
                     aduser.aUUserType = getPropertyValue(propertyCollection, "aUUserType");
                     aduser.aUStudentId = getPropertyValue(propertyCollection, "aUStudentId");
@@ -388,10 +389,10 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
-                if (model.accountExpires.HasValue)
-                    d.Properties["accountExpires"].Value = model.accountExpires;
-                else
-                    d.Properties["accountExpires"].Value = null;
+                //if (model.accountExpires.HasValue)
+                //    d.Properties["accountExpires"].Value = model.accountExpires;
+                //else
+                //    d.Properties["accountExpires"].Value = null;
                 principal.Save();
 
                 return new Result() { result = true };
@@ -403,42 +404,7 @@ namespace ABAC.Identity
 
         }
 
-        //public Result MoveOU(AdUser2 model, SpuContext spucontext)
-        //{
-
-        //    try
-        //    {
-        //        var setup = spucontext.table_setup.FirstOrDefault();
-        //        var oufilter = model.system_ou_lvl1.Replace("o=", "ou=") + ",";
-        //        if (!string.IsNullOrEmpty(model.system_ou_lvl2))
-        //            oufilter = model.system_ou_lvl2.Replace("o=", "ou=") + "," + oufilter;
-        //        if (!string.IsNullOrEmpty(model.system_ou_lvl3))
-        //            oufilter = model.system_ou_lvl3.Replace("o=", "ou=") + "," + oufilter;
-
-
-        //        PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host,  setup.Base, setup.Username, setup.Password);
-        //        UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
-        //        if (principal == null)
-        //        {
-        //            return new Result() { result = false, Message = "Account has not found" };
-        //        }
-
-
-        //        DirectoryEntry de = principal.GetUnderlyingObject() as DirectoryEntry;
-
-        //        DirectoryEntry nde = new DirectoryEntry("LDAP://" + setup.Host +"/" + oufilter + setup.Base, setup.Username, setup.Password, AuthenticationTypes.FastBind);
-        //        de.CommitChanges();
-        //        de.MoveTo(nde);
-        //        de.Close();
-        //        nde.Close();
-        //        return new Result() { result = true };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new Result() { result = false, Message = ex.Message };
-        //    }
-
-        //}
+       
         public Result DeleteUser(AdUser2 model, SpuContext spucontext)
         {
             try
@@ -558,31 +524,6 @@ namespace ABAC.Identity
             }
         }
 
-        //public Task<Result> RemoveStaffUser(string samAccountName, SpuContext spucontext)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        try
-        //        {
-        //            var setup = spucontext.table_setup.FirstOrDefault();
-
-        //            PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, "ou=staff," + setup.Base, setup.Username, setup.Password);
-        //            UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, samAccountName);
-        //            if (principal == null)
-        //            {
-        //                return new Result() { result = false, Message = "Account has not found" };
-        //            }
-        //            principal.Delete();
-        //            principal.Save();
-
-        //            return new Result() { result = true };
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return new Result() { result = false, Message = ex.Message };
-        //        }
-        //    });
-        //}
         private string getPropertyValue(PropertyCollection propertyCollection, string propertyName)
         {
             PropertyValueCollection ValueCollection = propertyCollection[propertyName];

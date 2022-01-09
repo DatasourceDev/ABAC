@@ -372,14 +372,34 @@
                         {
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่า Landing Page</a></li>
                         }
-                        @if (roles.Contains(roleType.Admin))
+                        @*@if (roles.Contains(roleType.Admin))
                         {
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
-                        }
+                        }*@
                     </ul>
                 </li>
-            }          
-
+            }
+            @if (!roles.Contains(roleType.Admin) & !roles.Contains(roleType.Helpdesk) & !roles.Contains(roleType.PasswordOperator) & !roles.Contains(roleType.WebMaster))
+            {
+                <li class="leftbar-menu-item">
+                    <a href="@Url.Action("Index", "Profile")" class="menu-link">
+                        <i data-feather="user" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>Account Profile</span>
+                    </a>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a href="@Url.Action("ChangePassword", "Profile")" class="menu-link">
+                        <i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>Change Password</span>
+                    </a>
+                </li>
+                <li class="leftbar-menu-item">
+                    <a href="@Url.Action("Logout", "Auth")" class="menu-link">
+                        <i data-feather="power" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            }
         </ul>
 
     </div>
