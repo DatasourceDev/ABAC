@@ -320,6 +320,11 @@ namespace ABAC.Identity
                 else
                     d.Properties["departmentNumber"].Value = null;
 
+                if (!string.IsNullOrEmpty(model.aUOtherMail))
+                    d.Properties["aUOtherMail"].Value = model.aUOtherMail;
+                else
+                    d.Properties["aUOtherMail"].Value = null;
+
                 //if (!string.IsNullOrEmpty(model.ExpireDate))
                 //    d.Properties["accountExpires"].Value = model.ExpireDate;
                 //else
@@ -384,6 +389,11 @@ namespace ABAC.Identity
                     d.Properties["departmentNumber"].Value = model.PassportID;
                 else
                     d.Properties["departmentNumber"].Value = null;
+
+                if (!string.IsNullOrEmpty(model.aUOtherMail))
+                    d.Properties["aUOtherMail"].Value = model.aUOtherMail;
+                else
+                    d.Properties["aUOtherMail"].Value = null;
 
                 //if (model.accountExpires.HasValue)
                 //    d.Properties["accountExpires"].Value = model.accountExpires;
