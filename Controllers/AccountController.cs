@@ -585,6 +585,7 @@ namespace ABAC.Controllers
                         aduser.PassportID = model.PassportID;
                         aduser.Reference = model.Reference;
                         aduser.accountExpires = DateUtil.ToDate( model.ExpireDate);
+                        aduser.aUOtherMail = model.aUOtherMail;
 
                         if (model.aUUserType == aUUserType.office)
                         {
