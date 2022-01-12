@@ -136,17 +136,6 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-right">Other Email</label>
-                                    <div class="col-sm-3">
-                                        <input class="form-control" type="email" asp-for="aUOtherMail">
-                                        @Html.ValidationMessageFor(m => m.aUOtherMail)
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         @if (Model.aUUserType == aUUserType.staff)
                         {
                             <div class="row">
@@ -216,6 +205,17 @@
                                         <div class="col-sm-3">
                                             <input class="form-control" type="text" asp-for="Reference">
                                             @Html.ValidationMessageFor(m => m.Reference)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-right">Other Email</label>
+                                        <div class="col-sm-3">
+                                            <input class="form-control" type="email" asp-for="aUOtherMail" required>
+                                            @Html.ValidationMessageFor(m => m.aUOtherMail)
                                         </div>
                                     </div>
                                 </div>

@@ -110,8 +110,8 @@ namespace ABAC
         public static string SuccessOTP = "OTP has been sent successfully.";
         public static string SuccessEmail = "Email has been sent successfully.";
         public static string DataInUse = "Error! Can not be deleted because data is in use.";
-        public static string ImportFail = "Your data has been imported successfully.";
-        public static string ImportSuccess = "Error! Your data could not be imported.";
+        public static string ImportSuccess = "Your data has been imported successfully.";
+        public static string ImportFail = "Error! Your data could not be imported.";
     }
     public static class  Portal
     {

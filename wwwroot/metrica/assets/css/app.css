@@ -103,7 +103,8 @@ File: Leftbar
 .left-sidenav-menu {
     margin-bottom: 0;
     padding: 0px 10px;
-    height: 800px !important;
+    height: 580px !important;
+    overflow-y: auto;
 }
 
     .left-sidenav-menu .menu-label {
@@ -116,8 +117,8 @@ File: Leftbar
     }
 
     .left-sidenav-menu .vertical-menu-icon {
-        width: 22px;
-        height: 22px;
+        width: 16px;
+        height: 16px;
         margin-right: 6px;
     }
 

@@ -166,6 +166,99 @@ namespace ABAC.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> BulkImport(SearchDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+
+            var lists = this._context.User_Bulk_Import.Where(w => 1 == 1);
+
+            if (!string.IsNullOrEmpty(model.text_search))
+                lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search) | w.Reference.Contains(model.text_search));
+                     
+
+            if (!string.IsNullOrEmpty(model.dfrom))
+            {
+                lists = lists.Where(w => w.Create_On >= dfrom);
+            }
+            if (!string.IsNullOrEmpty(model.dto))
+            {
+                lists = lists.Where(w => w.Create_On.Value.Date <= dto);
+            }
+
+            lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2=>o2.username);
+            int skipRows = (model.pageno - 1) * 100;
+            var itemcnt = lists.Count();
+            var pagelen = itemcnt / 100;
+            if (itemcnt % 100 > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+
+            model.lists = lists.AsQueryable();
+            return View(model);
+        }
+
+        public async Task<IActionResult> Bulk(SearchDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+
+            var lists = this._context.User_Bulk.Where(w => 1 == 1);
+
+            if (!string.IsNullOrEmpty(model.text_search))
+                lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search));
+
+            if (!string.IsNullOrEmpty(model.dfrom))
+            {
+                lists = lists.Where(w => w.Create_On >= dfrom);
+            }
+            if (!string.IsNullOrEmpty(model.dto))
+            {
+                lists = lists.Where(w => w.Create_On.Value.Date <= dto);
+            }
+
+            lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2 => o2.username);
+            int skipRows = (model.pageno - 1) * 100;
+            var itemcnt = lists.Count();
+            var pagelen = itemcnt / 100;
+            if (itemcnt % 100 > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+
+            model.lists = lists.AsQueryable();
+            return View(model);
+        }
+
         public IActionResult CreateUser(SearchDTO model)
         {
             return View(model);

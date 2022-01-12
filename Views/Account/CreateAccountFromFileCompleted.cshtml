@@ -1,7 +1,7 @@
 ﻿@using ABAC.Extensions
 @model ABAC.DTO.SearchDTO
 @{
-    ViewData["Title"] = "Create Account from File Completed";
+    ViewData["Title"] = "Import Bulk Account from File Completed";
     var rowcnt = 0;
     if (Model.lists != null && Model.lists.Count() > 0)
     {
@@ -32,9 +32,9 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">Create Account from File Completed</h4>
+                    <h4 class="page-title">Import Bulk Account from File Completed</h4>
                     <p class="text-muted">
-                         สร้างบัญชีรายชื่อผู้ใช้จากไฟล์สำเร็จ
+                        สร้างบัญชีรายชื่อผู้ใช้จากไฟล์สำเร็จ
                     </p>
                 </div><!--end page-title-box-->
             </div>
@@ -55,6 +55,8 @@
                                         <table id="tech-companies-1" class="table table-striped mb-0">
                                             <thead>
                                                 <tr>
+                                                    <th>Username</th>
+                                                    <th>Password</th>
                                                     <th>First Name</th>
                                                     <th>Last Name</th>
                                                     <th>CitizenID</th>
@@ -74,6 +76,15 @@
                                                             rowcolor = "text-danger";
                                                         }
                                                         <tr class="@rowcolor">
+                                                            <td>
+                                                                @item.username
+                                                            </td>
+                                                            <td>
+                                                                @item.password
+                                                            </td>
+                                                            <td>
+                                                                @item.firstname
+                                                            </td>
                                                             <td>
                                                                 @item.firstname
                                                             </td>
@@ -111,7 +122,7 @@
                                 </div>
                             </div>
                         </div>
-                    }                    
+                    }
                 </div> <!-- end card-body -->
             </div> <!-- end card -->
         </div> <!-- end col -->

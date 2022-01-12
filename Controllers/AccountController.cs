@@ -65,10 +65,13 @@ namespace ABAC.Controllers
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
-            var dup = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
-            if (dup != null)
+            if(_conf.Env != "dev")
             {
-                ModelState.AddModelError("SamAccountName", "username already exists.");
+                var dup = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
+                if (dup != null)
+                {
+                    ModelState.AddModelError("SamAccountName", "username already exists.");
+                }
             }
             if (ModelState.IsValid)
             {
@@ -82,7 +85,7 @@ namespace ABAC.Controllers
                         model.DistinguishedName = _conf.OU_OFFICE;
                         var user = new User_Office();
                         user.username = model.SamAccountName;
-                        user.password = Cryptography.encrypt(model.Password);
+                        user.password = model.Password;
                         user.firstname = model.GivenName;
                         user.lastname = model.Surname;
                         user.CitizenID = model.aUIDCard;
@@ -112,7 +115,7 @@ namespace ABAC.Controllers
                         model.DistinguishedName = _conf.OU_VIP;
                         var user = new User_VIP();
                         user.username = model.SamAccountName;
-                        user.password = Cryptography.encrypt(model.Password);
+                        user.password =model.Password;
                         user.firstname = model.GivenName;
                         user.lastname = model.Surname;
                         user.CitizenID = model.aUIDCard;
@@ -142,7 +145,7 @@ namespace ABAC.Controllers
                         model.DistinguishedName = _conf.OU_TEMP;
                         var user = new User_Bulk();
                         user.username = model.SamAccountName;
-                        user.password = Cryptography.encrypt(model.Password);
+                        user.password = model.Password;
                         user.firstname = model.GivenName;
                         user.lastname = model.Surname;
                         user.valid_date = DateUtil.ToDate(model.ValidDate);
@@ -155,15 +158,17 @@ namespace ABAC.Controllers
                         user.Update_On = DateUtil.Now();
                         _context.User_Bulk.Add(user);
                         _context.SaveChanges();
+                        if (_conf.Env != "dev")
+                        {
+                            var result_ad = _provider.CreateUser(model, _context);
+                            if (result_ad.result == true)
+                                writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                            else
+                                writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                        var result_ad = _provider.CreateUser(model, _context);
-                        if (result_ad.result == true)
-                            writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
-                        else
-                            writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
-
-                        user.ad_created = result_ad.result;
-                        _context.SaveChanges();
+                            user.ad_created = result_ad.result;
+                            _context.SaveChanges();
+                        }
                         writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                     }
                     else
@@ -369,7 +374,8 @@ namespace ABAC.Controllers
 
                     user.ad_created = result_ad.result;
                 }
-                
+                imp.username = user.username;
+                imp.password = user.password;
                 imp.ImportRemark = "Completed";
                 _context.SaveChanges();
                 writelog(LogType.log_create_account_with_file, LogStatus.successfully, IDMSource.Database, aduser.SamAccountName);
@@ -677,7 +683,7 @@ namespace ABAC.Controllers
             ViewBag.Message = model.msg;
             ViewBag.ReturnCode = model.code;
 
-            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+            if (!checkrole(new string[] { roleType.Admin }))
                 return RedirectToAction("Logout", "Auth");
 
             if (string.IsNullOrEmpty(model.text_search))

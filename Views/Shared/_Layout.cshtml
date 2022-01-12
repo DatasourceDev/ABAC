@@ -290,9 +290,9 @@
                         </span>
                     </a>
                     <ul class="nav-second-level" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create Account</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create Acount from File</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountBulk", "Account")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create bulk Account</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>New Account</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk Import File</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountBulk", "Account")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk</a></li>
                     </ul>
                 </li>
             }
@@ -310,7 +310,7 @@
                     <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Lock/Unlock</a>
                 </li>
             }
-            @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
+            @if (roles.Contains(roleType.Admin))
             {
                 <li class="leftbar-menu-item">
                     <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Delete Account</a>
@@ -328,9 +328,11 @@
                     </a>
                     <ul class="nav-second-level" aria-expanded="false">
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateUser", "Report")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการสร้างผู้ใช้งาน</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("BulkImport", "Report")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk Import File</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Bulk", "Report")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("UpdateUser", "Report")"><i data-feather="edit" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการแก้ไขผู้ใช้งาน</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("DeleteUser", "Report")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการลบผู้ใช้งาน</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Log", "Report")"><i data-feather="list" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>รายงานการกระทำ</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Log", "Report")"><i data-feather="list" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Transaction Log</a></li>
                     </ul>
                 </li>
             }

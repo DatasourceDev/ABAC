@@ -13,6 +13,10 @@ namespace ABAC.Models
         [Key]
         public int ID { get; set; }
 
+        public string username { get; set; }
+        public string password { get; set; }
+
+
         [Display(Name = "ชื่อ")]
         public string firstname { get; set; }
 
