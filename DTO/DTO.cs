@@ -178,11 +178,9 @@ namespace ABAC.DTO
     public class ChangePassword2DTO : BaseDTO
     {
         [Required]
-        public int UserID { get; set; }
+        public string UserName { get; set; }
 
         public string Code { get; set; }
-
-
 
         [Required]
         [DataType(DataType.Password)]
@@ -241,8 +239,8 @@ namespace ABAC.DTO
     public class ForgotPasswordDTO : BaseDTO
     {
         [Required]
-        [MaxLength(150)]
-        public string Code { get; set; }
+        public string UserName { get; set; }
+        public string aCode { get; set; }
 
         public SendMessageType SendMessageType { get; set; }
         public string Phone { get; set; }

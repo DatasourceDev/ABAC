@@ -103,14 +103,15 @@ namespace ABAC
     }
     public static class ReturnMessage
     {
-        public static string Success = "บันทึกข้อมูลสำเร็จ";
-        public static string ChangePasswordSuccess = "เปลี่ยนรหัสผ่านสำเร็จ";
-        public static string Error = "บันทึกข้อมูลไม่สำเร็จ";
-        public static string ChangePasswordFail = "เปลี่ยนรหัสผ่านไม่สำเร็จ";
-        public static string SuccessOTP = "ส่งรหัส OTP สำเร็จ";
-        public static string DataInUse = "ไม่สามารถลบรายการน้ได้เนื่องจากมีข้อมูลบางรายการที่อ้างอิงถึงรายการนี้";
-        public static string ImportFail = "นำเข้าข้อมูลไม่สำเร็จ";
-        public static string ImportSuccess = "นำเข้าข้อมูลข้อมูลสำเร็จ";
+        public static string Success = "Your data has been saved successfully.";
+        public static string ChangePasswordSuccess = "Password has been changed successfully.";
+        public static string Error = "Error! Your data could not be saved.";
+        public static string ChangePasswordFail = "Error! Your password could not be changed.";
+        public static string SuccessOTP = "OTP has been sent successfully.";
+        public static string SuccessEmail = "Email has been sent successfully.";
+        public static string DataInUse = "Error! Can not be deleted because data is in use.";
+        public static string ImportFail = "Your data has been imported successfully.";
+        public static string ImportSuccess = "Error! Your data could not be imported.";
     }
     public static class  Portal
     {
@@ -126,7 +127,7 @@ namespace ABAC
     {
         log_login = 15,
         log_logout,
-        log_reset_password_in_forgot_password,
+        log_forgot_password,
         log_change_password,
         log_reset_password,
         log_create_account,

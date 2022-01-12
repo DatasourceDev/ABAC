@@ -458,7 +458,7 @@ namespace ABAC.Controllers
             model.Passwords = new List<string>();
 
             if (model.Number == false & model.Lower == false && model.Upper == false)
-                ModelState.AddModelError("Condition", "กรุณาระบุเงือนไข");
+                ModelState.AddModelError("Condition", "Required Condition.");
 
             if (ModelState.IsValid)
             {

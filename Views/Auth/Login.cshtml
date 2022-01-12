@@ -2,13 +2,13 @@
 @inject ABAC.DAL.SpuContext _context
 
 @{
-    ViewData["Title"] = "เข้าสู่ระบบ";
+    ViewData["Title"] = "Login";
     Layout = "_LayoutLogin";
 
     var setup = _context.table_setup.FirstOrDefault();
     var landing = _context.table_landing_page.OrderBy(r => Guid.NewGuid()).FirstOrDefault();
     var landingsrc = "";
-    if(landing != null)
+    if (landing != null)
     {
         landingsrc = landing.Url;
     }
@@ -16,40 +16,40 @@
 }
 <div class="container-fluid">
     @*@if (TempData["actionUrl"] != null)
-    {
-        <form method="post" action="@TempData["actionUrl"]" id="ssoform1">
-            <div id="pnlCookie">
-                <div>
-                    @if (TempData["responseXml"] != null && TempData["relayState"] != null)
-                    {
-                        <div class="row">
-                            <div class="col-6">
-                                <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20">
-                            @TempData["responseXml"]
-                        </textarea>
+        {
+            <form method="post" action="@TempData["actionUrl"]" id="ssoform1">
+                <div id="pnlCookie">
+                    <div>
+                        @if (TempData["responseXml"] != null && TempData["relayState"] != null)
+                        {
+                            <div class="row">
+                                <div class="col-6">
+                                    <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20">
+                                @TempData["responseXml"]
+                            </textarea>
+                                </div>
                             </div>
-                        </div>
 
-                        <textarea name="RelayState" id="RelayState" cols="130" rows="5">
-                            @TempData["relayState"]
-                        </textarea>
-                    }
+                            <textarea name="RelayState" id="RelayState" cols="130" rows="5">
+                                @TempData["relayState"]
+                            </textarea>
+                        }
+                    </div>
                 </div>
-            </div>
-            <button class="btn btn-dark btn-block waves-effect waves-light" type="submit"><i class="fas fa-sign-in-alt ml-1"></i> Submit</button>
-        </form>
-        @section scripts{
-            <script>
-                $(document).ready(function () {
-                    document.getElementById("ssoform1").submit();
-                });
-            </script>
-        }
-    }*@
+                <button class="btn btn-dark btn-block waves-effect waves-light" type="submit"><i class="fas fa-sign-in-alt ml-1"></i> Submit</button>
+            </form>
+            @section scripts{
+                <script>
+                    $(document).ready(function () {
+                        document.getElementById("ssoform1").submit();
+                    });
+                </script>
+            }
+        }*@
 
     <!-- Log In page -->
     <div class="row vh-100">
-        <div class="col-lg-9 p-0 h-100vh d-flex justify-content-center auth-bg" style='background: url(@landingsrc) no-repeat center center;' >
+        <div class="col-lg-9 p-0 h-100vh d-flex justify-content-center auth-bg" style='background: url(@landingsrc) no-repeat center center;'>
             <div class="accountbg d-flex align-items-lg-start">
                 <div class="account-title text-center text-white">
                     @*<img src="~/images/logo.png" alt="">*@
@@ -97,10 +97,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <h2 class="font-weight-semibold font-22 mb-2">ยินดีต้อนรับเข้าสู่ระบบ<br /><span class="text-secondary">ระบบบริหารจัดการบัญชีผู้ใช้</span></h2>
+                            <h2 class="font-weight-semibold font-22 mb-2">Welcome to<br /><span class="text-secondary">User Management System</span></h2>
                             <ul class="nav-border nav nav-pills" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active font-weight-semibold" data-toggle="tab" href="#LogIn_Tab" role="tab">เข้าสู่ระบบ</a>
+                                    <a class="nav-link active font-weight-semibold" data-toggle="tab" href="#LogIn_Tab" role="tab">Login</a>
                                 </li>
                             </ul>
                             <!-- Tab panes -->
@@ -111,35 +111,28 @@
                                         @Html.HiddenFor(m => m.RelayState)
 
                                         <div class="form-group">
-                                            <label for="username">รหัสผู้ใช้</label>
+                                            <label for="username">Username</label>
                                             <input type="text" class="form-control" asp-for="UserName" required>
                                             @Html.ValidationMessageFor(m => m.UserName)
 
                                         </div><!--end form-group-->
 
                                         <div class="form-group">
-                                            <label for="userpassword">รหัสผ่าน</label>
+                                            <label for="userpassword">Password</label>
                                             <input type="password" class="form-control" asp-for="Password" required>
                                             @Html.ValidationMessageFor(m => m.Password)
                                         </div><!--end form-group-->
-                                        <!--<div class="form-group row mt-4">
-                                        <div class="col-sm-12 ">
-                                            <a href="@Url.Action("ForgotPassword","Auth")" class="text-muted font-13"><i class="dripicons-lock"></i> ลืมรหัสผ่าน?</a>
-                                        </div>-->
-                                        <!--end col-->
-                                        <!--</div>--><!--end form-group-->
+                                        <div class="form-group row mt-4">
+                                            <div class="col-sm-12 ">
+                                                <a href="@Url.Action("ForgotPassword","Auth")" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot Password?</a>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group mb-0 row">
                                             <div class="col-12 mt-2">
-                                                <button class="btn btn-dark btn-block waves-effect waves-light" type="submit"><i class="fas fa-sign-in-alt ml-1"></i> เข้าสู่ระบบ</button>
+                                                <button class="btn btn-dark btn-block waves-effect waves-light" type="submit"><i class="fas fa-sign-in-alt ml-1"></i> Login</button>
                                             </div><!--end col-->
                                         </div> <!--end form-group-->
-                                        <!--<div class="form-group mb-0 row">
-                                        <div class="col-12 mt-2">
-                                            <a class="btn btn-gradient-success btn-block waves-effect waves-light" href="@Url.Action("Register","Auth")"><i class="fas fa-user-plus ml-1"></i> </a>
-                                        </div>-->
-                                        <!--end col-->
-                                        <!--</div>--> <!--end form-group-->
                                     </form><!--end form-->
                                 </div>
                             </div>

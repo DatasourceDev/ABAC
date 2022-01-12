@@ -1,6 +1,6 @@
 ﻿@model ABAC.DTO.BaseDTO
 @{
-    ViewData["Title"] = "เปลี่ยนรหัสผ่าน ผู้ใช้ชั่วคราวสำเร็จ";
+    ViewData["Title"] = "Reset Password Fail";
     Layout = "_LayoutBox";
 
 }
@@ -12,12 +12,20 @@
                     <div class="card-body">
                         <div class="px-3">
                             <div class="text-center auth-logo-text">
-                                <h4 class="mt-0 mb-3 mt-5">บันทึกรหัสผ่านสำเร็จ</h4>
+                                <h4 class="mt-0 mb-3 mt-5">Reset Password Fail</h4>
                             </div> <!--end auth-logo-text-->
                         </div><!--end /div-->
-
+                        @if (ViewBag.ReturnCode != null)
+                        {
+                            @if (ViewBag.ReturnCode == ReturnCode.Error)
+                            {
+                                <div class="text-center">
+                                    <span class="text-danger ">@ViewBag.Message</span>
+                                </div>
+                            }
+                        }
                         <div class="m-3 text-center text-muted">
-                            <a href="@Url.Action("LoginUser","Auth")" class="btn btn-gradient-primary waves-effect waves-light" type="button">เข้าสู่ระบบ</a>
+                            <a href="@Url.Action("Login","Auth")" class="btn btn-dark btn-block waves-effect waves-light" type="button">Back</a>
                         </div>
                     </div><!--end card-body-->
                 </div><!--end card-->

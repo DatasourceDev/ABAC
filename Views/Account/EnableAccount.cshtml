@@ -2,7 +2,7 @@
 @using ABAC.Identity;
 @using ABAC.Extensions
 @{
-    ViewData["Title"] = "แก้ไข Lock / unlock";
+    ViewData["Title"] = "Lock/Unlock Account";
 
 }
 <div class="container-fluid">
@@ -29,9 +29,9 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">แก้ไข lock / unlock</h4>
+                    <h4 class="page-title">Lock/Unlock Account</h4>
                     <p class="text-muted">
-                        Edit Lock/Unlock Account
+                        Lock/Unlock บัญชีผู้ใช้
                     </p>
                 </div><!--end page-title-box-->
             </div>
@@ -46,7 +46,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title mt-0" id="exampleModalLabel">หมายเหตุ</h5>
+                        <h5 class="modal-title mt-0" id="exampleModalLabel">Remark</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -59,7 +59,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-lg-12 text-right">
-                                <button type="button" class="btn btn-dark" onclick="change_status()">ตกลง</button>
+                                <button type="button" class="btn btn-dark" onclick="change_status()">Submit</button>
                                 @*<button type="button" class="btn btn-default"  data-dismiss="modal" aria-label="Close">ปิด</button>*@
                             </div>
                         </div>
@@ -73,7 +73,7 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title mt-0" id="mySmallModalLabel2">หมายเหตุ</h5>
+                        <h5 class="modal-title mt-0" id="mySmallModalLabel2">Remark</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -93,16 +93,16 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="mt-0 header-title">ค้นหา</h4>
+                        <h4 class="mt-0 header-title">Search</h4>
                         <div class="form-group row">
                             <div class="col-lg-9">
-                                <label class="col-form-label">คำค้น</label>
-                                <input class="form-control" type="text" placeholder="รหัสผู้ใช้, ชื่อ, นามสกุล, เลขประจำตัวประชาชน, รหัสพนักงาน, รหัสนักศึกษา, อีเมล์" asp-for="text_search" required>
+                                <label class="col-form-label">Text</label>
+                                <input class="form-control" type="text" placeholder="Username, Name, ID Card,Emp Code, Student Code" asp-for="text_search" required>
                                 @Html.ValidationMessageFor(m => m.text_search)
 
                             </div>
                             <div class="col-lg-2">
-                                <label class="col-form-label">ประเภทผู้ใช้</label>
+                                <label class="col-form-label">Account Type</label>
                                 <select class="form-control" asp-for="usertype_search">
                                     <option value="@aUUserType.staff">@aUUserType.staff.toUserTypeName()</option>
                                     <option value="@aUUserType.student">@aUUserType.student.toUserTypeName()</option>
@@ -113,7 +113,7 @@
                             </div>
                             <div class="col-lg-1">
                                 <label class="col-form-label"><br /></label>
-                                <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
+                                <button class="btn btn-dark btn-block" type="submit">Search</button>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -188,7 +188,7 @@
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="9" class="text-center">ไม่พบข้อมูล</td>
+                                                        <td colspan="9" class="text-center">No Data</td>
                                                     </tr>
                                                 }
                                             </tbody>

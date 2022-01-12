@@ -68,7 +68,7 @@ namespace ABAC.Controllers
             var dup = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
             if (dup != null)
             {
-                ModelState.AddModelError("SamAccountName", "username ซ้ำในระบบ");
+                ModelState.AddModelError("SamAccountName", "username already exists.");
             }
             if (ModelState.IsValid)
             {
@@ -685,7 +685,7 @@ namespace ABAC.Controllers
             model.text_search = model.text_search.Trim();
             if (model.text_search.Length <= 3)
             {
-                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                ModelState.AddModelError("text_search", "Search Text must have at least 3 characters.");
                 return View(model);
             }
             //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
@@ -747,7 +747,12 @@ namespace ABAC.Controllers
                                 }
                                 else if (userType == aUUserType.bulk)
                                 {
-
+                                    var bulk = _context.User_Bulk.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                                    if (bulk != null)
+                                    {
+                                        _context.Remove(bulk);
+                                        _context.SaveChanges();
+                                    }
                                 }
                                 var result_ad = _provider.DeleteUser(model, _context);
                                 if (result_ad.result == true)
@@ -788,7 +793,7 @@ namespace ABAC.Controllers
             model.text_search = model.text_search.Trim();
             if (model.text_search.Length <= 3)
             {
-                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                ModelState.AddModelError("text_search", "Search Text must have at least 3 characters.");
                 return View(model);
             }
             //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
@@ -863,7 +868,13 @@ namespace ABAC.Controllers
                     }
                     else if (userType == aUUserType.bulk)
                     {
-
+                        var bulk = this._context.User_Bulk.Where(w => w.username.ToLower() == model.id.ToLower()).FirstOrDefault();
+                        if (bulk != null)
+                        {
+                            bulk.password = Cryptography.encrypt(model.Password);
+                            bulk.Update_On = DateUtil.Now();
+                            bulk.Update_By = userlogin.SamAccountName;
+                        }
                     }
                     _context.SaveChanges();
 
@@ -905,7 +916,7 @@ namespace ABAC.Controllers
             model.text_search = model.text_search.Trim();
             if (model.text_search.Length <= 3)
             {
-                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                ModelState.AddModelError("text_search", "Search Text must have at least 3 characters.");
                 return View(model);
             }
             //string[] roles = new { aUUserType.student.toUserTypeName(), aUUserType.staff.toUserTypeName() };
@@ -959,7 +970,12 @@ namespace ABAC.Controllers
                     }
                     else if (userType == aUUserType.bulk)
                     {
-
+                        var bulk = this._context.User_Bulk.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                        if (bulk != null)
+                        {
+                            bulk.Update_On = DateUtil.Now();
+                            bulk.Update_By = userlogin.SamAccountName;
+                        }
                     }
                     _context.SaveChanges();
 
@@ -1022,7 +1038,7 @@ namespace ABAC.Controllers
             model.text_search = model.text_search.Trim();
             if (model.text_search.Length <= 3)
             {
-                ModelState.AddModelError("text_search", "คำค้นจะต้องมากกว่า 3 ตัวอักษร");
+                ModelState.AddModelError("text_search", "Search Text must have at least 3 characters.");
                 return View(model);
             }
             //string[] roles = { model.usertype_search.toUserTypeName() };
@@ -1041,6 +1057,8 @@ namespace ABAC.Controllers
             model.lists = adusers.AsQueryable();
             return View(model);
         }
-        #endregion       
+        #endregion
+
+          
     }
 }

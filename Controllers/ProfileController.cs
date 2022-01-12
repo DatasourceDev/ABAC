@@ -68,7 +68,7 @@ namespace ABAC.Controllers
                 var setup = _context.table_setup.FirstOrDefault();
                 if (_provider.ValidateCredentials(aduser.SamAccountName, model.OldPassword, _context).result == false)
                 {
-                    ModelState.AddModelError("OldPassword", "รหัสผ่านเดิมไม่ถูกต้อง");
+                    ModelState.AddModelError("OldPassword", "old password is incorrect.");
                     return View(model);
                 }
 

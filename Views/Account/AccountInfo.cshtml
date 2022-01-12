@@ -1,7 +1,7 @@
 ﻿@model ABAC.Identity.AdUser2
 @using ABAC.Extensions
 @{
-    ViewData["Title"] = "แก้ไขบัญชีข้อมูลส่วนบุคคล";
+    ViewData["Title"] = "Edit Account";
 
 }
 <div class="container-fluid">
@@ -28,9 +28,9 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">แก้ไขบัญชีข้อมูลส่วนบุคคล</h4>
+                    <h4 class="page-title">Edit Account</h4>
                     <p class="text-muted">
-                        Edit User Information
+                        แก้ไขบัญชีข้อมูลส่วนบุคคล
                     </p>
                 </div><!--end page-title-box-->
             </div>
@@ -240,9 +240,9 @@
                                         }
                                         else
                                         {
-                                            <button class="btn btn-dark" type="submit">บันทึก</button>
+                                            <button class="btn btn-dark" type="submit">Save</button>
                                         }
-                                        <a href="@Url.Action("CheckAccount","Account")" class="btn btn-light" type="button">กลับ</a>
+                                        <a href="@Url.Action("CheckAccount","Account")" class="btn btn-light" type="button">Back</a>
                                     </div>
                                 </div>
                             </div>

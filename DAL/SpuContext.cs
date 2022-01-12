@@ -25,6 +25,7 @@ namespace ABAC.DAL
         public DbSet<User_Bulk_Import> User_Bulk_Import { get; set; }
         public DbSet<temp_import> table_temp_import { get; set; }
         public DbSet<user_role> table_user_role { get; set; }
+        public DbSet<activate_code> table_activate_code { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -1,7 +1,7 @@
 ﻿@model ABAC.DTO.UserRoleDTO
 @using ABAC.Identity;
 @{
-    ViewData["Title"] = "กำหนดสิทธิ์การใช้งาน";
+    ViewData["Title"] = "User Role";
 }
 <div class="container-fluid">
     <div class="row">
@@ -27,9 +27,9 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">กำหนดสิทธิ์การใช้งาน</h4>
+                    <h4 class="page-title">User Role</h4>
                     <p class="text-muted">
-                        User Role
+                        กำหนดสิทธิ์การใช้งาน
                     </p>
                 </div><!--end page-title-box-->
 
@@ -44,7 +44,7 @@
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-lg-6">
-                                <label class="col-form-label">ประเภทผู้ใช้</label>
+                                 <label class="col-form-label">Account Type</label>
                                 <select class="form-control" asp-for="userrole_search" onchange="userrole_onchange()">
                                     <option value="@roleType.Admin">@roleType.Admin</option>
                                     <option value="@roleType.Helpdesk">@roleType.Helpdesk</option>
@@ -54,7 +54,7 @@
                             </div>
                             <div class="col-lg-3">
                                 <label class="col-form-label"><br /></label>
-                                <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
+                                <button class="btn btn-dark btn-block" type="submit">Search</button>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -93,7 +93,7 @@
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="2" class="text-center">ไม่พบข้อมูล</td>
+                                                        <td colspan="2" class="text-center">No Data</td>
                                                     </tr>
                                                 }
                                             </tbody>
@@ -129,7 +129,7 @@
                             </div>
                             <div class="col-lg-3">
                                 <label class="col-form-label"><br /></label>
-                                <button class="btn btn-dark btn-block" type="submit">ค้นหา</button>
+                                <button class="btn btn-dark btn-block" type="submit">Search</button>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -168,7 +168,7 @@
                                                 @if (Model.lists2 == null || Model.lists2.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="2" class="text-center">ไม่พบข้อมูล</td>
+                                                        <td colspan="2" class="text-center">No Data</td>
                                                     </tr>
                                                 }
                                             </tbody>

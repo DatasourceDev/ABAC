@@ -31,18 +31,13 @@ namespace ABAC.Identity
         Result CreateUser(AdUser2 model, SpuContext spucontext);
 
         Result UpdateUser(AdUser2 model, SpuContext spucontext);
-        //Result MoveOU(AdUser2 model, SpuContext spucontext);
         Result ChangePwd(AdUser2 model, string pwd, SpuContext spucontext);
 
         Result DeleteUser(AdUser2 model, SpuContext spucontext);
 
-        //Task<Result> RemoveStaffUser(string samAccountName, SpuContext spucontext);
-
         Result EnableUser(AdUser2 model, SpuContext spucontext);
 
         Result DisableUser(AdUser2 model, SpuContext spucontext);
-
-        //Task<Result> CreateOU(string name, SpuContext spucontext);
     }
     public class AdUserProvider : IUserProvider
     {
@@ -75,6 +70,7 @@ namespace ABAC.Identity
                         user.UserPrincipalName = "adminwebmaster@au.edu";
                         user.userAccountControl = "66048";
                         user.EmailAddress = "adminwebmaster@au.edu";
+                        user.aUOtherMail = "voranun@dthai.co.th";
                         return user;
                     }
 

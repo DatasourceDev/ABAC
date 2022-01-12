@@ -1,14 +1,25 @@
-﻿<!DOCTYPE html>
+﻿@inject ABAC.DAL.SpuContext _context
+@{
+    var setup = _context.table_setup.FirstOrDefault();
+    var landing = _context.table_landing_page.OrderBy(r => Guid.NewGuid()).FirstOrDefault();
+    var landingsrc = "";
+    if (landing != null)
+    {
+        landingsrc = landing.Url;
+    }
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - มหาวิทยาลัย</title>
+    <title>@TempData["Title"] - Assumption University of Thailand</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="~/images/favicon.ico">
+    <link rel="shortcut icon" href="~/images/favicon.png">
 
     <!-- App css -->
     <link href="~/metrica/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />

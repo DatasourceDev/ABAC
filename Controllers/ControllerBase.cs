@@ -49,76 +49,8 @@ namespace ABAC.Controllers
 
         }
 
-       
-        //protected SelectList ListFaculty()
-        //{
-        //    var list = new List<faculty>();
-        //    list.AddRange(this._context.table_cu_faculty.OrderBy(o => o.faculty_name));
-        //    return new SelectList(list, "faculty_id", "faculty_name");
-        //}
-        //protected SelectList ListSubFaculty(int? fID)
-        //{
-        //    var list = new List<faculty_level2>();
-        //    list.AddRange(this._context.table_cu_faculty_level2.Where(w => w.faculty_id == fID).OrderBy(o => o.sub_office_name));
-        //    return new SelectList(list, "sub_office_id", "sub_office_name");
-        //}
 
-        //[HttpGet]
-        //public async Task<IActionResult> LoadGetOrganizationLvl2(string ou1)
-        //{
-        //    var list = await _providerldap.GetOrganizationLvl2(_context, _conf, ou1);
-        //    return Json(list);
-        //}
-        //[HttpGet]
-        //public async Task<IActionResult> LoadGetOrganizationLvl3(string ou1, string ou2)
-        //{
-        //    var list = await _providerldap.GetOrganizationLvl3(_context, _conf, ou1, ou2);
-        //    return Json(list);
-        //}
-        //[HttpGet]
-        //public ActionResult LoadSubFaculty(int? fID)
-        //{
-        //    return Json(ListSubFaculty(fID));
-        //}
 
-        //[HttpGet]
-        //public ActionResult LoadIsExistCitizenID(string pplid)
-        //{
-        //    if (string.IsNullOrEmpty(pplid))
-        //        return Json(new { result = false });
-        //    var query = this._context.table_visual_fim_user.Where(c => c.cu_pplid.ToLower() == pplid.ToLower()).FirstOrDefault(); 
-        //    return Json(new { result  = (query != null) });
-
-        //}
-
-        //public bool isExistNameSurNameAndCitizenID(visual_fim_user model)
-        //{
-        //    if (string.IsNullOrEmpty(model.basic_givenname) | string.IsNullOrEmpty(model.basic_sn) /*| string.IsNullOrEmpty(model.cu_pplid)*/)
-        //        return false;
-        //    var query = this._context.table_visual_fim_user.Where(c => c.basic_givenname == model.basic_givenname & c.basic_sn == model.basic_sn /*& c.cu_pplid == model.cu_pplid*/ & (model.id > 0 ? c.id != model.id : true)).FirstOrDefault();
-        //    return (query != null);
-        //}
-        //public bool isExistCitizenID(string pplid)
-        //{
-        //    if (string.IsNullOrEmpty(pplid))
-        //        return false;
-        //    var query = this._context.table_visual_fim_user.Where(c => c.cu_pplid.ToLower() == pplid.ToLower()).FirstOrDefault();
-        //    return (query != null);
-        //}
-        //public bool isExistUID(string uid)
-        //{
-        //    if (string.IsNullOrEmpty(uid))
-        //        return false;
-        //    var query = this._context.table_visual_fim_user.Where(c => c.basic_uid.ToLower() == uid.ToLower()).FirstOrDefault();
-        //    return (query != null);
-        //}
-        //public async Task<IActionResult> MailRequestApproveResetPassword(visual_fim_user model)
-        //{
-        //    var htmlToConvert = await RenderViewAsync("MailRequestApproveResetPassword", model, true);
-        //    var msg = sendNotificationEmail(model.basic_mail, "ยืนยันการร้องขอเปลี่ยนรหัสผ่านของท่าน", htmlToConvert.ToString());
-
-        //    return Json(new { Msg = msg });
-        //}
         //public async Task<IActionResult> MailRegister(Guest model)
         //{
         //    var htmlToConvert = await RenderViewAsync("MailRegister", model, true);
@@ -126,93 +58,84 @@ namespace ABAC.Controllers
 
         //    return Json(new { Msg = msg });
         //}
-        //public async Task<IActionResult> MailOTP(string email, OTPDTO model)
-        //{
-        //    var htmlToConvert = await RenderViewAsync("MailOTP", model, true);
-        //    var msg = sendNotificationEmail(email, "รหัสลงทะเบียน", htmlToConvert.ToString());
+        public async Task<IActionResult> MailForgotPassword(string email, ForgotPasswordDTO model)
+        {
+            var htmlToConvert = await RenderViewAsync("MailForgotPassword", model, true);
+            var msg = sendNotificationEmail(email, "Abac Reset your password", htmlToConvert.ToString());
 
-        //    return Json(new { Msg = msg });
-        //}
-        //public async Task<string> RenderViewAsync<TModel>(string viewName, TModel model, bool partial = false)
-        //{
-        //    if (string.IsNullOrEmpty(viewName))
-        //    {
-        //        viewName = this.ControllerContext.ActionDescriptor.ActionName;
-        //    }
+            return Json(new { Msg = msg });
+        }
+        public async Task<string> RenderViewAsync<TModel>(string viewName, TModel model, bool partial = false)
+        {
+            if (string.IsNullOrEmpty(viewName))
+            {
+                viewName = this.ControllerContext.ActionDescriptor.ActionName;
+            }
 
-        //    this.ViewData.Model = model;
+            this.ViewData.Model = model;
 
-        //    using (var writer = new StringWriter())
-        //    {
-        //        IViewEngine viewEngine = this.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
-        //        ViewEngineResult viewResult = viewEngine.FindView(this.ControllerContext, viewName, !partial);
+            using (var writer = new StringWriter())
+            {
+                IViewEngine viewEngine = this.HttpContext.RequestServices.GetService(typeof(ICompositeViewEngine)) as ICompositeViewEngine;
+                ViewEngineResult viewResult = viewEngine.FindView(this.ControllerContext, viewName, !partial);
 
-        //        if (viewResult.Success == false)
-        //        {
-        //            return $"A view with the name {viewName} could not be found";
-        //        }
+                if (viewResult.Success == false)
+                {
+                    return $"A view with the name {viewName} could not be found";
+                }
 
-        //        ViewContext viewContext = new ViewContext(
-        //            this.ControllerContext,
-        //            viewResult.View,
-        //            this.ViewData,
-        //            this.TempData,
-        //            writer,
-        //            new HtmlHelperOptions()
-        //        );
+                ViewContext viewContext = new ViewContext(
+                    this.ControllerContext,
+                    viewResult.View,
+                    this.ViewData,
+                    this.TempData,
+                    writer,
+                    new HtmlHelperOptions()
+                );
 
-        //        await viewResult.View.RenderAsync(viewContext);
+                await viewResult.View.RenderAsync(viewContext);
 
-        //        return writer.GetStringBuilder().ToString();
-        //    }
+                return writer.GetStringBuilder().ToString();
+            }
+        }
+        public string sendNotificationEmail(string to, string header, string message)
+        {
+            //to = "voranun@dthai.co.th";
+            var setup = this._context.table_setup.FirstOrDefault();
+            var msg = new System.Text.StringBuilder();
+            try
+            {
+                var SMTP_SERVER = setup.SMTP_Server;
+                var SMTP_PORT = setup.SMTP_Port;
+                var SMTP_USERNAME = setup.SMTP_Username;
+                var SMTP_PASSWORD = setup.SMTP_Password;
+                var SMTP_FROM = setup.SMTP_From;
+                bool STMP_SSL = setup.SMTP_SSL.HasValue ? setup.SMTP_SSL.Value : false;
 
+                SmtpClient smtpClient = new SmtpClient(SMTP_SERVER, SMTP_PORT);
+                System.Net.NetworkCredential cred = new System.Net.NetworkCredential(SMTP_USERNAME, SMTP_PASSWORD);
 
-        //}
-        //public string sendNotificationEmail(string to, string header, string message)
-        //{
-        //    //to = "voranun@dthai.co.th";
-        //    var setup = this._context.table_setup.FirstOrDefault();
-        //    var msg = new System.Text.StringBuilder();
-        //    try
-        //    {
-        //        var SMTP_SERVER = setup.SMTP_Server;
-        //        var SMTP_PORT = setup.SMTP_Port;
-        //        var SMTP_USERNAME = setup.SMTP_Username;
-        //        var SMTP_PASSWORD = setup.SMTP_Password;
-        //        var SMTP_FROM = setup.SMTP_From;
-        //        bool STMP_SSL = setup.SMTP_SSL.HasValue ? setup.SMTP_SSL.Value : false;
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                smtpClient.EnableSsl = STMP_SSL;
 
-        //        SmtpClient smtpClient = new SmtpClient(SMTP_SERVER, SMTP_PORT);
-        //        System.Net.NetworkCredential cred = new System.Net.NetworkCredential(SMTP_USERNAME, SMTP_PASSWORD);
+                var mail = new MailMessage(SMTP_FROM, to, header, message);
+                mail.BodyEncoding = Encoding.UTF8;
+                mail.IsBodyHtml = true;
 
-        //        smtpClient.UseDefaultCredentials = false;
-        //        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-        //        smtpClient.EnableSsl = STMP_SSL;
+                smtpClient.Credentials = cred;
+                smtpClient.Send(mail);
 
-        //        var mail = new MailMessage(SMTP_FROM, to, header, message);
-        //        mail.BodyEncoding = Encoding.UTF8;
-        //        mail.IsBodyHtml = true;
+                return msg.ToString();
+            }
+            catch (Exception ex)
+            {
+                msg.AppendLine(" EXCEPTION: " + ex.Message);
+            }
+            return msg.ToString();
+        }
 
-        //        smtpClient.Credentials = cred;
-        //        smtpClient.Send(mail);
-
-        //        return msg.ToString();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        msg.AppendLine(" EXCEPTION: " + ex.Message);
-        //    }
-        //    return msg.ToString();
-        //}
-
-        //public bool checkrole()
-        //{
-        //    var group = _context.table_group.Where(w => (w.group_name == UserRole.admin | w.group_name == UserRole.helpdesk | w.group_name == UserRole.approve) & w.group_username_list.Contains(this.HttpContext.User.Identity.Name.ToLower())).FirstOrDefault();
-        //    if (group == null)
-        //        return false;
-
-        //    return true;
-        //}
+       
         public bool checkrole(string[] role)
         {
             foreach(var r in role)
@@ -895,29 +818,31 @@ namespace ABAC.Controllers
             if (string.IsNullOrEmpty(log_description))
             {
                 if (log_type_id == LogType.log_create_account)
-                    log_description = "สร้างบัญชีผู้ใช้";
+                    log_description = "Create Account";
                 else if (log_type_id == LogType.log_create_account_with_file)
-                    log_description = "สร้างบัญชีผู้ใช้จากไฟล์";
+                    log_description = "Create Account from file";
                 else if (log_type_id == LogType.log_create_account_bulk)
-                    log_description = "สร้างบัญชีผู้ใช้จำนวนมาก";
+                    log_description = "Create Bulk Account";
                 else if (log_type_id == LogType.log_edit_account)
-                    log_description = "แก้ไขบัญชีผู้ใช้";
+                    log_description = "Edit Account";
                 else if (log_type_id == LogType.log_delete_account)
-                    log_description = "ลบบัญชีผู้ใช้";
+                    log_description = "Delete Account";
                 else if (log_type_id == LogType.log_change_password)
-                    log_description = "เปลี่ยนรหัสผ่านบัญชีผู้ใช้";
+                    log_description = "Change Password";
                 else if (log_type_id == LogType.log_reset_password)
-                    log_description = "เปลี่ยนรหัสผ่านบัญชีผู้ใช้";
+                    log_description = "Reset Password";
                 else if (log_type_id == LogType.log_lock_account)
-                    log_description = "ล็อกบัญชีผู้ใช้";
+                    log_description = "Lock Account";
                 else if (log_type_id == LogType.log_unlock_account)
-                    log_description = "ปลดล็อกบัญชีผู้ใช้";
+                    log_description = "Unlock Account";
+                else if (log_type_id == LogType.log_forgot_password)
+                    log_description = "forgot password";
 
-                log_description += " " + uid + " บน " + source.ToString();
+                log_description += " " + uid + " on " + source.ToString();
                 if (log_status == LogStatus.successfully)
-                    log_description += " สำเร็จ";
+                    log_description += " Success";
                 else
-                    log_description += " ไม่สำเร็จ";
+                    log_description += " Fail";
             }
 
             if (string.IsNullOrEmpty(logonname))

@@ -22,7 +22,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@TempData["Title"] - มหาวิทยาลัย</title>
+    <title>@TempData["Title"] - Assumption University of Thailand</title>
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
@@ -275,7 +275,7 @@
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
                 <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("CheckAccount", "Account")"><i data-feather="search" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ค้นหาผู้ใช้</a>
+                    <a class="menu-link" href="@Url.Action("CheckAccount", "Account")"><i data-feather="search" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Search Account</a>
                 </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
@@ -284,15 +284,15 @@
 
                     <a href="javascript: void(0);" class="menu-link">
                         <i data-feather="plus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>สร้างบัญชีผู้ใช้</span>
+                        <span>Create Account</span>
                         <span class="menu-arrow">
                             <i class="mdi mdi-chevron-right"></i>
                         </span>
                     </a>
                     <ul class="nav-second-level" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จากไฟล์</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountBulk", "Account")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>สร้างบัญชีผู้ใช้จำนวนมาก</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create Account</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create Acount from File</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountBulk", "Account")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create bulk Account</a></li>
                     </ul>
                 </li>
             }
@@ -300,20 +300,20 @@
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk) | roles.Contains(roleType.PasswordOperator))
             {
                 <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>แก้ไขรหัสผ่าน</a>
+                    <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Reset Password</a>
                 </li>
             }
 
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
                 <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>lock/unlock</a>
+                    <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Lock/Unlock</a>
                 </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
                 <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ลบบัญชีผู้ใช้</a>
+                    <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Delete Account</a>
                 </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
@@ -321,7 +321,7 @@
                 <li class="leftbar-menu-item">
                     <a href="javascript: void(0);" class="menu-link">
                         <i data-feather="pie-chart" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>รายงาน</span>
+                        <span>Report</span>
                         <span class="menu-arrow">
                             <i class="mdi mdi-chevron-right"></i>
                         </span>
@@ -339,17 +339,17 @@
                 <li class="leftbar-menu-item">
                     <a href="javascript: void(0);" class="menu-link">
                         <i data-feather="code" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>ตั้งค่า Home</span>
+                        <span>Home CMS</span>
                         <span class="menu-arrow">
                             <i class="mdi mdi-chevron-right"></i>
                         </span>
                     </a>
                     <ul class="nav-second-level" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStaff", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Staff</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStudent", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Student</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home VIP</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Office</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่าหน้า Home Guest</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStaff", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Staff</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStudent", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Student</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>VIP</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Office</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Guest</a></li>
                     </ul>
                 </li>
             }
@@ -358,7 +358,7 @@
                 <li class="leftbar-menu-item">
                     <a href="javascript: void(0);" class="menu-link">
                         <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>ตั้งค่า</span>
+                        <span>Setup</span>
                         <span class="menu-arrow">
                             <i class="mdi mdi-chevron-right"></i>
                         </span>
@@ -366,11 +366,11 @@
                     <ul class="nav-second-level" aria-expanded="false">
                         @if (roles.Contains(roleType.Admin))
                         {
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("UserRole", "System")"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>กำหนดสิทธิ์การใช้งาน</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("UserRole", "System")"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>User Role</a></li>
                         }
                         @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.WebMaster))
                         {
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>ตั้งค่า Landing Page</a></li>
+                            <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Landing Page</a></li>
                         }
                         @*@if (roles.Contains(roleType.Admin))
                         {
