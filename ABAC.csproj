@@ -25,6 +25,7 @@
     <Content Remove="Views\Auth\RegisterCompleted.cshtml" />
     <Content Remove="Views\Auth\RegisterOTP.cshtml" />
     <Content Remove="Views\Auth\ResetPassword.cshtml" />
+    <Content Remove="Views\Auth\ShowPassword.cshtml" />
     <Content Remove="Views\Profile\Admin.cshtml" />
     <Content Remove="Views\Profile\Guest.cshtml" />
     <Content Remove="Views\Profile\Staff.cshtml" />

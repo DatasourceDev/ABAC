@@ -130,14 +130,14 @@ namespace ABAC.Controllers
                 var aduser = await _provider.GetAdUser2(model.UserName, _context, _conf.Env);
                 if (aduser == null)
                 {
-                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "ไม่พบข้อมูลผู้ใช้ " + model.UserName + " ในระบบ AD", model.UserName);
+                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "The account " + model.UserName + " is not exist on AD.", model.UserName);
                     ModelState.AddModelError("UserName", "The account does not exist.");
                     return View(model);
                 }
 
                 if (aduser.Enabled == false)
                 {
-                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, " ถูกระงับการใช้งาน", model.UserName);
+                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "The account " + model.UserName + " has been terminated.", model.UserName);
                     ModelState.AddModelError("UserName", "The account has been terminated.");
                     return View(model);
                 }
@@ -155,7 +155,7 @@ namespace ABAC.Controllers
                     }
 
                     this._loginServices.Login(aduser, role, true);
-                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
+                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
                     var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
                     var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
@@ -187,7 +187,7 @@ namespace ABAC.Controllers
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
                 {
-                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, model.UserName + " ระบุรหัสผ่านไม่ถูกต้อง", model.UserName);
+                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "The account " + model.UserName + " key-in incorrect username or password.", model.UserName);
                     ModelState.AddModelError("Password", "Incorrect username or password.");
                     return View(model);
                 }
@@ -204,7 +204,7 @@ namespace ABAC.Controllers
                         }
                     }
                     this._loginServices.Login(aduser, role, true);
-                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " เข้าสู่ระบบสำเร็จ", model.UserName);
+                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
                     var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
                     var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
@@ -241,7 +241,7 @@ namespace ABAC.Controllers
         }
         public IActionResult Logout()
         {
-            writelog(LogType.log_logout, LogStatus.successfully, IDMSource.Database, this.HttpContext.User.Identity.Name, this.HttpContext.User.Identity.Name + " ออกจากระบบสำเร็จ");
+            writelog(LogType.log_logout, LogStatus.successfully, IDMSource.Database, this.HttpContext.User.Identity.Name, this.HttpContext.User.Identity.Name + " has been logged out.");
             this._loginServices.Logout();
             var portal = _conf.Portal;
             if (portal == Portal.admin)
@@ -326,8 +326,8 @@ namespace ABAC.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Message = ReturnMessage.ChangePasswordFail;
-                ViewBag.ReturnCode = ReturnCode.Error;
+                return RedirectToAction("FGFail", "Auth", new { code = ReturnCode.Error, msg = "The reset password link is Invaid." });
+
             }
             return View(model);
         }
@@ -358,52 +358,54 @@ namespace ABAC.Controllers
                 ViewBag.ReturnCode = code;
                 try
                 {
-                    var user = await _provider.GetAdUser2(model.UserName, _context, _conf.Env);
+                    var user = await _provider.GetAdUser2(activate.UserName, _context, _conf.Env);
                     if (user == null)
                         return RedirectToAction("Logout", "Auth");
 
                     var userType = AppUtil.getaUUserType(user.DistinguishedName);
                     if (userType == aUUserType.vip)
                     {
-                        var vip = this._context.User_VIP.Where(w => w.username.ToLower() == model.UserName.ToLower()).FirstOrDefault();
+                        var vip = this._context.User_VIP.Where(w => w.username.ToLower() == activate.UserName.ToLower()).FirstOrDefault();
                         if (vip != null)
                         {
                             vip.password = Cryptography.encrypt(model.Password);
                             vip.Update_On = DateUtil.Now();
-                            vip.Update_By = model.UserName;
+                            vip.Update_By = activate.UserName;
                         }
                     }
                     else if (userType == aUUserType.office)
                     {
-                        var office = this._context.User_Office.Where(w => w.username.ToLower() == model.UserName.ToLower()).FirstOrDefault();
+                        var office = this._context.User_Office.Where(w => w.username.ToLower() == activate.UserName.ToLower()).FirstOrDefault();
                         if (office != null)
                         {
                             office.password = Cryptography.encrypt(model.Password);
                             office.Update_On = DateUtil.Now();
-                            office.Update_By = model.UserName;
+                            office.Update_By = activate.UserName;
                         }
                     }
                     else if (userType == aUUserType.bulk)
                     {
-                        var bulk = this._context.User_Bulk.Where(w => w.username.ToLower() == model.UserName.ToLower()).FirstOrDefault();
+                        var bulk = this._context.User_Bulk.Where(w => w.username.ToLower() == activate.UserName.ToLower()).FirstOrDefault();
                         if (bulk != null)
                         {
                             bulk.password = Cryptography.encrypt(model.Password);
                             bulk.Update_On = DateUtil.Now();
-                            bulk.Update_By = model.UserName;
+                            bulk.Update_By = activate.UserName;
                         }
 
                     }
                     activate.Active = false;
                     _context.SaveChanges();
+                    if(_conf.Env != "dev")
+                    {
+                        var result_ad = _provider.ChangePwd(user, model.Password, _context);
+                        if (result_ad.result == true)
+                            writelog(LogType.log_forgot_password, LogStatus.successfully, IDMSource.AD, activate.UserName);
+                        else
+                            writelog(LogType.log_forgot_password, LogStatus.failed, IDMSource.AD, activate.UserName, log_exception: result_ad.Message);
+                    }
 
-                    var result_ad = _provider.ChangePwd(user, model.Password, _context);
-                    if (result_ad.result == true)
-                        writelog(LogType.log_forgot_password, LogStatus.successfully, IDMSource.AD, model.UserName);
-                    else
-                        writelog(LogType.log_forgot_password, LogStatus.failed, IDMSource.AD, model.UserName, log_exception: result_ad.Message);
-
-                    writelog(LogType.log_forgot_password, LogStatus.successfully, IDMSource.Database, model.UserName);
+                    writelog(LogType.log_forgot_password, LogStatus.successfully, IDMSource.Database, activate.UserName);
 
                     msg = ReturnMessage.ChangePasswordSuccess;
                     code = ReturnCode.Success;
@@ -413,7 +415,7 @@ namespace ABAC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    writelog(LogType.log_forgot_password, LogStatus.failed, IDMSource.Database, model.UserName, log_exception: ex.Message);
+                    writelog(LogType.log_forgot_password, LogStatus.failed, IDMSource.Database, activate.UserName, log_exception: ex.Message);
                 }
             }
             return View(model);

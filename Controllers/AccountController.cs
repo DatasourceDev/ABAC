@@ -98,17 +98,19 @@ namespace ABAC.Controllers
                         user.Update_On = DateUtil.Now();
                         _context.User_Office.Add(user);
                         _context.SaveChanges();
+                        if (_conf.Env != "dev")
+                        {
+                            var result_ad = _provider.CreateUser(model, _context);
+                            if (result_ad.result == true)
+                                writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                            else
+                                writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                        var result_ad = _provider.CreateUser(model, _context);
-                        if (result_ad.result == true)
-                            writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
-                        else
-                            writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
-
-                        user.ad_created = result_ad.result;
-                        _context.SaveChanges();
+                            user.ad_created = result_ad.result;
+                            _context.SaveChanges();
+                        }
+                      
                         writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
-
                     }
                     else if (model.aUUserType == aUUserType.vip)
                     {
@@ -128,15 +130,18 @@ namespace ABAC.Controllers
                         user.Update_On = DateUtil.Now();
                         _context.User_VIP.Add(user);
                         _context.SaveChanges();
-
-                        var result_ad = _provider.CreateUser(model, _context);
-                        if (result_ad.result == true)
-                            writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
-                        else
-                            writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
-
-                        user.ad_created = result_ad.result;
-                        _context.SaveChanges();
+                        if(_conf.Env != "dev")
+                        {
+                            var result_ad = _provider.CreateUser(model, _context);
+                            if (result_ad.result == true)
+                                writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                            else
+                                writelog(LogType.log_create_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+                            user.ad_created = result_ad.result;
+                            _context.SaveChanges();
+                        }
+                       
+                      
                         writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
 
                     }
@@ -758,6 +763,12 @@ namespace ABAC.Controllers
                                     if (bulk != null)
                                     {
                                         _context.Remove(bulk);
+                                        _context.SaveChanges();
+                                    }
+                                    var bulkimp = _context.User_Bulk_Import.Where(w => w.username.ToLower() == id.ToLower()).FirstOrDefault();
+                                    if (bulkimp != null)
+                                    {
+                                        _context.Remove(bulkimp);
                                         _context.SaveChanges();
                                     }
                                 }

@@ -817,32 +817,30 @@ namespace ABAC.Controllers
         {
             if (string.IsNullOrEmpty(log_description))
             {
-                if (log_type_id == LogType.log_create_account)
-                    log_description = "Create Account";
-                else if (log_type_id == LogType.log_create_account_with_file)
-                    log_description = "Create Account from file";
-                else if (log_type_id == LogType.log_create_account_bulk)
-                    log_description = "Create Bulk Account";
-                else if (log_type_id == LogType.log_edit_account)
-                    log_description = "Edit Account";
-                else if (log_type_id == LogType.log_delete_account)
-                    log_description = "Delete Account";
-                else if (log_type_id == LogType.log_change_password)
-                    log_description = "Change Password";
-                else if (log_type_id == LogType.log_reset_password)
-                    log_description = "Reset Password";
-                else if (log_type_id == LogType.log_lock_account)
-                    log_description = "Lock Account";
-                else if (log_type_id == LogType.log_unlock_account)
-                    log_description = "Unlock Account";
-                else if (log_type_id == LogType.log_forgot_password)
-                    log_description = "forgot password";
+                log_description = source.ToString() + ":";
 
-                log_description += " " + uid + " on " + source.ToString();
-                if (log_status == LogStatus.successfully)
-                    log_description += " Success";
-                else
-                    log_description += " Fail";
+                if (log_type_id == LogType.log_create_account)
+                    log_description = "Create cccount";
+                else if (log_type_id == LogType.log_create_account_with_file)
+                    log_description = "Create cccount from file";
+                else if (log_type_id == LogType.log_create_account_bulk)
+                    log_description = "Create bulk account";
+                else if (log_type_id == LogType.log_edit_account)
+                    log_description = "Edit account";
+                else if (log_type_id == LogType.log_delete_account)
+                    log_description = "Delete account";
+                else if (log_type_id == LogType.log_change_password)
+                    log_description = "Change password";
+                else if (log_type_id == LogType.log_reset_password)
+                    log_description = "Reset password";
+                else if (log_type_id == LogType.log_lock_account)
+                    log_description = "Lock account";
+                else if (log_type_id == LogType.log_unlock_account)
+                    log_description = "Unlock account";
+                else if (log_type_id == LogType.log_forgot_password)
+                    log_description = "Forgot password";
+
+                log_description += uid ;
             }
 
             if (string.IsNullOrEmpty(logonname))
