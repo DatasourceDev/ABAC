@@ -45,6 +45,10 @@ namespace ABAC
 
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<SpuContext>(options => options.UseSqlServer(connectionString));
+
+            var connectionString2 = Configuration.GetConnectionString("mmsConnection");
+            services.AddDbContext<MmsContext>(options => options.UseSqlServer(connectionString2));
+
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddTransient<ILoginServices, LoginServices>();
@@ -115,9 +119,9 @@ namespace ABAC
             {
                 var context = serviceScope.ServiceProvider.GetService<SpuContext>();
                 context.Database.EnsureCreated();
-                //context.Database.Migrate();
                 context.EnsureSeedData();
             }
+           
 
             string enUSCulture = "en-US";
             var supportedCultures = new[]

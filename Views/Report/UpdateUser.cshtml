@@ -1,8 +1,9 @@
 ﻿@model ABAC.DTO.SearchDTO
 @using ABAC.Extensions;
 @{
-    ViewData["Title"] = "รายงานการแก้ไขผู้ใช้งาน";
-
+    ViewData["Title"] = "Update/Rename User[Syn]";
+    var totalupdate = 0;
+    var totalrename = 0;
 }
 <div class="container-fluid">
     <!-- Page-Title -->
@@ -11,10 +12,7 @@
             <div class="page-title-box">
                 <div class="float-right">
                 </div>
-                <h4 class="page-title">รายงานการแก้ไขผู้ใช้งาน</h4>
-                <p class="text-muted">
-                    Update User Report
-                </p>
+                <h4 class="page-title">Update/Rename User[Syn]</h4>
             </div><!--end page-title-box-->
         </div><!--end col-->
     </div>
@@ -28,10 +26,6 @@
                     <div class="card-body">
                         <h4 class="mt-0 header-title">Search</h4>
                         <div class="form-group row">
-                            <div class="col-lg-3">
-                                <label class="col-form-label">Text</label>
-                                <input class="form-control" type="text" placeholder="" asp-for="text_search">
-                            </div>
                             <div class="col-lg-2">
                                 <label class="col-form-label">From</label>
                                 <div class="input-group">
@@ -45,7 +39,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-1">
-                                <label class="col-form-label"><br/></label>
+                                <label class="col-form-label"><br /></label>
                                 <button class="btn btn-dark btn-block" type="submit">Search</button>
                             </div>
                         </div>
@@ -56,30 +50,50 @@
                                         <table id="tech-companies-1" class="table table-striped mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th>Sam Account Name</th>
-                                                    <th>Employee/Student Code</th>
-                                                    <th>User Principal Name</th>
-                                                    <th>First Name</th>
-                                                    <th>Last Name</th>
-                                                    <th>Update By</th>
-                                                    <th>Update Date</th>
+                                                    <th>Agent Name</th>
+                                                    <th>Profile Name</th>
+                                                    <th>Status</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Numbers of update Account</th>
+                                                    <th>Numbers of rename Account</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if (Model.lists != null)
                                                 {
-                                                    @foreach (system_log item in Model.lists)
+                                                    @foreach (m_step_history item in Model.lists)
                                                     {
-
+                                                        <tr>
+                                                            <td>@item.ma_name</td>
+                                                            <td>@item.run_profile_name</td>
+                                                            <td>@item.step_result</td>
+                                                            <td>@item.start_date</td>
+                                                            <td>@item.end_date</td>
+                                                            <td>@item.export_update</td>
+                                                            <td>@item.export_rename</td>
+                                                        </tr>
+                                                        totalupdate += item.export_update;
+                                                        totalrename += item.export_rename;
                                                     }
                                                 }
+                                            </tbody>
+                                            <tfoot>
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
                                                         <td colspan="7" class="text-center">No Data</td>
                                                     </tr>
                                                 }
-                                            </tbody>
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="5">Total</td>
+                                                        <td>@totalupdate</td>
+                                                        <td>@totalrename</td>
+                                                    </tr>
+                                                }
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

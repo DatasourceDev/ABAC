@@ -1,8 +1,8 @@
 ﻿@model ABAC.DTO.SearchDTO
 @using ABAC.Extensions;
 @{
-    ViewData["Title"] = "รายงานการสร้างผู้ใช้งาน";
-
+    ViewData["Title"] = "Create User[Syn]";
+    var total = 0;
 }
 <div class="container-fluid">
     <!-- Page-Title -->
@@ -11,10 +11,7 @@
             <div class="page-title-box">
                 <div class="float-right">
                 </div>
-                <h4 class="page-title">รายงานการสร้างผู้ใช้งาน</h4>
-                <p class="text-muted">
-                    Create User Report
-                </p>
+                <h4 class="page-title">Create User[Syn]</h4>
             </div><!--end page-title-box-->
         </div><!--end col-->
     </div>
@@ -28,10 +25,6 @@
                     <div class="card-body">
                         <h4 class="mt-0 header-title">Search</h4>
                         <div class="form-group row">
-                            <div class="col-lg-3">
-                                <label class="col-form-label">Text</label>
-                                <input class="form-control" type="text" placeholder="" asp-for="text_search">
-                            </div>
                             <div class="col-lg-2">
                                 <label class="col-form-label">From</label>
                                 <div class="input-group">
@@ -56,30 +49,46 @@
                                         <table id="tech-companies-1" class="table table-striped mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th>Sam Account Name</th>
-                                                    <th>Employee/Student Code</th>
-                                                    <th>User Principal Name</th>
-                                                    <th>First Name</th>
-                                                    <th>Last Name</th>
-                                                    <th>Create By</th>
-                                                    <th>Create Date</th>
+                                                    <th>Agent Name</th>
+                                                    <th>Profile Name</th>
+                                                    <th>Status</th>
+                                                    <th>Start Date</th>
+                                                    <th>End Date</th>
+                                                    <th>Numbers of new Account</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @if (Model.lists != null)
                                                 {
-                                                    @foreach (system_log item in Model.lists)
+                                                    @foreach (m_step_history item in Model.lists)
                                                     {
-
+                                                        <tr>
+                                                            <td>@item.ma_name</td>
+                                                            <td>@item.run_profile_name</td>
+                                                            <td>@item.step_result</td>
+                                                            <td>@item.start_date</td>
+                                                            <td>@item.end_date</td>
+                                                            <td>@item.export_add</td>
+                                                        </tr>
+                                                        total += item.export_add;
                                                     }
                                                 }
+                                            </tbody>
+                                            <tfoot>
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="7" class="text-center">No Data</td>
+                                                        <td colspan="6" class="text-center">No Data</td>
                                                     </tr>
                                                 }
-                                            </tbody>
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="5">Total</td>
+                                                        <td>@total</td>
+                                                    </tr>
+                                                }
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>

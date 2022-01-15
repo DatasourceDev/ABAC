@@ -20,15 +20,18 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using System.Globalization;
+using Microsoft.Data.SqlClient;
 
 namespace ABAC.Controllers
 {
     [Authorize]
     public class ReportController : ControllerBase
     {
+        public MmsContext _contextmms;
 
-        public ReportController(SpuContext context, ILogger<ReportController> logger, ILoginServices loginServices, IUserProvider provider,  IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider)
+        public ReportController(SpuContext context, MmsContext contextmms, ILogger<ReportController> logger, ILoginServices loginServices, IUserProvider provider, IOptions<SystemConf> conf) : base(context, logger, loginServices, conf, provider)
         {
+            this._contextmms = contextmms;
         }
         public async Task<IActionResult> Log(SearchDTO model)
         {
@@ -187,7 +190,7 @@ namespace ABAC.Controllers
 
             if (!string.IsNullOrEmpty(model.text_search))
                 lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search) | w.Reference.Contains(model.text_search));
-                     
+
 
             if (!string.IsNullOrEmpty(model.dfrom))
             {
@@ -198,7 +201,7 @@ namespace ABAC.Controllers
                 lists = lists.Where(w => w.Create_On.Value.Date <= dto);
             }
 
-            lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2=>o2.username);
+            lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2 => o2.username);
             int skipRows = (model.pageno - 1) * 100;
             var itemcnt = lists.Count();
             var pagelen = itemcnt / 100;
@@ -261,14 +264,254 @@ namespace ABAC.Controllers
 
         public IActionResult CreateUser(SearchDTO model)
         {
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+            var lists = new List<m_step_history>();
+            var sql = new StringBuilder();
+            sql.AppendLine(" select m.ma_name, r.run_profile_name, sh.step_history_id, sh.run_history_id, sh.step_number ,sh.step_result , sh.start_date, sh.end_date, ");
+            sql.AppendLine(" sh.export_add, sh.export_update, sh.export_rename, sh.export_delete, sh.export_deleteadd, sh.export_failure ");
+            sql.AppendLine(" from [mms_step_history] sh");
+            sql.AppendLine(" inner join [mms_run_history] r on sh.run_history_id = r.run_history_id");
+            sql.AppendLine(" inner join [mms_management_agent] m on m.ma_id = r.ma_id");
+            sql.AppendLine(" where 1 = 1");
+            if (dfrom.HasValue)
+            {
+                sql.AppendLine(" and sh.start_date >= convert(datetime, '" + DateUtil.ToInternalDate(dfrom) +"',110)");
+            }
+            if (dto.HasValue)
+            {
+                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto) + "',110)");
+            }
+            sql.AppendLine(" and (m.ma_name = 'STAFF-ADMA' or m.ma_name = 'STUDENT-ADMA')");
+            sql.AppendLine(" and r.run_profile_name = 'Export'");
+            sql.AppendLine(" and sh.export_add > 0");
+            sql.AppendLine(" order by sh.start_date desc; ");
+            using (var command = _contextmms.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sql.ToString();
+                _contextmms.Database.OpenConnection();
+                using (var result = command.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        var j = 0;
+                        var row = new m_step_history();
+                        row.ma_name = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.run_profile_name = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.step_history_id = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.run_history_id = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.step_number = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.step_result = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.start_date = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        var start_date = DateUtil.ToDate(row.start_date, monthfirst: true);
+                        if (start_date.HasValue)
+                        {
+                            //start_date = start_date.Value.AddHours(7);
+                            row.start_date = DateUtil.ToDisplayDateTime(start_date);
+                        }
+
+                        row.end_date = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        var end_date = DateUtil.ToDate(row.end_date, monthfirst: true);
+                        if (end_date.HasValue)
+                        {
+                            //end_date = end_date.Value.AddHours(7);
+                            row.end_date = DateUtil.ToDisplayDateTime(end_date);
+                        }
+
+                        row.export_add = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_update = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_rename = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_delete = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_deleteadd = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_failure = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        lists.Add(row);
+                    }
+                }
+            }
+
+            int skipRows = (model.pageno - 1) * 100;
+            var itemcnt = lists.Count();
+            var pagelen = itemcnt / 100;
+            if (itemcnt % 100 > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+
+            model.lists = lists.AsQueryable();
             return View(model);
         }
         public IActionResult UpdateUser(SearchDTO model)
         {
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+            var lists = new List<m_step_history>();
+            var sql = new StringBuilder();
+            sql.AppendLine(" select m.ma_name, r.run_profile_name, sh.step_history_id, sh.run_history_id, sh.step_number ,sh.step_result , sh.start_date, sh.end_date, ");
+            sql.AppendLine(" sh.export_add, sh.export_update, sh.export_rename, sh.export_delete, sh.export_deleteadd, sh.export_failure ");
+            sql.AppendLine(" from [mms_step_history] sh");
+            sql.AppendLine(" inner join [mms_run_history] r on sh.run_history_id = r.run_history_id");
+            sql.AppendLine(" inner join [mms_management_agent] m on m.ma_id = r.ma_id");
+            sql.AppendLine(" where 1 = 1");
+            if (dfrom.HasValue)
+            {
+                sql.AppendLine(" and sh.start_date >= convert(datetime, '" + DateUtil.ToInternalDate(dfrom) + "',110)");
+            }
+            if (dto.HasValue)
+            {
+                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto) + "',110)");
+            }
+            sql.AppendLine(" and (m.ma_name = 'STAFF-ADMA' or m.ma_name = 'STUDENT-ADMA')");
+            sql.AppendLine(" and r.run_profile_name = 'Export'");
+            sql.AppendLine(" and (sh.export_update > 0 or sh.export_rename > 0 )");
+            sql.AppendLine(" order by sh.start_date desc; ");
+            using (var command = _contextmms.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sql.ToString();
+                _contextmms.Database.OpenConnection();
+                using (var result = command.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        var j = 0;
+                        var row = new m_step_history();
+                        row.ma_name = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.run_profile_name = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.step_history_id = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.run_history_id = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.step_number = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.step_result = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.start_date = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        var start_date = DateUtil.ToDate(row.start_date, monthfirst: true);
+                        if (start_date.HasValue)
+                        {
+                            //start_date = start_date.Value.AddHours(7);
+                            row.start_date = DateUtil.ToDisplayDateTime(start_date);
+                        }
+
+                        row.end_date = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        var end_date = DateUtil.ToDate(row.end_date, monthfirst: true);
+                        if (end_date.HasValue)
+                        {
+                            //end_date = end_date.Value.AddHours(7);
+                            row.end_date = DateUtil.ToDisplayDateTime(end_date);
+                        }
+
+                        row.export_add = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_update = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_rename = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_delete = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_deleteadd = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_failure = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        lists.Add(row);
+                    }
+                }
+            }
+
+            int skipRows = (model.pageno - 1) * 100;
+            var itemcnt = lists.Count();
+            var pagelen = itemcnt / 100;
+            if (itemcnt % 100 > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+
+            model.lists = lists.AsQueryable();
             return View(model);
         }
         public IActionResult DeleteUser(SearchDTO model)
         {
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+            var lists = new List<m_step_history>();
+            var sql = new StringBuilder();
+            sql.AppendLine(" select m.ma_name, r.run_profile_name, sh.step_history_id, sh.run_history_id, sh.step_number ,sh.step_result , sh.start_date, sh.end_date, ");
+            sql.AppendLine(" sh.export_add, sh.export_update, sh.export_rename, sh.export_delete, sh.export_deleteadd, sh.export_failure ");
+            sql.AppendLine(" from [mms_step_history] sh");
+            sql.AppendLine(" inner join [mms_run_history] r on sh.run_history_id = r.run_history_id");
+            sql.AppendLine(" inner join [mms_management_agent] m on m.ma_id = r.ma_id");
+            sql.AppendLine(" where 1 = 1");
+            if (dfrom.HasValue)
+            {
+                sql.AppendLine(" and sh.start_date >= convert(datetime, '" + DateUtil.ToInternalDate(dfrom) + "',110)");
+            }
+            if (dto.HasValue)
+            {
+                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto) + "',110)");
+            }
+            sql.AppendLine(" and (m.ma_name = 'STAFF-ADMA' or m.ma_name = 'STUDENT-ADMA')");
+            sql.AppendLine(" and r.run_profile_name = 'Export'");
+            sql.AppendLine(" and sh.export_delete > 0");
+            sql.AppendLine(" order by sh.start_date desc; ");
+            using (var command = _contextmms.Database.GetDbConnection().CreateCommand())
+            {
+                command.CommandText = sql.ToString();
+                _contextmms.Database.OpenConnection();
+                using (var result = command.ExecuteReader())
+                {
+                    while (result.Read())
+                    {
+                        var j = 0;
+                        var row = new m_step_history();
+                        row.ma_name = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.run_profile_name = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.step_history_id = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.run_history_id = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.step_number = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.step_result = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        row.start_date = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        var start_date = DateUtil.ToDate(row.start_date, monthfirst: true);
+                        if (start_date.HasValue)
+                        {
+                            //start_date = start_date.Value.AddHours(7);
+                            row.start_date = DateUtil.ToDisplayDateTime(start_date);
+                        }
+
+                        row.end_date = AppUtil.ManageNull(result.GetValue(j)).ToString(); j++;
+                        var end_date = DateUtil.ToDate(row.end_date, monthfirst: true);
+                        if (end_date.HasValue)
+                        {
+                            //end_date = end_date.Value.AddHours(7);
+                            row.end_date = DateUtil.ToDisplayDateTime(end_date);
+                        }
+
+                        row.export_add = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_update = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_rename = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_delete = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_deleteadd = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        row.export_failure = NumUtil.ParseInteger(AppUtil.ManageNull(result.GetValue(j))); j++;
+                        lists.Add(row);
+                    }
+                }
+            }
+
+            int skipRows = (model.pageno - 1) * 100;
+            var itemcnt = lists.Count();
+            var pagelen = itemcnt / 100;
+            if (itemcnt % 100 > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+
+            model.lists = lists.AsQueryable();
             return View(model);
         }
     }

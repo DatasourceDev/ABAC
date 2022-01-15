@@ -9,7 +9,7 @@ namespace ABAC.DAL
 {
     public class SpuContext : DbContext
     {
-        public SpuContext(DbContextOptions options) : base(options) { }
+        public SpuContext(DbContextOptions<SpuContext> options) : base(options) { }
 
         public SpuContext()
         {
@@ -26,6 +26,8 @@ namespace ABAC.DAL
         public DbSet<temp_import> table_temp_import { get; set; }
         public DbSet<user_role> table_user_role { get; set; }
         public DbSet<activate_code> table_activate_code { get; set; }
+       
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
