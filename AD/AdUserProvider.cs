@@ -50,28 +50,52 @@ namespace ABAC.Identity
                 {
                     if(env == "dev")
                     {
-                        //var user = new AdUser2();
-                        //user.DistinguishedName = "CN=u9999999,OU=Bachelor,OU=MAJOR FIELD: DIGITAL BUSINESS MANAGEMENT,OU=BUSINESS ADMINISTRATION,OU=Student,DC=auds,DC=au,DC=edu";
-                        //user.DisplayName = "u9999999";
-                        //user.GivenName = "u9999999";
-                        //user.Name = "u9999999";
-                        //user.SamAccountName = "u9999999";
-                        //user.UserPrincipalName = "u9999999@au.edu";
-                        //user.userAccountControl = "66048";
-                        //user.EmailAddress = "u9999999@au.edu";
-                        //return user;
+                       
 
-                        var user = new AdUser2();
-                        user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
-                        user.DisplayName = "adminwebmaster";
-                        user.GivenName = "u999adminwebmaster9999";
-                        user.Name = "adminwebmaster";
-                        user.SamAccountName = "adminwebmaster";
-                        user.UserPrincipalName = "adminwebmaster@au.edu";
-                        user.userAccountControl = "66048";
-                        user.EmailAddress = "adminwebmaster@au.edu";
-                        user.aUOtherMail = "voranun@dthai.co.th";
-                        return user;
+                        if (samAccountName == "adminwebmaster")
+                        {
+                            var user = new AdUser2();
+                            user.DistinguishedName = "CN=adminwebmaster,OU=Service-user,DC=auds,DC=au,DC=edu";
+                            user.DisplayName = "adminwebmaster";
+                            user.GivenName = "u999adminwebmaster9999";
+                            user.Name = "adminwebmaster";
+                            user.SamAccountName = "adminwebmaster";
+                            user.UserPrincipalName = "adminwebmaster@au.edu";
+                            user.userAccountControl = "66048";
+                            user.EmailAddress = "adminwebmaster@au.edu";
+                            user.aUOtherMail = "voranun@dthai.co.th";
+                            return user;
+                        }
+                        else if (samAccountName == "u9999999")
+                        {
+                            var user = new AdUser2();
+                            user.DistinguishedName = "CN=u9999999,OU=Bachelor,OU=MAJOR FIELD: DIGITAL BUSINESS MANAGEMENT,OU=BUSINESS ADMINISTRATION,OU=Student,DC=auds,DC=au,DC=edu";
+                            user.DisplayName = "u9999999";
+                            user.GivenName = "u9999999";
+                            user.Name = "u9999999";
+                            user.SamAccountName = "u9999999";
+                            user.UserPrincipalName = "u9999999@au.edu";
+                            user.userAccountControl = "66048";
+                            user.EmailAddress = "u9999999@au.edu";
+                            user.aUOtherMail = "voranun@dthai.co.th";
+                            return user;
+                        }
+                        else if (samAccountName == "jantanaTng")
+                        {
+                            var user = new AdUser2();
+                            user.DistinguishedName = "CN=jantanaTng,OU=Service-user,DC=auds,DC=au,DC=edu";
+                            user.DisplayName = "jantanaTng";
+                            user.GivenName = "jantanaTng";
+                            user.Name = "jantanaTng";
+                            user.SamAccountName = "jantanaTng";
+                            user.UserPrincipalName = "jantanaTng@au.edu";
+                            user.userAccountControl = "66048";
+                            user.EmailAddress = "jantanaTng@au.edu";
+                            user.aUOtherMail = "voranun@dthai.co.th";
+                            return user;
+                        }
+                        else
+                            return null;
                     }
 
                     var setup = spucontext.table_setup.FirstOrDefault();

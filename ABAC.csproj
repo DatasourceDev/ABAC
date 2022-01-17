@@ -67,6 +67,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\files\landingpage\" />
+    <Folder Include="wwwroot\files\temp\" />
   </ItemGroup>
 
 </Project>

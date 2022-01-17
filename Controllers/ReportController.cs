@@ -21,6 +21,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Text;
 using System.Globalization;
 using Microsoft.Data.SqlClient;
+using OfficeOpenXml;
+using System.IO;
 
 namespace ABAC.Controllers
 {
@@ -186,11 +188,18 @@ namespace ABAC.Controllers
             var dfrom = DateUtil.ToDate(model.dfrom);
             var dto = DateUtil.ToDate(model.dto);
 
+            //if (this._loginServices.UserRole().Contains(roleType.Helpdesk) & !_loginServices.UserRole().Contains(roleType.Admin))
+            if (string.IsNullOrEmpty(model.create_by))
+                model.create_by = this.HttpContext.User.Identity.Name;
+
+
             var lists = this._context.User_Bulk_Import.Where(w => 1 == 1);
 
             if (!string.IsNullOrEmpty(model.text_search))
                 lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search) | w.Reference.Contains(model.text_search));
 
+            if (!string.IsNullOrEmpty(model.create_by))
+                lists = lists.Where(w => w.Create_By.ToLower().Contains(model.create_by.ToLower()) | w.adminname.ToLower().Contains(model.create_by.ToLower()));
 
             if (!string.IsNullOrEmpty(model.dfrom))
             {
@@ -215,8 +224,147 @@ namespace ABAC.Controllers
             model.lists = lists.AsQueryable();
             return View(model);
         }
+        public async Task<IActionResult> BulkImportExcel(SearchDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
 
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+
+            //if (this._loginServices.UserRole().Contains(roleType.Helpdesk) & !_loginServices.UserRole().Contains(roleType.Admin))
+            model.create_by = this.HttpContext.User.Identity.Name;
+
+            var lists = this._context.User_Bulk_Import.Where(w => 1 == 1);
+
+            if (!string.IsNullOrEmpty(model.text_search))
+                lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search) | w.Reference.Contains(model.text_search));
+
+            if (!string.IsNullOrEmpty(model.create_by))
+                lists = lists.Where(w => w.Create_By.ToLower().Contains(model.create_by.ToLower()) | w.adminname.ToLower().Contains(model.create_by.ToLower()));
+
+            if (!string.IsNullOrEmpty(model.dfrom))
+            {
+                lists = lists.Where(w => w.Create_On >= dfrom);
+            }
+            if (!string.IsNullOrEmpty(model.dto))
+            {
+                lists = lists.Where(w => w.Create_On.Value.Date <= dto);
+            }
+
+            lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2 => o2.username);
+            var date = DateUtil.ToInternalDate3(DateUtil.Now());
+            var filePath = Directory.GetCurrentDirectory() + "\\wwwroot\\files\\temp\\bulkimport_" + date + ".xlsx";
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var workbook = package.Workbook;
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+                var col = 1;
+                var row = 1;
+                worksheet.Cells[row, col].Value = "Username"; col++;
+                worksheet.Cells[row, col].Value = "Password"; col++;
+                worksheet.Cells[row, col].Value = "First Name"; col++;
+                worksheet.Cells[row, col].Value = "Last Name"; col++;
+                worksheet.Cells[row, col].Value = "Reference"; col++;
+                worksheet.Cells[row, col].Value = "Create By"; col++;
+                worksheet.Cells[row, col].Value = "Create Date"; col++;
+                worksheet.Cells[row, col].Value = "Expiry Date"; col++;
+                row++;
+                foreach (User_Bulk_Import item in lists)
+                {
+                    col = 1;
+                    worksheet.Cells[row, col].Value = item.username; col++;
+                    worksheet.Cells[row, col].Value = item.password; col++;
+                    worksheet.Cells[row, col].Value = item.firstname; col++;
+                    worksheet.Cells[row, col].Value = item.lastname; col++;
+                    worksheet.Cells[row, col].Value = item.Reference; col++;
+                    worksheet.Cells[row, col].Value = item.Create_By; col++;
+                    worksheet.Cells[row, col].Value = DateUtil.ToDisplayDateTime(item.Create_On); col++;
+                    worksheet.Cells[row, col].Value = DateUtil.ToDisplayDate(item.expire_date); col++;
+                    row++;
+                }
+
+                var filename = filePath;
+                filePath = filePath.Replace("\\", "/");
+                package.SaveAs(new FileInfo(filePath));
+                if (System.IO.File.Exists(filename))
+                {
+                    var memory = new MemoryStream();
+                    using (var stream = new FileStream(filename, FileMode.Open))
+                    {
+                        await stream.CopyToAsync(memory);
+                    }
+                    memory.Position = 0;
+                    var mimeType = "application/vnd.ms-excel";
+                    return File(memory, mimeType, Path.GetFileName(filename));
+                }
+            }
+            return View(model);
+        }
         public async Task<IActionResult> Bulk(SearchDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (string.IsNullOrEmpty(model.dfrom))
+                model.dfrom = DateUtil.ToDisplayDate(DateUtil.Now());
+            if (string.IsNullOrEmpty(model.dto))
+                model.dto = DateUtil.ToDisplayDate(DateUtil.Now());
+
+            var dfrom = DateUtil.ToDate(model.dfrom);
+            var dto = DateUtil.ToDate(model.dto);
+
+            //if (this._loginServices.UserRole().Contains(roleType.Helpdesk) & !_loginServices.UserRole().Contains(roleType.Admin))
+            if (string.IsNullOrEmpty(model.create_by))
+                model.create_by = this.HttpContext.User.Identity.Name;
+
+            var lists = this._context.User_Bulk.Where(w => 1 == 1);
+
+            if (!string.IsNullOrEmpty(model.text_search))
+                lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search));
+
+            if (!string.IsNullOrEmpty(model.create_by))
+                lists = lists.Where(w => w.Create_By.ToLower().Contains(model.create_by.ToLower()) | w.adminname.ToLower().Contains(model.create_by.ToLower()));
+
+            if (!string.IsNullOrEmpty(model.dfrom))
+            {
+                lists = lists.Where(w => w.Create_On >= dfrom);
+            }
+            if (!string.IsNullOrEmpty(model.dto))
+            {
+                lists = lists.Where(w => w.Create_On.Value.Date <= dto);
+            }
+
+            lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2 => o2.username);
+            int skipRows = (model.pageno - 1) * 100;
+            var itemcnt = lists.Count();
+            var pagelen = itemcnt / 100;
+            if (itemcnt % 100 > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+
+            model.lists = lists.AsQueryable();
+            return View(model);
+        }
+        public async Task<IActionResult> BulkExcel(SearchDTO model)
         {
             if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
                 return RedirectToAction("Logout", "Auth");
@@ -238,6 +386,9 @@ namespace ABAC.Controllers
             if (!string.IsNullOrEmpty(model.text_search))
                 lists = lists.Where(w => w.username.Contains(model.text_search) | w.firstname.Contains(model.text_search) | w.lastname.Contains(model.text_search));
 
+            if (!string.IsNullOrEmpty(model.create_by))
+                lists = lists.Where(w => w.Create_By.ToLower().Contains(model.create_by.ToLower()) | w.adminname.ToLower().Contains(model.create_by.ToLower()));
+
             if (!string.IsNullOrEmpty(model.dfrom))
             {
                 lists = lists.Where(w => w.Create_On >= dfrom);
@@ -248,20 +399,55 @@ namespace ABAC.Controllers
             }
 
             lists = lists.OrderByDescending(o => o.Create_On).ThenByDescending(o2 => o2.username);
-            int skipRows = (model.pageno - 1) * 100;
-            var itemcnt = lists.Count();
-            var pagelen = itemcnt / 100;
-            if (itemcnt % 100 > 0)
-                pagelen += 1;
 
-            model.itemcnt = itemcnt;
-            model.pagelen = pagelen;
-            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+            var date = DateUtil.ToInternalDate3(DateUtil.Now());
+            var filePath = Directory.GetCurrentDirectory() + "\\wwwroot\\files\\temp\\bulk_" + date + ".xlsx";
 
-            model.lists = lists.AsQueryable();
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            using (var package = new ExcelPackage())
+            {
+                var workbook = package.Workbook;
+                var worksheet = workbook.Worksheets.Add("Sheet1");
+                var col = 1;
+                var row = 1;
+                worksheet.Cells[row, col].Value = "Username"; col++;
+                worksheet.Cells[row, col].Value = "Password"; col++;
+                worksheet.Cells[row, col].Value = "First Name"; col++;
+                worksheet.Cells[row, col].Value = "Last Name"; col++;
+                worksheet.Cells[row, col].Value = "Create By"; col++;
+                worksheet.Cells[row, col].Value = "Create Date"; col++;
+                worksheet.Cells[row, col].Value = "Expiry Date"; col++;
+                row++;
+                foreach(User_Bulk item in lists)
+                {
+                    col = 1;
+                    worksheet.Cells[row, col].Value = item.username; col++;
+                    worksheet.Cells[row, col].Value = item.password; col++;
+                    worksheet.Cells[row, col].Value = item.firstname; col++;
+                    worksheet.Cells[row, col].Value = item.lastname; col++;
+                    worksheet.Cells[row, col].Value = item.Create_By; col++;
+                    worksheet.Cells[row, col].Value = DateUtil.ToDisplayDateTime( item.Create_On); col++;
+                    worksheet.Cells[row, col].Value = DateUtil.ToDisplayDate(item.expire_date); col++;
+                    row++;
+                }
+
+                var filename = filePath;
+                filePath = filePath.Replace("\\", "/");
+                package.SaveAs(new FileInfo(filePath));
+                if (System.IO.File.Exists(filename))
+                {
+                    var memory = new MemoryStream();
+                    using (var stream = new FileStream(filename, FileMode.Open))
+                    {
+                        await stream.CopyToAsync(memory);
+                    }
+                    memory.Position = 0;
+                    var mimeType = "application/vnd.ms-excel";
+                    return File(memory, mimeType, Path.GetFileName(filename));
+                }
+            }
             return View(model);
         }
-
         public IActionResult CreateUser(SearchDTO model)
         {
             if (string.IsNullOrEmpty(model.dfrom))

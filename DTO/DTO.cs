@@ -40,6 +40,7 @@ namespace ABAC.DTO
         public string dfrom { get; set; }
         public string dto { get; set; }
         public string import_option { get; set; }
+        public string create_by { get; set; }
 
         public string option { get; set; }
 
