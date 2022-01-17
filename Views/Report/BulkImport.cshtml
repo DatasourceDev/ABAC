@@ -62,7 +62,7 @@
                             </div>
                             <div class="col-lg-1">
                                 <label class="col-form-label"><br /></label>
-                                <button class="btn btn-gray btn-block" type="submit">Export</button>
+                                <a class="btn btn-gray btn-block" target="_blank" href="@Url.Action("BulkImportExcel","Report", new {text_search = Model.text_search ,dfrom = Model.dfrom,dto = Model.dto,create_by = Model.create_by})">Export</a>
                             </div>
                         </div>
                         <div class="form-group row">
