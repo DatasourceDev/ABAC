@@ -31,7 +31,7 @@
                         <div class="form-group row">
                             <div class="col-lg-3">
                                 <label class="col-form-label">Text</label>
-                                <input class="form-control" type="text" placeholder="ผู้แก้ไข รายละเอียด IP Address" asp-for="text_search">
+                                <input class="form-control" type="text" placeholder="Action By, Detail, IP Address" asp-for="text_search">
                             </div>
                             <div class="col-lg-2">
                                 <label class="col-form-label">From</label>
@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-2">
-                                <label class="col-form-label">สถานะ</label>
+                                <label class="col-form-label">Status</label>
                                 <select class="form-control" asp-for="logstatus_search">
                                     <option value="">All</option>
                                     <option value="@LogStatus.successfully">@LogStatus.successfully.ToString()</option>
@@ -85,14 +85,13 @@
                                         <table id="tech-companies-1" class="table table-striped mb-0">
                                             <thead>
                                                 <tr>
-                                                    <th>ลำดับ</th>
-                                                    <th>วันที่แก้ไข</th>
-                                                    <th>ผู้แก้ไข</th>
-                                                    <th>การกระทำ</th>
-                                                    <th>สถานะ</th>
-                                                    <th>รายละเอียด</th>
-                                                    <th>IP ต้นทาง</th>
-                                                    <th>IP ปลายทาง</th>
+                                                    <th>No.</th>
+                                                    <th>Action Date</th>
+                                                    <th>Action By</th>
+                                                    <th>Action</th>
+                                                    <th>Status</th>
+                                                    <th>Detail</th>
+                                                    <th>IP Address</th>
                                                     @*<th>Url</th>*@
                                                 </tr>
                                             </thead>
@@ -110,8 +109,6 @@
                                                             <td>@item.log_status</td>
                                                             <td>@item.log_description</td>
                                                             <td>@item.log_ip</td>
-                                                            <td>@item.log_target_ip</td>
-                                                            @*<td>@item.log_target</td>*@
                                                         </tr>
                                                         row++;
                                                     }
@@ -119,7 +116,7 @@
                                                 @if (Model.lists == null || Model.lists.Count() == 0)
                                                 {
                                                     <tr>
-                                                        <td colspan="5" class="text-center">No Data</td>
+                                                        <td colspan="6" class="text-center">No Data</td>
                                                     </tr>
                                                 }
                                             </tbody>
