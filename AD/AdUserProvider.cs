@@ -450,6 +450,8 @@ namespace ABAC.Identity
                     return new Result() { result = false, Message = "Account has not found" };
                 }
                 principal.SamAccountName= newSamAccountName;
+                principal.EmailAddress = newSamAccountName + "@au.edu";
+                principal.UserPrincipalName = newSamAccountName + "@au.edu";
                 principal.Save();
                 return new Result() { result = true };
             }
