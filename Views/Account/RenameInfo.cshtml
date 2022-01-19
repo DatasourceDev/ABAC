@@ -39,7 +39,6 @@
     <!-- end page title end breadcrumb -->
     <!--end row-->
     <form class="form-horizontal form-parsley" asp-action="RenameInfo" asp-controller="Account">
-        @Html.HiddenFor(m => m.SamAccountName)
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -47,9 +46,21 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label text-right">Current Username</label>
+                                    <div class="col-sm-3">
+                                        <input class="form-control" type="text" value="@Model.SamAccountName" readonly>
+                                        @Html.ValidationMessageFor(m => m.SamAccountName)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-right">Username</label>
                                     <div class="col-sm-3">
-                                        <input class="form-control" type="text" value="@Model.newSamAccountName" required>
+                                        <input class="form-control" type="text" asp-for="newSamAccountName" required>
+                                        @Html.ValidationMessageFor(m => m.newSamAccountName)
                                     </div>
                                 </div>
                             </div>
