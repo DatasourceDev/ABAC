@@ -61,7 +61,14 @@ namespace ABAC.Models
         #endregion
 
         #region setup
+        [Display(Name = "Guest Row Number")]
         public int GuestRowNumber { get; set; }
+
+        [Display(Name = "Landing Page Text")]
+        public string first_page_description { get; set; }
+
+        [Display(Name = "Landing Page Text Color")]
+        public string first_page_text_color { get; set; }
 
         #endregion
 

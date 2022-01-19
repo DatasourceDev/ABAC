@@ -35,7 +35,6 @@
     <Content Remove="Views\System\PasswordGenerator.cshtml" />
     <Content Remove="Views\System\Role.cshtml" />
     <Content Remove="Views\System\RoleInfo.cshtml" />
-    <Content Remove="Views\System\Setup.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

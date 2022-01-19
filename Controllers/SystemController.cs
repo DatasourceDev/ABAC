@@ -580,5 +580,72 @@ namespace ABAC.Controllers
             }
             return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
         }
+
+        public async Task<IActionResult> Setup()
+        {
+            if (!checkrole(new string[] { roleType.Admin }))
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            var model = _context.table_setup.FirstOrDefault();
+            if (model == null)
+                model = new setup();
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Setup(setup model)
+        {
+            if (!checkrole(new string[] { roleType.Admin }))
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+                if (model.ID > 0)
+                {
+                    var setup = _context.table_setup.Where(w => w.ID == model.ID).FirstOrDefault();
+                    if (setup != null)
+                    {
+                        setup.Host = model.Host;
+                        setup.Port = model.Port;
+                        setup.Base = model.Base;
+                        setup.Username = model.Username;
+                        setup.Password = model.Password;
+                        setup.SMTP_From = model.SMTP_From;
+                        setup.SMTP_Password = model.SMTP_Password;
+                        setup.SMTP_Port = model.SMTP_Port;
+                        setup.SMTP_Server = model.SMTP_Server;
+                        setup.SMTP_SSL = model.SMTP_SSL;
+                        setup.SMTP_Username = model.SMTP_Username;
+                        setup.first_page_text_color = model.first_page_text_color;
+                        setup.first_page_description = model.first_page_description;
+                        setup.Update_On = DateUtil.Now();
+                        setup.Update_By = userlogin.SamAccountName;
+                        this._context.SaveChanges();
+                    }
+                }
+                else
+                {
+                    model.Create_On = DateUtil.Now();
+                    model.Create_By = userlogin.SamAccountName;
+                    model.Update_On = DateUtil.Now();
+                    model.Update_By = userlogin.SamAccountName;
+                    this._context.table_setup.Add(model);
+                    this._context.SaveChanges();
+                }
+                ViewBag.Message = ReturnMessage.Success;
+                ViewBag.ReturnCode = ReturnCode.Success;
+            }
+            return View(model);
+        }
     }
 }
