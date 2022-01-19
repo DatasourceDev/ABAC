@@ -144,6 +144,7 @@ namespace ABAC
         log_edit_account,
         log_lock_account,
         log_unlock_account,
+        log_rename,
     }
     public static class LogActivity
     {

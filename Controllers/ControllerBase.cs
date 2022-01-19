@@ -820,27 +820,30 @@ namespace ABAC.Controllers
                 log_description = source.ToString() + ":";
 
                 if (log_type_id == LogType.log_create_account)
-                    log_description = "Create cccount";
+                    log_description = "Create account ";
                 else if (log_type_id == LogType.log_create_account_with_file)
-                    log_description = "Create cccount from file";
+                    log_description = "Create accoun from file ";
                 else if (log_type_id == LogType.log_create_account_bulk)
-                    log_description = "Create bulk account";
+                    log_description = "Create bulk account ";
                 else if (log_type_id == LogType.log_edit_account)
-                    log_description = "Edit account";
+                    log_description = "Edit account ";
                 else if (log_type_id == LogType.log_delete_account)
-                    log_description = "Delete account";
+                    log_description = "Delete account ";
                 else if (log_type_id == LogType.log_change_password)
-                    log_description = "Change password";
+                    log_description = "Change password ";
                 else if (log_type_id == LogType.log_reset_password)
-                    log_description = "Reset password";
+                    log_description = "Reset password ";
                 else if (log_type_id == LogType.log_lock_account)
-                    log_description = "Lock account";
+                    log_description = "Lock account ";
                 else if (log_type_id == LogType.log_unlock_account)
-                    log_description = "Unlock account";
+                    log_description = "Unlock account ";
                 else if (log_type_id == LogType.log_forgot_password)
-                    log_description = "Forgot password";
+                    log_description = "Forgot password ";
+                else if (log_type_id == LogType.log_rename)
+                    log_description = "Rename account ";
 
                 log_description += uid ;
+                log_description += " on " + source.ToString();
             }
 
             if (string.IsNullOrEmpty(logonname))

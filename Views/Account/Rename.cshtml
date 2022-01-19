@@ -2,7 +2,7 @@
 @using ABAC.Identity;
 @using ABAC.Extensions
 @{
-    ViewData["Title"] = "Search Account";
+    ViewData["Title"] = "Rename Account";
 
 }
 <div class="container-fluid">
@@ -29,15 +29,15 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">Search Account</h4>
+                    <h4 class="page-title">Rename Account</h4>
                     <p class="text-muted">
-                        ค้นหาผู้ใช้งาน
+                        เปลี่ยน Username
                     </p>
                 </div><!--end page-title-box-->
             </div>
         </div><!--end col-->
     </div>
-    <form class="form-horizontal form-parsley" asp-action="CheckAccount" asp-controller="Account" method="get">
+    <form class="form-horizontal form-parsley" asp-action="Rename" asp-controller="Account" method="get">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">

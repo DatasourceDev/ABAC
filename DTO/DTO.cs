@@ -86,6 +86,15 @@ namespace ABAC.DTO
             }
         }
     }
+    public class RenameDTO
+    {
+        [Required]
+        public string SamAccountName { get; set; }
+
+        [Required]
+        public string newSamAccountName { get; set; }
+
+    }
     public class UserRoleDTO
     {
         public string text_search { get; set; }

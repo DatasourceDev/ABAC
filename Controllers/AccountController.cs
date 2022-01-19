@@ -65,7 +65,7 @@ namespace ABAC.Controllers
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
 
-            if(_conf.Env != "dev")
+            if (_conf.Env != "dev")
             {
                 var dup = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
                 if (dup != null)
@@ -91,7 +91,7 @@ namespace ABAC.Controllers
                         user.CitizenID = model.aUIDCard;
                         user.PassportID = model.PassportID;
                         user.Reference = model.Reference;
-                        user.adminname = userlogin.SamAccountName;                  
+                        user.adminname = userlogin.SamAccountName;
                         user.Create_By = userlogin.SamAccountName;
                         user.Create_On = DateUtil.Now();
                         user.Update_By = userlogin.SamAccountName;
@@ -109,7 +109,7 @@ namespace ABAC.Controllers
                             user.ad_created = result_ad.result;
                             _context.SaveChanges();
                         }
-                      
+
                         writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                     }
                     else if (model.aUUserType == aUUserType.vip)
@@ -117,7 +117,7 @@ namespace ABAC.Controllers
                         model.DistinguishedName = _conf.OU_VIP;
                         var user = new User_VIP();
                         user.username = model.SamAccountName;
-                        user.password =model.Password;
+                        user.password = model.Password;
                         user.firstname = model.GivenName;
                         user.lastname = model.Surname;
                         user.CitizenID = model.aUIDCard;
@@ -130,7 +130,7 @@ namespace ABAC.Controllers
                         user.Update_On = DateUtil.Now();
                         _context.User_VIP.Add(user);
                         _context.SaveChanges();
-                        if(_conf.Env != "dev")
+                        if (_conf.Env != "dev")
                         {
                             var result_ad = _provider.CreateUser(model, _context);
                             if (result_ad.result == true)
@@ -140,8 +140,8 @@ namespace ABAC.Controllers
                             user.ad_created = result_ad.result;
                             _context.SaveChanges();
                         }
-                       
-                      
+
+
                         writelog(LogType.log_create_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
 
                     }
@@ -154,7 +154,7 @@ namespace ABAC.Controllers
                         user.firstname = model.GivenName;
                         user.lastname = model.Surname;
                         user.valid_date = DateUtil.ToDate(model.ValidDate);
-                        user.expire_date = DateUtil.ToDate(model.ExpireDate);  
+                        user.expire_date = DateUtil.ToDate(model.ExpireDate);
                         user.today = DateUtil.Now();
                         user.adminname = userlogin.SamAccountName;
                         user.Create_By = userlogin.SamAccountName;
@@ -289,7 +289,7 @@ namespace ABAC.Controllers
                             _context.SaveChanges();
                         }
                     }
-                }               
+                }
             }
             model.lists = lists.AsQueryable();
             return View(model);
@@ -312,15 +312,15 @@ namespace ABAC.Controllers
             if (setup == null)
                 return RedirectToAction("Logout", "Auth");
 
-            int runNumber = setup.GuestRowNumber+1;
+            int runNumber = setup.GuestRowNumber + 1;
             var imports = _context.table_temp_import.OrderBy(o => o.ImportRow);
             foreach (var imp in imports.ToList())
             {
                 var username = "guest" + runNumber.ToString("00000");
                 var dup = true;
-                while(dup == true)
+                while (dup == true)
                 {
-                    if(_conf.Env == "dev")
+                    if (_conf.Env == "dev")
                     {
                         dup = false;
                         break;
@@ -334,7 +334,7 @@ namespace ABAC.Controllers
                     runNumber++;
                     username = "guest" + runNumber.ToString("00000");
                 }
-                   
+
                 var user = new User_Bulk_Import();
                 user.firstname = imp.firstname;
                 user.lastname = imp.lastname;
@@ -454,7 +454,7 @@ namespace ABAC.Controllers
 
             var temp = "";
             int runNumber = setup.GuestRowNumber + 1;
-            for (var i=0; i < model.NumberOfPeople; i++)
+            for (var i = 0; i < model.NumberOfPeople; i++)
             {
                 var username = "guest" + runNumber.ToString("00000");
                 var dup = true;
@@ -502,7 +502,7 @@ namespace ABAC.Controllers
                 _context.SaveChanges();
                 runNumber++;
 
-                if(_conf.Env != "dev")
+                if (_conf.Env != "dev")
                 {
                     var result_ad = _provider.CreateUser(aduser, _context);
                     if (result_ad.result == true)
@@ -516,7 +516,7 @@ namespace ABAC.Controllers
                 _context.SaveChanges();
                 temp += user.username + "|";
                 writelog(LogType.log_create_account_bulk, LogStatus.successfully, IDMSource.Database, aduser.SamAccountName);
-               
+
             }
             msg = ReturnMessage.Success;
             code = ReturnCode.Success;
@@ -530,10 +530,10 @@ namespace ABAC.Controllers
 
             if (!string.IsNullOrEmpty(model.temp))
             {
-                var users = model.temp.Split("|",StringSplitOptions.RemoveEmptyEntries);
-                model.lists = users.AsQueryable(); 
+                var users = model.temp.Split("|", StringSplitOptions.RemoveEmptyEntries);
+                model.lists = users.AsQueryable();
             }
-           
+
             ViewBag.Message = model.msg;
             ViewBag.ReturnCode = model.code;
             return View(model);
@@ -547,9 +547,9 @@ namespace ABAC.Controllers
                 return RedirectToAction("Logout", "Auth");
 
             var aduser = await _provider.GetAdUser2(id, _context, _conf.Env);
-            if(aduser != null)
+            if (aduser != null)
             {
-                if(aduser.aUUserType == aUUserType.bulk)
+                if (aduser.aUUserType == aUUserType.bulk)
                 {
                     var bulk = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                     if (bulk != null)
@@ -560,11 +560,11 @@ namespace ABAC.Controllers
                         if (bulkimp != null)
                             aduser.ValidDate = DateUtil.ToDisplayDate(bulkimp.valid_date);
                     }
-                    
+
                     aduser.ExpireDate = DateUtil.ToDisplayDate(aduser.accountExpires);
                 }
             }
-           
+
             return View(aduser);
         }
 
@@ -595,7 +595,7 @@ namespace ABAC.Controllers
                         aduser.aUIDCard = model.aUIDCard;
                         aduser.PassportID = model.PassportID;
                         aduser.Reference = model.Reference;
-                        aduser.accountExpires = DateUtil.ToDate( model.ExpireDate);
+                        aduser.accountExpires = DateUtil.ToDate(model.ExpireDate);
                         aduser.aUOtherMail = model.aUOtherMail;
 
                         if (model.aUUserType == aUUserType.office)
@@ -636,12 +636,12 @@ namespace ABAC.Controllers
                         else if (model.aUUserType == aUUserType.bulk)
                         {
                             var user = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
-                            if(user != null)
+                            if (user != null)
                             {
                                 user.firstname = model.GivenName;
                                 user.lastname = model.Surname;
                                 user.valid_date = DateUtil.ToDate(model.ValidDate);
-                                user.expire_date = DateUtil.ToDate(model.ExpireDate);                                
+                                user.expire_date = DateUtil.ToDate(model.ExpireDate);
                                 user.today = DateUtil.Now();
                                 user.adminname = userlogin.SamAccountName;
                                 user.Update_By = userlogin.SamAccountName;
@@ -674,14 +674,154 @@ namespace ABAC.Controllers
                     else
                         writelog(LogType.log_edit_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                    
+
                     return RedirectToAction("CheckAccount", "Account", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
                 }
             }
             return View(model);
         }
         #endregion
+        #region Rename Account     
+        public async Task<IActionResult> Rename(SearchDTO model)
+        {
+            ViewBag.Message = model.msg;
+            ViewBag.ReturnCode = model.code;
 
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            if (string.IsNullOrEmpty(model.text_search))
+                return View(model);
+
+            model.text_search = model.text_search.Trim();
+            if (model.text_search.Length <= 3)
+            {
+                ModelState.AddModelError("text_search", "Search Text must have at least 3 characters.");
+                return View(model);
+            }
+            //string[] roles = { model.usertype_search.toUserTypeName() };
+            var adusers = await _provider.FindUser(model, null, _context);
+
+
+            int skipRows = (model.pageno - 1) * _pagelen;
+            var itemcnt = adusers.Count();
+            var pagelen = itemcnt / _pagelen;
+            if (itemcnt % _pagelen > 0)
+                pagelen += 1;
+
+            model.itemcnt = itemcnt;
+            model.pagelen = pagelen;
+            //model.lists = lists.Skip(skipRows).Take(_pagelen).AsQueryable();
+            model.lists = adusers.AsQueryable();
+            return View(model);
+        }
+        public async Task<IActionResult> RenameInfo(string id)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            var aduser = await _provider.GetAdUser2(id, _context, _conf.Env);
+            if (aduser == null)
+            {
+                return RedirectToAction("Rename");
+            }
+            var model = new RenameDTO();
+            model.SamAccountName = aduser.SamAccountName;
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RenameInfo(RenameDTO model)
+        {
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk }))
+                return RedirectToAction("Logout", "Auth");
+
+            var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
+            if (userlogin == null)
+                return RedirectToAction("Logout", "Auth");
+
+            if (ModelState.IsValid)
+            {
+                ViewBag.Message = ReturnMessage.Error;
+                ViewBag.ReturnCode = ReturnCode.Error;
+
+                var aduser = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
+                if (aduser != null)
+                {
+                    aduser.SamAccountName= model.newSamAccountName;
+                   
+                    if (aduser.aUUserType == aUUserType.office)
+                    {
+                        var user = _context.User_Office.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                        if (user != null)
+                        {
+                            user.username = model.newSamAccountName;
+                            user.adminname = userlogin.SamAccountName;
+                            user.Update_By = userlogin.SamAccountName;
+                            user.Update_On = DateUtil.Now();
+                            _context.SaveChanges();
+                            writelog(LogType.log_rename, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                        }
+                    }
+                    else if (aduser.aUUserType == aUUserType.vip)
+                    {
+                        var user = _context.User_VIP.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                        if (user != null)
+                        {
+                            user.username = model.newSamAccountName;
+                            user.adminname = userlogin.SamAccountName;
+                            user.Update_By = userlogin.SamAccountName;
+                            user.Update_On = DateUtil.Now();
+                            _context.SaveChanges();
+                            writelog(LogType.log_rename, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                        }
+
+                    }
+                    else if (aduser.aUUserType == aUUserType.bulk)
+                    {
+                        var user = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                        if (user != null)
+                        {
+                            user.username = model.newSamAccountName;
+                            user.today = DateUtil.Now();
+                            user.adminname = userlogin.SamAccountName;
+                            user.Update_By = userlogin.SamAccountName;
+                            user.Update_On = DateUtil.Now();
+                            _context.SaveChanges();
+                            writelog(LogType.log_rename, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                        }
+                        else
+                        {
+                            var bulkimp = _context.User_Bulk_Import.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
+                            if (bulkimp != null)
+                            {
+                                user.username = model.newSamAccountName;
+                                bulkimp.today = DateUtil.Now();
+                                bulkimp.adminname = userlogin.SamAccountName;
+                                bulkimp.Update_By = userlogin.SamAccountName;
+                                bulkimp.Update_On = DateUtil.Now();
+                                _context.SaveChanges();
+                                writelog(LogType.log_rename, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
+                            }
+                        }
+                    }
+                }
+                if(_conf.Env != "dev")
+                {
+                    var result_ad = _provider.UpdateUser(aduser, _context);
+                    if (result_ad.result == true)
+                        writelog(LogType.log_rename, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
+                    else
+                        writelog(LogType.log_rename, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
+
+                }
+
+                return RedirectToAction("Rename", "Account", new { code = ReturnCode.Success, msg = ReturnMessage.Success });
+
+            }
+            return View(model);
+        }
+        #endregion
         #region DeleteAccount
         public async Task<IActionResult> DeleteAccount(SearchDTO model)
         {
@@ -736,7 +876,7 @@ namespace ABAC.Controllers
                         try
                         {
                             var model = await _provider.GetAdUser2(id, _context, _conf.Env);
-                            if(model != null)
+                            if (model != null)
                             {
                                 var userType = AppUtil.getaUUserType(model.DistinguishedName);
                                 if (userType == aUUserType.vip)
@@ -778,10 +918,10 @@ namespace ABAC.Controllers
                                 else
                                     writelog(LogType.log_delete_account, LogStatus.failed, IDMSource.AD, model.SamAccountName, log_exception: result_ad.Message);
 
-                            
+
                                 writelog(LogType.log_delete_account, LogStatus.successfully, IDMSource.Database, model.SamAccountName);
                             }
-                            
+
                         }
                         catch (Exception ex)
                         {
@@ -793,8 +933,8 @@ namespace ABAC.Controllers
             }
             return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
         }
-        #endregion    
-       
+        #endregion
+
 
         #region ResetPassword
         public async Task<IActionResult> ResetPassword(SearchDTO model)
@@ -802,7 +942,7 @@ namespace ABAC.Controllers
             ViewBag.Message = model.msg;
             ViewBag.ReturnCode = model.code;
 
-            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk,  roleType.PasswordOperator }))
+            if (!checkrole(new string[] { roleType.Admin, roleType.Helpdesk, roleType.PasswordOperator }))
                 return RedirectToAction("Logout", "Auth");
 
             if (string.IsNullOrEmpty(model.text_search))
@@ -1077,6 +1217,6 @@ namespace ABAC.Controllers
         }
         #endregion
 
-          
+
     }
 }

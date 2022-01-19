@@ -45,7 +45,7 @@
 
     @*<link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/standard/styles.php">*@
     @*<link rel="stylesheet" type="text/css" href="http://home.au.edu/theme/formal_white_custom/styles.php">*@
-    <style>
+    @*<style>
         @@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css"); /* Using a url */
         @@import url("https://fonts.googleapis.com/css?family=Arimo");
         @@import url("https://fonts.googleapis.com/css?family=Chonburi");
@@ -232,7 +232,7 @@
         }
         /*---------------------------- end reset -----------------------------------*/
 
-    </style>
+    </style>*@
 </head>
 <body class="dark-sidenav">
     <div class="loading">
@@ -296,7 +296,12 @@
                     </ul>
                 </li>
             }
-
+            @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
+            {
+                <li class="leftbar-menu-item">
+                    <a class="menu-link" href="@Url.Action("Rename", "Account")"><i data-feather="edit-3" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Rename Account</a>
+                </li>
+            }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk) | roles.Contains(roleType.PasswordOperator))
             {
                 <li class="leftbar-menu-item">
@@ -375,9 +380,9 @@
                             <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Landing Page</a></li>
                         }
                         @*@if (roles.Contains(roleType.Admin))
-                        {
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
-                        }*@
+                    {
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>การตั้งค่าทั่วไป</a></li>
+                    }*@
                     </ul>
                 </li>
             }

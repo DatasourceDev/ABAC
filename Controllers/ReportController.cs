@@ -471,7 +471,7 @@ namespace ABAC.Controllers
             }
             if (dto.HasValue)
             {
-                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto) + "',110)");
+                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto.Value.AddDays(1)) + "',110)");
             }
             sql.AppendLine(" and (m.ma_name = 'STAFF-ADMA' or m.ma_name = 'STUDENT-ADMA')");
             sql.AppendLine(" and r.run_profile_name = 'Export'");
@@ -555,7 +555,7 @@ namespace ABAC.Controllers
             }
             if (dto.HasValue)
             {
-                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto) + "',110)");
+                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto.Value.AddDays(1)) + "',110)");
             }
             sql.AppendLine(" and (m.ma_name = 'STAFF-ADMA' or m.ma_name = 'STUDENT-ADMA')");
             sql.AppendLine(" and r.run_profile_name = 'Export'");
@@ -639,7 +639,7 @@ namespace ABAC.Controllers
             }
             if (dto.HasValue)
             {
-                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto) + "',110)");
+                sql.AppendLine(" and sh.start_date <= convert(datetime, '" + DateUtil.ToInternalDate(dto.Value.AddDays(1)) + "',110)");
             }
             sql.AppendLine(" and (m.ma_name = 'STAFF-ADMA' or m.ma_name = 'STUDENT-ADMA')");
             sql.AppendLine(" and r.run_profile_name = 'Export'");
