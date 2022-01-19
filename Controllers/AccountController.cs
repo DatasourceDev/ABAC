@@ -747,9 +747,7 @@ namespace ABAC.Controllers
 
                 var aduser = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
                 if (aduser != null)
-                {
-                    aduser.SamAccountName= model.newSamAccountName;
-                   
+                {                   
                     if (aduser.aUUserType == aUUserType.office)
                     {
                         var user = _context.User_Office.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
@@ -808,7 +806,7 @@ namespace ABAC.Controllers
                 }
                 if(_conf.Env != "dev")
                 {
-                    var result_ad = _provider.UpdateUser(aduser, _context);
+                    var result_ad = _provider.RenameUser(aduser, model.newSamAccountName, _context);
                     if (result_ad.result == true)
                         writelog(LogType.log_rename, LogStatus.successfully, IDMSource.AD, model.SamAccountName);
                     else

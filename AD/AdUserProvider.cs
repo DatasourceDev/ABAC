@@ -31,6 +31,7 @@ namespace ABAC.Identity
         Result CreateUser(AdUser2 model, SpuContext spucontext);
 
         Result UpdateUser(AdUser2 model, SpuContext spucontext);
+        Result RenameUser(AdUser2 model, string newSamAccountName, SpuContext spucontext);
         Result ChangePwd(AdUser2 model, string pwd, SpuContext spucontext);
 
         Result DeleteUser(AdUser2 model, SpuContext spucontext);
@@ -434,7 +435,30 @@ namespace ABAC.Identity
 
         }
 
-       
+        public Result RenameUser(AdUser2 model,string newSamAccountName, SpuContext spucontext)
+        {
+            try
+            {
+                var setup = spucontext.table_setup.FirstOrDefault();
+                var oufilter = getOufromDistinguishedName(model.DistinguishedName);
+
+
+                PrincipalContext context = new PrincipalContext(ContextType.Domain, setup.Host, oufilter, setup.Username, setup.Password);
+                UserPrincipal principal = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, model.SamAccountName);
+                if (principal == null)
+                {
+                    return new Result() { result = false, Message = "Account has not found" };
+                }
+                principal.SamAccountName= newSamAccountName;
+                principal.Save();
+                return new Result() { result = true };
+            }
+            catch (Exception ex)
+            {
+                return new Result() { result = false, Message = ex.Message };
+            }
+
+        }
         public Result DeleteUser(AdUser2 model, SpuContext spucontext)
         {
             try
