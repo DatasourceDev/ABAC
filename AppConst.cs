@@ -120,8 +120,8 @@ namespace ABAC
     }
     public static class LogStatus
     {
-        public static string successfully = "successfully";
-        public static string failed = "failed";
+        public static string successfully = "success";
+        public static string failed = "fail";
     }
     public enum LogType
     {

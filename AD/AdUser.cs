@@ -248,6 +248,7 @@ namespace ABAC.Identity
         public string aUUserType { get; set; }
         public string aUStudentId { get; set; }
         public string aUOtherMail { get; set; }
+        public string comment { get; set; }
         
         public string Reference { get; set; }
         public string ValidDate { get; set; }
@@ -312,6 +313,7 @@ namespace ABAC.Identity
                 PassportID = getpropertyvalue(d.Properties, "departmentNumber"),
                 Reference = getpropertyvalue(d.Properties, "department"),
                 userAccountControl = getpropertyvalue(d.Properties, "userAccountControl"),
+                comment = getpropertyvalue(d.Properties, "comment"),
                 //accountExpires = getpropertydatevalue(d.Properties, "accountExpires"),
 
             };

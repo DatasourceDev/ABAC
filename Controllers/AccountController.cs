@@ -1135,11 +1135,12 @@ namespace ABAC.Controllers
                     }
                     _context.SaveChanges();
 
-
+                    model.comment = remark;
                     if (NumUtil.ParseInteger(model.userAccountControl) == (int)userAccountControl.Disable || NumUtil.ParseInteger(model.userAccountControl) == (int)userAccountControl.DisablePasswordNotRequired)
                     {
                         try
                         {
+                           
                             var result_ad = _provider.EnableUser(model, _context);
                             if (result_ad.result == true)
                                 writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);

@@ -615,18 +615,6 @@ namespace ABAC.Controllers
                     var setup = _context.table_setup.Where(w => w.ID == model.ID).FirstOrDefault();
                     if (setup != null)
                     {
-                        setup.Host = model.Host;
-                        setup.Port = model.Port;
-                        setup.Base = model.Base;
-                        setup.Username = model.Username;
-                        setup.Password = model.Password;
-                        setup.SMTP_From = model.SMTP_From;
-                        setup.SMTP_Password = model.SMTP_Password;
-                        setup.SMTP_Port = model.SMTP_Port;
-                        setup.SMTP_Server = model.SMTP_Server;
-                        setup.SMTP_SSL = model.SMTP_SSL;
-                        setup.SMTP_Username = model.SMTP_Username;
-                        setup.first_page_text_color = model.first_page_text_color;
                         setup.first_page_description = model.first_page_description;
                         setup.Update_On = DateUtil.Now();
                         setup.Update_By = userlogin.SamAccountName;

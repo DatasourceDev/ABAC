@@ -158,7 +158,7 @@
                                                     <td>@item.sn</td>
                                                     <td>@item.mail</td>
                                                     <td>
-                                                        
+                                                        @Html.Raw(item.comment)
                                                     </td>
                                                     <td>
                                                         @if (NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.Enable || NumUtil.ParseInteger(item.userAccountControl) == (int)userAccountControl.EnablePasswordNotRequired)

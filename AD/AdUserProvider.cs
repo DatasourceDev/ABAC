@@ -193,7 +193,7 @@ namespace ABAC.Identity
                     aduser.aUSex = getPropertyValue(propertyCollection, "aUSex");
                     aduser.department = getPropertyValue(propertyCollection, "department");
                     aduser.departmentNumber = getPropertyValue(propertyCollection, "departmentNumber");
-
+                    aduser.comment = getPropertyValue(propertyCollection, "comment");
                     adusers.Add(aduser);
                 }
 
@@ -545,6 +545,8 @@ namespace ABAC.Identity
 
                 DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;
                 d.Properties["userAccountControl"].Value = userAccountControl.EnablePasswordNotRequired;
+                if (!string.IsNullOrEmpty(model.comment))
+                    d.Properties["comment"].Value = model.comment;
                 principal.Save();
 
                 return new Result() { result = true };
@@ -570,6 +572,8 @@ namespace ABAC.Identity
 
                 DirectoryEntry d = principal.GetUnderlyingObject() as DirectoryEntry;
                 d.Properties["userAccountControl"].Value = userAccountControl.DisablePasswordNotRequired;
+                if (!string.IsNullOrEmpty(model.comment))
+                    d.Properties["comment"].Value = model.comment;
                 principal.Save();
 
                 return new Result() { result = true };

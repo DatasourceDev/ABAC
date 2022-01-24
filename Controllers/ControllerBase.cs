@@ -61,7 +61,7 @@ namespace ABAC.Controllers
         public async Task<IActionResult> MailForgotPassword(string email, ForgotPasswordDTO model)
         {
             var htmlToConvert = await RenderViewAsync("MailForgotPassword", model, true);
-            var msg = sendNotificationEmail(email, "Abac Reset your password", htmlToConvert.ToString());
+            var msg = sendNotificationEmail(email, "Request to Reset AU password for " + model.UserName, htmlToConvert.ToString());
 
             return Json(new { Msg = msg });
         }

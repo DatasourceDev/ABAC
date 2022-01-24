@@ -55,23 +55,33 @@
                     @*<img src="~/images/logo.png" alt="">*@
                     <br />
                     <br />
-                    <h1 class="text-danger" style="font-size:48px;">Assumption University of Thailand</h1>
-                    @*<h4 class="mt-3 text-white"><span class="text-dark">University</span> </h4>
-                        <div class="border w-25 mx-auto border-classic"></div>
-                        @if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
+                    @if (setup != null)
+                    {
+                        if (!string.IsNullOrEmpty(setup.first_page_description))
                         {
-                            <p class="font-12 mt-3">
-                                @Html.Raw(setup.first_page_description)
-                            </p>
+                            @Html.Raw(setup.first_page_description)
                         }
-                        else
-                        {
-                            <p class="font-12 mt-3">
-                                ศูนย์ ICT มหาวิทยาลัย
-                                <br />
-                                email: ictcenter@cu.ac.th
-                            </p>
-                        }*@
+                    }
+                    else
+                    {
+                        <h1 class="text-danger" style="font-size:48px;">Assumption University of Thailand</h1>
+                    }
+                    @*<h4 class="mt-3 text-white"><span class="text-dark">University</span> </h4>
+        <div class="border w-25 mx-auto border-classic"></div>
+        @if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
+        {
+            <p class="font-12 mt-3">
+                @Html.Raw(setup.first_page_description)
+            </p>
+        }
+        else
+        {
+            <p class="font-12 mt-3">
+                ศูนย์ ICT มหาวิทยาลัย
+                <br />
+                email: ictcenter@cu.ac.th
+            </p>
+        }*@
                     <div class="border w-25 mx-auto border-danger"></div>
                 </div>
             </div>

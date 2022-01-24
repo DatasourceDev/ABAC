@@ -27,12 +27,12 @@
                             }
                         }
                     </div>
-                    <h4 class="page-title">กำหนดค่าระบบ</h4>
+                    <h4 class="page-title">Setup</h4>
                     <p class="text-muted">
-                        System Configuration
+                        กำหนดค่าระบบ
                     </p>
                 </div><!--end page-title-box-->
-              
+
             </div>
         </div><!--end col-->
     </div>
@@ -41,195 +41,22 @@
         @Html.HiddenFor(m => m.ID)
         <div class="row">
             <div class="col-lg-12">
-                <div class="card" style="display:none">
-                    <div class="card-body mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-8">
-                                        <h4 class="mt-0 header-title">AD</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">Host</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="Host">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">Port</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="Port">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">Base</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="Base">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">Username</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="Username">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">Password</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="Password">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="card">
                     <div class="card-body mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-8">
-                                        <h4 class="mt-0 header-title">SMS</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-8">
-                                        <h4 class="mt-0 header-title">SMTP</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">SMTP Server</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="SMTP_Server">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">SMTP Port</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="SMTP_Port">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">SMTP From</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="SMTP_From">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">SMTP Username</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="SMTP_Username">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">SMTP Password</label>
-                                    <div class="col-sm-8">
-                                        <input class="form-control" type="text" asp-for="SMTP_Password">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4 col-form-label text-right">SMTP SSL</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-control" asp-for="SMTP_SSL">
-                                            <option value="true">True</option>
-                                            <option value="false">False</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-8">
-                                        <h4 class="mt-0 header-title">Change Password</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body mt-3">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group row">
-                                    <div class="col-sm-4"></div>
-                                    <div class="col-sm-8">
-                                        <h4 class="mt-0 header-title">Others</h4>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label text-right">ข้อความหน้าแรก</label>
+                                    <div class="col-sm-2"></div>
+                                    <div class="col-sm-8">
+                                        <h4 class="mt-0 header-title">Landing Page</h4>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label text-right">Text</label>
                                     <div class="col-sm-10">
                                         <textarea id="elm1" asp-for="first_page_description"></textarea>
                                     </div>
-                                </div>
+                                </div>                              
                             </div>
                         </div>
 
@@ -242,7 +69,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-4 col-form-label text-right"></label>
                                     <div class="col-sm-8">
-                                        <button class="btn btn-dark" type="submit">บันทึก</button>
+                                        <button class="btn btn-dark" type="submit">Save</button>
                                     </div>
                                 </div>
                             </div>
@@ -258,3 +85,11 @@
     <!-- end row -->
 
 </div><!-- container -->
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('#b_color-default').colorpicker();
+        });
+       
+    </script>
+}
