@@ -13,22 +13,23 @@ namespace ABAC.Models
         [Key]
         public int ID { get; set; }
 
-        [Display(Name = "Url")]
+        [Display(Name = "landing page image url")]
         public string Url { get; set; }
 
-        [Display(Name = "file name")]
+        [Display(Name = "landing page image file name")]
         public string File_Name { get; set; }
+
         #region Audit
 
-        [Display(Name = "ผู้สร้าง")]
+         [Display(Name = "create by")]
         [MaxLength(250)]
         public string Create_By { get; set; }
-        [Display(Name = "เวลาสร้าง")]
+        [Display(Name = "create datetime")]
         public Nullable<DateTime> Create_On { get; set; }
-        [Display(Name = "ผู้แก้ไข")]
+        [Display(Name = "update by")]
         [MaxLength(250)]
         public string Update_By { get; set; }
-        [Display(Name = "เวลาแก้ไข")]
+        [Display(Name = "update datetime")]
         public Nullable<DateTime> Update_On { get; set; }
 
         #endregion      

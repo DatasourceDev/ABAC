@@ -45,7 +45,7 @@ namespace ABAC.Models
 
         public SendMessageType SendMessageType { get; set; }
 
-        [Display(Name = "เวลาสร้าง")]
+        [Display(Name = "create datetime")]
         public Nullable<DateTime> Create_On { get; set; }
 
         [Display(Name = "เวลาหมดอายุ")]

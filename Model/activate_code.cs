@@ -16,21 +16,21 @@ namespace ABAC.Models
         [Display(Name = "username")]
         public string UserName { get; set; }
 
-        [Display(Name = "Role Type")]
+        [Display(Name = "A code that is used to verify a account")]
         public string Code { get; set; }
 
-        [Display(Name = "Expiry_Date")]
+        [Display(Name = "code expiry date")]
         public DateTime? Expiry_Date { get; set; }
 
-        [Display(Name = "Active")]
+        [Display(Name = "code status (0 is inactive, 1 is active)")]
         public bool Active { get; set; }
 
         #region Audit
 
-        [Display(Name = "ผู้สร้าง")]
+        [Display(Name = "create by")]
         [MaxLength(250)]
         public string Create_By { get; set; }
-        [Display(Name = "เวลาสร้าง")]
+        [Display(Name = "create datetime")]
         public Nullable<DateTime> Create_On { get; set; }
 
         #endregion      

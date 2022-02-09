@@ -14,45 +14,45 @@ namespace ABAC.Models
         public int ID { get; set; }
 
         #region AD
-        [Display(Name = "Host")]
+        [Display(Name = "ad host")]
         [MaxLength(150)]
         public string Host { get; set; }
 
-        [Display(Name = "Port")]
+        [Display(Name = "ad port")]
         [MaxLength(150)]
         public string Port { get; set; }
 
-        [Display(Name = "Base")]
+        [Display(Name = "ad base")]
         [MaxLength(150)]
         public string Base { get; set; }
 
-        [Display(Name = "Username")]
+        [Display(Name = "ad username")]
         [MaxLength(150)]
         public string Username { get; set; }
 
-        [Display(Name = "Password")]
+        [Display(Name = "ad password")]
         [MaxLength(150)]
         public string Password { get; set; }
         #endregion        
 
         #region SMTP
 
-        [Display(Name = "SMTP Server")]
+        [Display(Name = "SMTP server")]
         [MaxLength(150)]
         public string SMTP_Server { get; set; }
 
-        [Display(Name = "SMTP Port")]
+        [Display(Name = "SMTP port")]
         public int SMTP_Port { get; set; }
 
-        [Display(Name = "SMTP From")]
+        [Display(Name = "SMTP from")]
         [MaxLength(150)]
         public string SMTP_From { get; set; }
 
-        [Display(Name = "SMTP Username")]
+        [Display(Name = "SMTP username")]
         [MaxLength(150)]
         public string SMTP_Username { get; set; }
 
-        [Display(Name = "SMTP Password")]
+        [Display(Name = "SMTP password")]
         [MaxLength(150)]
         public string SMTP_Password { get; set; }
 
@@ -61,10 +61,10 @@ namespace ABAC.Models
         #endregion
 
         #region setup
-        [Display(Name = "Guest Row Number")]
+        [Display(Name = "guest row number")]
         public int GuestRowNumber { get; set; }
 
-        [Display(Name = "Landing Page Text")]
+        [Display(Name = "landing page text")]
         public string first_page_description { get; set; }
 
 
@@ -72,15 +72,15 @@ namespace ABAC.Models
 
         #region Audit
 
-        [Display(Name = "ผู้สร้าง")]
+         [Display(Name = "create by")]
         [MaxLength(250)]
         public string Create_By { get; set; }
-        [Display(Name = "เวลาสร้าง")]
+        [Display(Name = "create datetime")]
         public Nullable<DateTime> Create_On { get; set; }
-        [Display(Name = "ผู้แก้ไข")]
+        [Display(Name = "update by")]
         [MaxLength(250)]
         public string Update_By { get; set; }
-        [Display(Name = "เวลาแก้ไข")]
+        [Display(Name = "update datetime")]
         public Nullable<DateTime> Update_On { get; set; }
 
         #endregion       
