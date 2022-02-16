@@ -73,6 +73,21 @@ namespace ABAC.Controllers
                     ModelState.AddModelError("SamAccountName", "username already exists.");
                 }
             }
+            if (model.aUUserType == aUUserType.bulk) { 
+                if (!string.IsNullOrEmpty(model.ValidDate) && !string.IsNullOrEmpty(model.ExpireDate))
+                {
+                    var vd = DateUtil.ToDate(model.ValidDate);
+                    var exd = DateUtil.ToDate(model.ExpireDate);
+                    if (vd.HasValue & exd.HasValue)
+                    {
+                        if (exd.Value.Date < vd.Value.Date)
+                        {
+                            ModelState.AddModelError("ValidDate", "The Expire Date should be more than Valid Date");
+                            ModelState.AddModelError("ExpireDate", "The Expire Date should be more than Valid Date");
+                        }
+                    }
+                }
+            }
             if (ModelState.IsValid)
             {
                 model.DisplayName = model.GivenName + " " + model.Surname;
@@ -312,6 +327,19 @@ namespace ABAC.Controllers
             if (setup == null)
                 return RedirectToAction("Logout", "Auth");
 
+            if (!string.IsNullOrEmpty(model2.dfrom) && !string.IsNullOrEmpty(model2.dto))
+            {
+                var vd = DateUtil.ToDate(model2.dfrom);
+                var exd = DateUtil.ToDate(model2.dto);
+                if (vd.HasValue & exd.HasValue)
+                {
+                    if (exd.Value.Date < vd.Value.Date)
+                    {
+                        return RedirectToAction("CreateAccountFromFile", new { code = code, msg = "The Expire Date should be more than Valid Date" });
+                    }
+                }
+            }
+
             int runNumber = setup.GuestRowNumber + 1;
             var imports = _context.table_temp_import.OrderBy(o => o.ImportRow);
             foreach (var imp in imports.ToList())
@@ -445,6 +473,19 @@ namespace ABAC.Controllers
             var msg = ReturnMessage.Error;
             var code = ReturnCode.Error;
 
+            if (!string.IsNullOrEmpty(model.ValidDate) && !string.IsNullOrEmpty(model.ExpireDate))
+            {
+                var vd = DateUtil.ToDate(model.ValidDate);
+                var exd = DateUtil.ToDate(model.ExpireDate);
+                if (vd.HasValue & exd.HasValue)
+                {
+                    if (exd.Value.Date < vd.Value.Date)
+                    {
+                        return RedirectToAction("CreateAccountBulk", new { code = code, msg = "The Expire Date should be more than Valid Date" });
+                    }
+                }
+            }
+
             var setup = _context.table_setup.FirstOrDefault();
             if (setup == null)
                 return RedirectToAction("Logout", "Auth");
@@ -577,6 +618,20 @@ namespace ABAC.Controllers
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (userlogin == null)
                 return RedirectToAction("Logout", "Auth");
+
+            if (!string.IsNullOrEmpty(model.ValidDate) && !string.IsNullOrEmpty(model.ExpireDate))
+            {
+                var vd = DateUtil.ToDate(model.ValidDate);
+                var exd = DateUtil.ToDate(model.ExpireDate);
+                if(vd.HasValue & exd.HasValue)
+                {
+                    if (exd.Value.Date < vd.Value.Date)
+                    {
+                        ModelState.AddModelError("ValidDate", "The Expire Date should be more than Valid Date");
+                        ModelState.AddModelError("ExpireDate", "The Expire Date should be more than Valid Date");
+                    }
+                }
+            }
 
             if (ModelState.IsValid)
             {
@@ -747,9 +802,16 @@ namespace ABAC.Controllers
 
                 var aduser = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
                 if (aduser != null)
-                {                   
+                {
                     if (aduser.aUUserType == aUUserType.office)
                     {
+                        var dup = _context.User_Office.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
+                        if (dup != null)
+                        {
+                            ModelState.AddModelError("newSamAccountName", "Account name is already existed");
+                            return View(model);
+                        }
+
                         var user = _context.User_Office.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                         if (user != null)
                         {
@@ -763,6 +825,12 @@ namespace ABAC.Controllers
                     }
                     else if (aduser.aUUserType == aUUserType.vip)
                     {
+                        var dup = _context.User_VIP.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
+                        if (dup != null)
+                        {
+                            ModelState.AddModelError("newSamAccountName", "Account name is already existed");
+                            return View(model);
+                        }
                         var user = _context.User_VIP.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                         if (user != null)
                         {
@@ -777,6 +845,12 @@ namespace ABAC.Controllers
                     }
                     else if (aduser.aUUserType == aUUserType.bulk)
                     {
+                        var dup = _context.User_Bulk.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
+                        if (dup != null)
+                        {
+                            ModelState.AddModelError("newSamAccountName", "Account name is already existed");
+                            return View(model);
+                        }
                         var user = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                         if (user != null)
                         {
@@ -804,7 +878,7 @@ namespace ABAC.Controllers
                         }
                     }
                 }
-                if(_conf.Env != "dev")
+                if (_conf.Env != "dev")
                 {
                     var result_ad = _provider.RenameUser(aduser, model.newSamAccountName, _context);
                     if (result_ad.result == true)
@@ -1140,7 +1214,7 @@ namespace ABAC.Controllers
                     {
                         try
                         {
-                           
+
                             var result_ad = _provider.EnableUser(model, _context);
                             if (result_ad.result == true)
                                 writelog(LogType.log_unlock_account, LogStatus.successfully, IDMSource.AD, model.SamAccountName);

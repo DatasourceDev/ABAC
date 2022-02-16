@@ -39,7 +39,7 @@ namespace ABAC
             services.AddMvc().AddSessionStateTempDataProvider();
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromDays(1);
+                options.IdleTimeout = TimeSpan.FromHours(1);
             });
 
 
@@ -72,14 +72,14 @@ namespace ABAC
                 {
                     options.LoginPath = "/Auth/Login";
                     options.LogoutPath = "/Auth/Logout";
-                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 });
 
 
                 services.ConfigureApplicationCookie(options =>
                 {
                     options.AccessDeniedPath = "/Auth/Login";
-                    options.ExpireTimeSpan = TimeSpan.FromDays(1);
+                    options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 });
             }
             else

@@ -28,11 +28,14 @@ namespace ABAC.Models
 
         [Display(Name = "html content at guest home page")]
         public string HOME_Guest { get; set; }
+
+        [Display(Name = "html content at test home page")]
+        public string HOME_Test { get; set; }
         #endregion
 
         #region Audit
 
-         [Display(Name = "create by")]
+        [Display(Name = "create by")]
         [MaxLength(250)]
         public string Create_By { get; set; }
         [Display(Name = "create datetime")]

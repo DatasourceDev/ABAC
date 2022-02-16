@@ -1,0 +1,73 @@
+﻿@model ABAC.Models.cms
+@{
+    ViewData["Title"] = "Test";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <div aria-live="polite" aria-atomic="true" style="position: relative;">
+                <div class="page-title-box">
+                    <div class="float-right" style="width:50%">
+                        @if (ViewBag.ReturnCode != null)
+                        {
+                            @if (ViewBag.ReturnCode == ReturnCode.Success)
+                            {
+                                <div class="alert alert-success  border-0" role="alert">
+                                    <i class="mdi mdi-check-circle-outline font-18 mr-1"></i>
+                                    <strong class="font-18">@ViewBag.Message</strong>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-danger border-0" role="alert">
+                                    <i class="mdi mdi-close-circle-outline font-18 mr-1"></i>
+                                    <strong class="font-18">@ViewBag.Message</strong>
+                                </div>
+                            }
+                        }
+                    </div>
+                    <h4 class="page-title">Test</h4>
+                    <p class="text-muted">
+                        ตั้งค่า Home Test
+                    </p>
+                </div><!--end page-title-box-->
+
+            </div>
+        </div><!--end col-->
+    </div>
+    <!--end row-->
+    <form class="form-horizontal form-parsley" novalidate role="form" asp-action="CMSTest" asp-controller="System">
+        @Html.HiddenFor(m => m.ID)
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group row">
+                    <div class="col-sm-12">
+                        <button class="btn btn-dark" type="submit">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body mt-3">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group row">
+                                    <div class="col-sm-12">
+                                        <h4 class="mt-0 header-title">Home Test</h4>
+                                        <textarea asp-for="HOME_Test" rows="5" style="width:100%"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- end col -->
+            <!-- end col -->
+        </div>
+        <div id="preview">
+            @Html.Raw(Model.HOME_Test)
+        </div>
+    </form>
+</div><!-- container -->

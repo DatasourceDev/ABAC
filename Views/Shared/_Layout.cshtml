@@ -357,6 +357,7 @@
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>VIP</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Office</a></li>
                         <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Guest</a></li>
+                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSTest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Test</a></li>
                     </ul>
                 </li>
             }
@@ -392,12 +393,12 @@
                         <span>Account Profile</span>
                     </a>
                 </li>
-                <li class="leftbar-menu-item">
+                @*<li class="leftbar-menu-item">
                     <a href="@Url.Action("ChangePassword", "Profile")" class="menu-link">
                         <i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
                         <span>Change Password</span>
                     </a>
-                </li>
+                </li>*@
                 <li class="leftbar-menu-item">
                     <a href="@Url.Action("Logout", "Auth")" class="menu-link">
                         <i data-feather="power" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
@@ -427,7 +428,10 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <a class="dropdown-item" href="@Url.Action("Index","Profile")"><i class="dripicons-user text-muted mr-2"></i> Account Profile</a>
-                        <a class="dropdown-item" href="@Url.Action("ChangePassword","Profile")"><i class="dripicons-lock text-muted mr-2"></i> Change Password</a>
+                        @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk) | roles.Contains(roleType.PasswordOperator) | roles.Contains(roleType.WebMaster))
+                        {
+                            <a class="dropdown-item" href="@Url.Action("ChangePassword","Profile")"><i class="dripicons-lock text-muted mr-2"></i> Change Password</a>
+                        }
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="@Url.Action("Logout", "Auth")" onclick="logout()"><i class="dripicons-exit text-muted mr-2"></i> Logout</a>
                     </div>

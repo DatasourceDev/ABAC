@@ -22,7 +22,7 @@ namespace ABAC.Models
 
         [NotMapped]
         [DataType(DataType.Password)]
-        [Compare("ConfirmPassword", ErrorMessage = "รหัสผ่านไม่ตรงกัน")]
+        [Compare("ConfirmPassword", ErrorMessage = "Password doesn't match")]
         [MaxLength(250)]
         public string ConfirmPassword { get; set; }
 
