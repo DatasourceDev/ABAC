@@ -450,9 +450,9 @@ namespace ABAC.Identity
                     return new Result() { result = false, Message = "Account has not found" };
                 }
                  UserPrincipal principal2 = UserPrincipal.FindByIdentity(context, IdentityType.SamAccountName, newSamAccountName);
-                if (principal2 == null)
+                if (principal2 != null)
                 {
-                    return new Result() { result = false, Message = "Account name is already existed" };
+                    return new Result() { result = false, Message = "Username is already existed" };
                 }
 
                 principal.SamAccountName= newSamAccountName;

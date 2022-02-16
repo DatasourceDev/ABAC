@@ -803,15 +803,32 @@ namespace ABAC.Controllers
                 var aduser = await _provider.GetAdUser2(model.SamAccountName, _context, _conf.Env);
                 if (aduser != null)
                 {
+                    var dup = _context.User_Office.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
+                    if (dup != null)
+                    {
+                        ModelState.AddModelError("newSamAccountName", "Username is already existed");
+                        return View(model);
+                    }
+                    var dup2 = _context.User_VIP.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
+                    if (dup2 != null)
+                    {
+                        ModelState.AddModelError("newSamAccountName", "Username is already existed");
+                        return View(model);
+                    }
+                    var dup3 = _context.User_Bulk.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
+                    if (dup3 != null)
+                    {
+                        ModelState.AddModelError("newSamAccountName", "Username is already existed");
+                        return View(model);
+                    }
+                    var aduser2 = await _provider.GetAdUser2(model.newSamAccountName, _context, _conf.Env);
+                    if(aduser2 != null)
+                    {
+                        ModelState.AddModelError("newSamAccountName", "Username is already existed");
+                        return View(model);
+                    }
                     if (aduser.aUUserType == aUUserType.office)
                     {
-                        var dup = _context.User_Office.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
-                        if (dup != null)
-                        {
-                            ModelState.AddModelError("newSamAccountName", "Account name is already existed");
-                            return View(model);
-                        }
-
                         var user = _context.User_Office.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                         if (user != null)
                         {
@@ -825,12 +842,7 @@ namespace ABAC.Controllers
                     }
                     else if (aduser.aUUserType == aUUserType.vip)
                     {
-                        var dup = _context.User_VIP.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
-                        if (dup != null)
-                        {
-                            ModelState.AddModelError("newSamAccountName", "Account name is already existed");
-                            return View(model);
-                        }
+                        
                         var user = _context.User_VIP.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                         if (user != null)
                         {
@@ -845,12 +857,7 @@ namespace ABAC.Controllers
                     }
                     else if (aduser.aUUserType == aUUserType.bulk)
                     {
-                        var dup = _context.User_Bulk.Where(w => w.username == model.newSamAccountName).FirstOrDefault();
-                        if (dup != null)
-                        {
-                            ModelState.AddModelError("newSamAccountName", "Account name is already existed");
-                            return View(model);
-                        }
+                        
                         var user = _context.User_Bulk.Where(w => w.username == aduser.SamAccountName).FirstOrDefault();
                         if (user != null)
                         {
