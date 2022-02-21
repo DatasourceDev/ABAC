@@ -251,6 +251,8 @@ namespace ABAC
                 status = "userTemp";
             else if (statusType == aUUserType.admin)
                 status = "Service-user";
+            else if (statusType == aUUserType.alumni)
+                status = "Alumni";
             return status;
         }
         public static string touserAccountControlName(this userAccountControl statusType)
