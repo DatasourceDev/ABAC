@@ -31,6 +31,7 @@ namespace ABAC
         public static string bulk = "bulk";
         public static string office = "office";
         public static string admin = "admin";
+        public static string alumni = "alumni";
     }
     public class roleType
     {
@@ -231,6 +232,8 @@ namespace ABAC
                 status = "Office";
             else if (statusType == aUUserType.bulk)
                 status = "Guest";
+            else if (statusType == aUUserType.alumni)
+                status = "Alumni";
             return status;
         }
         public static string toOUName(this string statusType)
