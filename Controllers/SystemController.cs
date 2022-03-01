@@ -635,7 +635,7 @@ namespace ABAC.Controllers
 
         public async Task<IActionResult> Setup()
         {
-            if (!checkrole(new string[] { roleType.Admin }))
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
@@ -651,7 +651,7 @@ namespace ABAC.Controllers
         [HttpPost]
         public async Task<IActionResult> Setup(setup model)
         {
-            if (!checkrole(new string[] { roleType.Admin }))
+            if (!checkrole(new string[] { roleType.Admin, roleType.WebMaster }))
                 return Json(new { error = ReturnMessage.Error, result = ReturnCode.Error });
 
             var userlogin = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
