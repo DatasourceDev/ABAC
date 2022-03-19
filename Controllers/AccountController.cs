@@ -88,6 +88,11 @@ namespace ABAC.Controllers
                     }
                 }
             }
+            if (model.SamAccountName.Contains("@"))
+            {
+                ModelState.AddModelError("SamAccountName", "Username should not be email.");
+            }
+
             if (ModelState.IsValid)
             {
                 model.DisplayName = model.GivenName + " " + model.Surname;
@@ -98,6 +103,8 @@ namespace ABAC.Controllers
                     if (model.aUUserType == aUUserType.office)
                     {
                         model.DistinguishedName = _conf.OU_OFFICE;
+                        model.UserPrincipalName = model.SamAccountName + "@au.edu";
+                        model.EmailAddress = model.SamAccountName + "@au.edu";
                         var user = new User_Office();
                         user.username = model.SamAccountName;
                         user.password = model.Password;
@@ -130,6 +137,8 @@ namespace ABAC.Controllers
                     else if (model.aUUserType == aUUserType.vip)
                     {
                         model.DistinguishedName = _conf.OU_VIP;
+                        model.UserPrincipalName = model.SamAccountName + "@au.edu";
+                        model.EmailAddress = model.SamAccountName + "@au.edu";
                         var user = new User_VIP();
                         user.username = model.SamAccountName;
                         user.password = model.Password;
