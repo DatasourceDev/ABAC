@@ -31,11 +31,39 @@ namespace ABAC.Controllers
         {
         }
 
-        public IActionResult Login(string SAMLRequest, string RelayState)
+        public async Task<IActionResult> Login(string SAMLRequest, string RelayState)
         {
             var model = new LoginDTO();
             model.SAMLRequest = SAMLRequest;
             model.RelayState = RelayState;
+            if (!string.IsNullOrEmpty(this.HttpContext.User.Identity.Name))
+            {
+                if (!string.IsNullOrEmpty(SAMLRequest) && !string.IsNullOrEmpty(RelayState))
+                {
+                    var username = this.HttpContext.User.Identity.Name;
+                    var aduser = await _provider.GetAdUser2(username, _context, _conf.Env);
+                    if (aduser == null)
+                    {
+                        writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, username, "The account " + username + " is not exist on AD.", username);
+                        ModelState.AddModelError("UserName", "The account does not exist.");
+                        return View(model);
+                    }
+                    var responseXml = "";
+                    while (string.IsNullOrEmpty(responseXml))
+                    {
+                        var sso = SSO(username, SAMLRequest, RelayState);
+                        if (sso != null)
+                        {
+                            responseXml = sso.responseXml;
+                            TempData["responseXml"] = sso.responseXml;
+                            TempData["actionUrl"] = sso.actionUrl;
+                            TempData["relayState"] = sso.relayState;
+                        }
+                    }
+                    return RedirectToAction("Home", "Profile");
+                }
+            }
+
             return View(model);
         }
         private SSODTO SSO(string username, string samlRequest, string relayState)
