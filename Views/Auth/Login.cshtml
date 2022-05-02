@@ -12,7 +12,6 @@
     {
         landingsrc = landing.Url;
     }
-
 }
 <div class="container-fluid">
     @*@if (TempData["actionUrl"] != null)
@@ -67,21 +66,21 @@
                         <h1 class="text-danger" style="font-size:48px;">Assumption University of Thailand</h1>
                     }
                     @*<h4 class="mt-3 text-white"><span class="text-dark">University</span> </h4>
-        <div class="border w-25 mx-auto border-classic"></div>
-        @if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
-        {
-            <p class="font-12 mt-3">
-                @Html.Raw(setup.first_page_description)
-            </p>
-        }
-        else
-        {
-            <p class="font-12 mt-3">
-                ศูนย์ ICT มหาวิทยาลัย
-                <br />
-                email: ictcenter@cu.ac.th
-            </p>
-        }*@
+                        <div class="border w-25 mx-auto border-classic"></div>
+                        @if (setup != null && !string.IsNullOrEmpty(setup.first_page_description))
+                        {
+                            <p class="font-12 mt-3">
+                                @Html.Raw(setup.first_page_description)
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="font-12 mt-3">
+                                ศูนย์ ICT มหาวิทยาลัย
+                                <br />
+                                email: ictcenter@cu.ac.th
+                            </p>
+                        }*@
                     <div class="border w-25 mx-auto border-danger"></div>
                 </div>
             </div>
@@ -95,7 +94,7 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <a href="#" class="logo logo-admin">
-                                            <span><img src="~/images/logo.png" height="120" alt="logo" ></span>
+                                            <span><img src="~/images/logo.png" height="120" alt="logo"></span>
                                         </a>
                                     </div>
                                     <div class="col-sm-12 text-right">
@@ -111,7 +110,7 @@
                             <!-- Tab panes -->
                             <div class="tab-content">
                                 <div class="tab-pane active p-3" id="LogIn_Tab" role="tabpanel">
-                                    <form class="form-horizontal auth-form my-4 form-parsley" novalidate role="form" asp-action="Login" asp-controller="Auth">
+                                    <form class="form-horizontal auth-form my-4 form-parsley" novalidate role="form" asp-action="Login" asp-controller="Auth" id="loginForm">
                                         @Html.HiddenFor(m => m.SAMLRequest)
                                         @Html.HiddenFor(m => m.RelayState)
 
@@ -128,14 +127,14 @@
                                             @Html.ValidationMessageFor(m => m.Password)
                                         </div><!--end form-group-->
                                         @*<div class="form-group row mt-4">
-                                            <div class="col-sm-12 ">
-                                                <a href="@Url.Action("ForgotPassword","Auth")" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot Password?</a>
-                                            </div>
-                                        </div>*@
+                                                <div class="col-sm-12 ">
+                                                    <a href="@Url.Action("ForgotPassword","Auth")" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot Password?</a>
+                                                </div>
+                                            </div>*@
 
                                         <div class="form-group mb-0 row">
                                             <div class="col-12 mt-2">
-                                                <button class="btn btn-dark btn-block waves-effect waves-light" type="submit"><i class="fas fa-sign-in-alt ml-1"></i> Login</button>
+                                                <button class="btn btn-dark btn-block waves-effect waves-light" type="button" onclick="login()"><i class="fas fa-sign-in-alt ml-1"></i> Login</button>
                                             </div><!--end col-->
                                         </div> <!--end form-group-->
                                     </form><!--end form-->
@@ -148,3 +147,14 @@
         </div>
     </div>
 </div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+           
+        });
+        function login() {
+            localStorage.removeItem("sso");
+            $("#loginForm").submit();
+        }
+    </script>
+}

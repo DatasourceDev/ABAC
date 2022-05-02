@@ -39,3 +39,12 @@
     </div>
 
 </div> <!-- end row -->
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            if ('@ViewBag.renewsso' == 'True') {
+                localStorage.removeItem("sso");
+            }
+        });
+    </script>
+}

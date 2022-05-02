@@ -26,12 +26,13 @@ namespace ABAC.Controllers
         {
             this.provider = provider;
         }
-        public async Task<IActionResult> Home()
+        public async Task<IActionResult> Home(bool renewsso)
         {
             var aduser = await _provider.GetAdUser2(this.HttpContext.User.Identity.Name, _context, _conf.Env);
             if (aduser == null)
                 return RedirectToAction("Logout", "Auth");
 
+            ViewBag.renewsso = renewsso;
             return View(aduser);
         }
 

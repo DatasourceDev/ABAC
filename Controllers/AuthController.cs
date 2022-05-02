@@ -49,17 +49,36 @@ namespace ABAC.Controllers
                         return View(model);
                     }
                     var responseXml = "";
+                    var actionUrl = "";
+                    var relayState = "";
                     while (string.IsNullOrEmpty(responseXml))
                     {
                         var sso = SSO(username, SAMLRequest, RelayState);
                         if (sso != null)
                         {
                             responseXml = sso.responseXml;
+                            actionUrl = sso.actionUrl;
+                            relayState = sso.relayState;
                             TempData["responseXml"] = sso.responseXml;
                             TempData["actionUrl"] = sso.actionUrl;
                             TempData["relayState"] = sso.relayState;
                         }
                     }
+                    var role = AppUtil.getaUUserType(aduser.DistinguishedName);
+                    var user_role = _context.table_user_role.Where(w => w.username.ToLower() == aduser.SamAccountName.ToLower());
+                    if (user_role.Count() > 0)
+                    {
+                        role = "";
+                        foreach (var r in user_role)
+                        {
+                            role += r.roleType + "|";
+                        }
+                    }
+                    this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
+                    return RedirectToAction("Home", "Profile", new { renewsso = true});
+                }
+                else
+                {
                     return RedirectToAction("Home", "Profile");
                 }
             }
@@ -182,8 +201,6 @@ namespace ABAC.Controllers
                         }
                     }
 
-                    this._loginServices.Login(aduser, role, true);
-                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
                     var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
                     var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
@@ -200,17 +217,24 @@ namespace ABAC.Controllers
                         username = aduser.EmailAddress;
 
                     var responseXml = "";
+                    var actionUrl = "";
+                    var relayState = "";
                     while (string.IsNullOrEmpty(responseXml))
                     {
                         var sso = SSO(username, model.SAMLRequest, model.RelayState);
                         if (sso != null)
                         {
                             responseXml = sso.responseXml;
+                            actionUrl = sso.actionUrl;
+                            relayState = sso.relayState;
                             TempData["responseXml"] = sso.responseXml;
                             TempData["actionUrl"] = sso.actionUrl;
                             TempData["relayState"] = sso.relayState;
                         }
                     }
+                    this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
+                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
+
                     return RedirectToAction("Home", "Profile");
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
@@ -231,8 +255,6 @@ namespace ABAC.Controllers
                             role += r.roleType + "|";
                         }
                     }
-                    this._loginServices.Login(aduser, role, true);
-                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
                     var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
                     var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
@@ -249,18 +271,23 @@ namespace ABAC.Controllers
                         username = aduser.EmailAddress;
 
                     var responseXml = "";
+                    var actionUrl = "";
+                    var relayState = "";
                     while (string.IsNullOrEmpty(responseXml))
                     {
                         var sso = SSO(username, model.SAMLRequest, model.RelayState);
                         if (sso != null)
                         {
                             responseXml = sso.responseXml;
+                            actionUrl = sso.actionUrl;
+                            relayState = sso.relayState;
                             TempData["responseXml"] = sso.responseXml;
                             TempData["actionUrl"] = sso.actionUrl;
                             TempData["relayState"] = sso.relayState;
                         }
                     }
-
+                    this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
+                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
                     return RedirectToAction("Home", "Profile");
                 }
@@ -424,7 +451,7 @@ namespace ABAC.Controllers
                     }
                     activate.Active = false;
                     _context.SaveChanges();
-                    if(_conf.Env != "dev")
+                    if (_conf.Env != "dev")
                     {
                         var result_ad = _provider.ChangePwd(user, model.Password, _context);
                         if (result_ad.result == true)
