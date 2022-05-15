@@ -165,6 +165,9 @@ namespace ABAC.DTO
         [DataType(DataType.Password)]
         [MaxLength(100)]
         public string Password { get; set; }
+
+        public bool isSSO { get; set; }
+
     }
     public class ChangePasswordDTO : BaseDTO
     {

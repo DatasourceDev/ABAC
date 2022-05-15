@@ -113,6 +113,7 @@
                                     <form class="form-horizontal auth-form my-4 form-parsley" novalidate role="form" asp-action="Login" asp-controller="Auth" id="loginForm">
                                         @Html.HiddenFor(m => m.SAMLRequest)
                                         @Html.HiddenFor(m => m.RelayState)
+                                        @Html.HiddenFor(m => m.isSSO)
 
                                         <div class="form-group">
                                             <label for="username">Username</label>
@@ -127,10 +128,10 @@
                                             @Html.ValidationMessageFor(m => m.Password)
                                         </div><!--end form-group-->
                                         @*<div class="form-group row mt-4">
-                                                <div class="col-sm-12 ">
-                                                    <a href="@Url.Action("ForgotPassword","Auth")" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot Password?</a>
-                                                </div>
-                                            </div>*@
+            <div class="col-sm-12 ">
+                <a href="@Url.Action("ForgotPassword","Auth")" class="text-muted font-13"><i class="dripicons-lock"></i> Forgot Password?</a>
+            </div>
+        </div>*@
 
                                         <div class="form-group mb-0 row">
                                             <div class="col-12 mt-2">

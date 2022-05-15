@@ -82,7 +82,13 @@ namespace ABAC.Controllers
                     return RedirectToAction("Home", "Profile");
                 }
             }
-
+            else
+            {
+                if (!string.IsNullOrEmpty(SAMLRequest) && !string.IsNullOrEmpty(RelayState))
+                {
+                    model.isSSO = true;
+                }
+            }
             return View(model);
         }
         private SSODTO SSO(string username, string samlRequest, string relayState)
@@ -235,7 +241,10 @@ namespace ABAC.Controllers
                     this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
-                    return RedirectToAction("Home", "Profile");
+                    if (model.isSSO)
+                        return RedirectToAction("Home", "Profile", new { renewsso = true });
+                    else
+                        return RedirectToAction("Home", "Profile");
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
                 {
@@ -289,7 +298,10 @@ namespace ABAC.Controllers
                     this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
                     writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
 
-                    return RedirectToAction("Home", "Profile");
+                    if (model.isSSO)
+                        return RedirectToAction("Home", "Profile", new { renewsso = true });
+                    else
+                        return RedirectToAction("Home", "Profile");
                 }
             }
             return View(model);
