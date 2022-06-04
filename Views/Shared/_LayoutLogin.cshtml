@@ -27,6 +27,17 @@
         </div>
 
     </div>
+    <div style="display:none">
+        <form method="post" action="https://www.google.com/a/au.edu/acs" id="ssoform1">
+            <div id="pnlCookie">
+                <div>
+                    <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20"></textarea>
+                    <textarea name="RelayState" id="RelayState" cols="130" rows="5"></textarea>
+                </div>
+            </div>
+            <button id="btnssosubmit" type="submit">Submit</button>
+        </form>
+    </div>
     @RenderBody()
     <!-- End Log In page -->
     <!-- jQuery  -->

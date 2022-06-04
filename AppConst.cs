@@ -21,7 +21,8 @@ namespace ABAC
     {
         Database,
         AD,
-        LDAP
+        LDAP,
+        SSO
     }
     public class aUUserType
     {
@@ -146,6 +147,7 @@ namespace ABAC
         log_lock_account,
         log_unlock_account,
         log_rename,
+        log_sso
     }
     public static class LogActivity
     {

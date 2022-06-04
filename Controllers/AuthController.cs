@@ -31,155 +31,36 @@ namespace ABAC.Controllers
         {
         }
 
-        public async Task<IActionResult> Login(string SAMLRequest, string RelayState)
+        [HttpGet]
+        public  IActionResult Login(string SAMLRequest, string RelayState)
         {
             var model = new LoginDTO();
             model.SAMLRequest = SAMLRequest;
             model.RelayState = RelayState;
-            if (!string.IsNullOrEmpty(this.HttpContext.User.Identity.Name))
+            if (!string.IsNullOrEmpty(SAMLRequest) && !string.IsNullOrEmpty(RelayState))
             {
-                if (!string.IsNullOrEmpty(SAMLRequest) && !string.IsNullOrEmpty(RelayState))
-                {
-                    var username = this.HttpContext.User.Identity.Name;
-                    var aduser = await _provider.GetAdUser2(username, _context, _conf.Env);
-                    if (aduser == null)
-                    {
-                        writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, username, "The account " + username + " is not exist on AD.", username);
-                        ModelState.AddModelError("UserName", "The account does not exist.");
-                        return View(model);
-                    }
-                    var responseXml = "";
-                    var actionUrl = "";
-                    var relayState = "";
-                    while (string.IsNullOrEmpty(responseXml))
-                    {
-                        var sso = SSO(username, SAMLRequest, RelayState);
-                        if (sso != null)
-                        {
-                            responseXml = sso.responseXml;
-                            actionUrl = sso.actionUrl;
-                            relayState = sso.relayState;
-                            TempData["responseXml"] = sso.responseXml;
-                            TempData["actionUrl"] = sso.actionUrl;
-                            TempData["relayState"] = sso.relayState;
-                        }
-                    }
-                    var role = AppUtil.getaUUserType(aduser.DistinguishedName);
-                    var user_role = _context.table_user_role.Where(w => w.username.ToLower() == aduser.SamAccountName.ToLower());
-                    if (user_role.Count() > 0)
-                    {
-                        role = "";
-                        foreach (var r in user_role)
-                        {
-                            role += r.roleType + "|";
-                        }
-                    }
-                    this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
-                    return RedirectToAction("Home", "Profile", new { renewsso = true});
-                }
-                else
+                model.isSSO = true;
+                model.SAMLRequest = SAMLRequest;
+                model.RelayState = RelayState;
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(this.HttpContext.User.Identity.Name))
                 {
                     return RedirectToAction("Home", "Profile");
                 }
             }
-            else
-            {
-                if (!string.IsNullOrEmpty(SAMLRequest) && !string.IsNullOrEmpty(RelayState))
-                {
-                    model.isSSO = true;
-                }
-            }
             return View(model);
         }
-        private SSODTO SSO(string username, string samlRequest, string relayState)
-        {
-            if (!string.IsNullOrEmpty(samlRequest) && !string.IsNullOrEmpty(relayState))
-            {
-                if (username != "")
-                {
-                    List<string> result = new List<string>();
-                    using (var process = new Process())
-                    {
-                        process.StartInfo.FileName = Path.Combine("C:\\Dthai\\SMAL\\", "ABAC-SAML.exe"); // relative path. absolute path works too. 
-                        //process.StartInfo.FileName = Path.Combine("C:\\Work\\ABAC\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
-                        process.StartInfo.ArgumentList.Add($"{username}");
-                        process.StartInfo.ArgumentList.Add($"{samlRequest}");
-                        process.StartInfo.CreateNoWindow = true;
-                        process.StartInfo.UseShellExecute = false;
-                        process.StartInfo.RedirectStandardOutput = true;
-                        process.StartInfo.RedirectStandardError = true;
-                        process.OutputDataReceived += (sender, data) => result.Add(data.Data);
-                        process.ErrorDataReceived += (sender, data) => result.Add(data.Data);
-                        process.Start();
-                        process.BeginOutputReadLine();
-                        process.BeginErrorReadLine();     // (optional) wait up to 10 seconds
-                        do
-                        {
-                            if (!process.HasExited)
-                            {
-                                // Refresh the current process property values.
-                                process.Refresh();
-                                Console.WriteLine($"exit {process.HasExited}");
-                            }
-                        }
-                        while (!process.WaitForExit(1000));
-                    }
-                    try
-                    {
-                        string responseXml = "";
-                        string actionUrl = "";
-                        var actionUrlbegin = false;
-                        if (result.Count() > 0)
-                        {
-                            foreach (var row in result)
-                            {
-                                if (!string.IsNullOrEmpty(row))
-                                {
-                                    if (row.Contains("actionUrl:"))
-                                    {
-                                        actionUrl = row.Replace("actionUrl:", "");
-                                        actionUrlbegin = true;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        if (actionUrlbegin == false)
-                                        {
-                                            if (row.Contains("responseXml:"))
-                                                responseXml += row.Replace("responseXml:", "");
-                                            else
-                                                responseXml += Environment.NewLine + row;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        var sso = new SSODTO();
-                        sso.responseXml = responseXml;
-                        sso.actionUrl = actionUrl;
-                        sso.relayState = relayState;
-                        return sso;
-                    }
-                    catch (Exception ex)
-                    {
-                        return null;
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            return null;
-        }
+       
         [HttpPost]
         public async Task<IActionResult> Login(LoginDTO model)
         {
-            model.UserName = model.UserName.Trim();
-            model.Password = model.Password.Trim();
+           
             if (ModelState.IsValid)
             {
-
+                model.UserName = model.UserName.Trim();
+                model.Password = model.Password.Trim();
                 var aduser = await _provider.GetAdUser2(model.UserName, _context, _conf.Env);
                 if (aduser == null)
                 {
@@ -207,44 +88,23 @@ namespace ABAC.Controllers
                         }
                     }
 
-
-                    var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
-                    var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
-
-                    if (string.IsNullOrEmpty(model.SAMLRequest))
-                        model.SAMLRequest = SAMLRequest;
-                    if (string.IsNullOrEmpty(model.RelayState))
-                        model.RelayState = RelayState;
-
-                    var username = model.UserName;
-                    if (string.IsNullOrEmpty(aduser.EmailAddress))
-                        username = model.UserName + _conf.DomainGmail;
-                    else
-                        username = aduser.EmailAddress;
-
-                    var responseXml = "";
-                    var actionUrl = "";
-                    var relayState = "";
-                    while (string.IsNullOrEmpty(responseXml))
+                    if (model.isSSO)
                     {
-                        var sso = SSO(username, model.SAMLRequest, model.RelayState);
-                        if (sso != null)
+                        if (!string.IsNullOrEmpty(model.SAMLRequest) && !string.IsNullOrEmpty(model.RelayState))
                         {
-                            responseXml = sso.responseXml;
-                            actionUrl = sso.actionUrl;
-                            relayState = sso.relayState;
-                            TempData["responseXml"] = sso.responseXml;
-                            TempData["actionUrl"] = sso.actionUrl;
-                            TempData["relayState"] = sso.relayState;
+                            var sso = SSO(model.UserName, model.SAMLRequest, model.RelayState);
+                            this._loginServices.Login(aduser, role, true, model.SAMLRequest, model.RelayState, sso.actionUrl, sso.responseXml);
+                            writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
+                            return RedirectToAction("Home", "Profile", new { renewsso = true });
                         }
                     }
-                    this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
-                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
-
-                    if (model.isSSO)
-                        return RedirectToAction("Home", "Profile", new { renewsso = true });
                     else
+                    {
+                        this._loginServices.Login(aduser, role, true, "", "", "", "");
+                        writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
                         return RedirectToAction("Home", "Profile");
+                    }
+                        
                 }
                 if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
                 {
@@ -254,6 +114,7 @@ namespace ABAC.Controllers
                 }
                 else
                 {
+                   
                     var role = AppUtil.getaUUserType(aduser.DistinguishedName);
                     var user_role = _context.table_user_role.Where(w => w.username.ToLower() == aduser.SamAccountName.ToLower());
                     if (user_role.Count() > 0)
@@ -265,43 +126,23 @@ namespace ABAC.Controllers
                         }
                     }
 
-                    var SAMLRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
-                    var RelayState = "https://www.google.com/a/au.edu/ServiceLogin?service=mail&passive=true&rm=false&continue=https://mail.google.com/mail/&ss=1&ltmpl=default&ltmplcache=2&emr=1&osid=1";
-
-                    if (string.IsNullOrEmpty(model.SAMLRequest))
-                        model.SAMLRequest = SAMLRequest;
-                    if (string.IsNullOrEmpty(model.RelayState))
-                        model.RelayState = RelayState;
-
-                    var username = model.UserName;
-                    if (string.IsNullOrEmpty(aduser.EmailAddress))
-                        username = model.UserName + _conf.DomainGmail;
-                    else
-                        username = aduser.EmailAddress;
-
-                    var responseXml = "";
-                    var actionUrl = "";
-                    var relayState = "";
-                    while (string.IsNullOrEmpty(responseXml))
+                    if (model.isSSO)
                     {
-                        var sso = SSO(username, model.SAMLRequest, model.RelayState);
-                        if (sso != null)
+                        if (!string.IsNullOrEmpty(model.SAMLRequest) && !string.IsNullOrEmpty(model.RelayState))
                         {
-                            responseXml = sso.responseXml;
-                            actionUrl = sso.actionUrl;
-                            relayState = sso.relayState;
-                            TempData["responseXml"] = sso.responseXml;
-                            TempData["actionUrl"] = sso.actionUrl;
-                            TempData["relayState"] = sso.relayState;
+                            var sso = SSO(model.UserName, model.SAMLRequest, model.RelayState);
+                            this._loginServices.Login(aduser, role, true, model.SAMLRequest, model.RelayState, sso.actionUrl, sso.responseXml);
+                            writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
+                            return RedirectToAction("Home", "Profile", new { renewsso = true });
                         }
                     }
-                    this._loginServices.Login(aduser, role, true, responseXml, relayState, actionUrl);
-                    writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
-
-                    if (model.isSSO)
-                        return RedirectToAction("Home", "Profile", new { renewsso = true });
                     else
+                    {
+                        this._loginServices.Login(aduser, role, true, "", "", "", "");
+                        writelog(LogType.log_login, LogStatus.successfully, IDMSource.AD, model.UserName, model.UserName + " has been logged in.", model.UserName);
                         return RedirectToAction("Home", "Profile");
+                    }
+                        
                 }
             }
             return View(model);

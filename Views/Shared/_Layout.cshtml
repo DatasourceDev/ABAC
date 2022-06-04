@@ -71,14 +71,21 @@
         <div class="leftbar-profile p-3 w-100">
             <div class="media position-relative">
                 <div class="avatar-box thumb-md align-self-center mr-3">
-                    <a onclick="gmail_onclick()" href="javascript:void(0)" class="avatar-title bg-danger rounded-circle"  title="Email" ><i class="far fa-envelope fa-2x"></i></a>
+                    <a onclick="gmail_onclick()" href="javascript:void(0)" class="avatar-title bg-danger rounded-circle" title="Email"><i class="far fa-envelope fa-2x"></i></a>
                 </div>
                 <div class="avatar-box thumb-md align-self-center mr-3">
-                    <a onclick="cal_onclick()" href="javascript:void(0)" class="avatar-title bg-success rounded-circle" title="Calendar" ><i class="far far fa-calendar-alt fa-2x"></i></a>
+                    <a onclick="cal_onclick()" href="javascript:void(0)" class="avatar-title bg-success rounded-circle" title="Calendar"><i class="far far fa-calendar-alt fa-2x"></i></a>
                 </div><!--end media-body-->
                 <div class="avatar-box thumb-md align-self-center mr-3">
                     <a onclick="doc_onclick()" href="javascript:void(0)" class="avatar-title bg-warning rounded-circle" title="Document"><i class="fas fa-folder-open fa-2x"></i></a>
                 </div><!--end media-body-->
+                <div class="avatar-box thumb-md align-self-center mr-3" style="display:none;">
+                    <a onclick="reset_onclick()" href="javascript:void(0)" class="avatar-title bg-primary rounded-circle" title="Reset"><i class="fas fa-refresh fa-2x"></i></a>
+                </div><!--end media-body-->
+            </div>
+            <div>
+                <span id="sso_msg" style="color:white"></span>
+               
             </div>
         </div>
         <ul class="metismenu left-sidenav-menu slimscroll">
@@ -87,138 +94,139 @@
             </li>
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
-                <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("CheckAccount", "Account")"><i data-feather="search" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Search Account</a>
-                </li>
+            <li class="leftbar-menu-item">
+                <a class="menu-link" href="@Url.Action("CheckAccount", "Account")"><i data-feather="search" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Search Account</a>
+            </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
-                <li class="leftbar-menu-item">
+            <li class="leftbar-menu-item">
 
-                    <a href="javascript: void(0);" class="menu-link">
-                        <i data-feather="plus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>Create Account</span>
-                        <span class="menu-arrow">
-                            <i class="mdi mdi-chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="nav-second-level" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>New Account</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk Import File</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountBulk", "Account")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk</a></li>
-                    </ul>
-                </li>
+                <a href="javascript: void(0);" class="menu-link">
+                    <i data-feather="plus-square" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>Create Account</span>
+                    <span class="menu-arrow">
+                        <i class="mdi mdi-chevron-right"></i>
+                    </span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccount", "Account")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>New Account</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountFromFile", "Account")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk Import File</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateAccountBulk", "Account")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk</a></li>
+                </ul>
+            </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
-                <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("Rename", "Account")"><i data-feather="edit-3" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Rename Account</a>
-                </li>
+            <li class="leftbar-menu-item">
+                <a class="menu-link" href="@Url.Action("Rename", "Account")"><i data-feather="edit-3" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Rename Account</a>
+            </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk) | roles.Contains(roleType.PasswordOperator))
             {
-                <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Reset Password</a>
-                </li>
+            <li class="leftbar-menu-item">
+                <a class="menu-link" href="@Url.Action("ResetPassword", "Account")"><i data-feather="key" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Reset Password</a>
+            </li>
             }
 
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
-                <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Lock/Unlock</a>
-                </li>
+            <li class="leftbar-menu-item">
+                <a class="menu-link" href="@Url.Action("EnableAccount", "Account")"><i data-feather="toggle-right" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Lock/Unlock</a>
+            </li>
             }
             @if (roles.Contains(roleType.Admin))
             {
-                <li class="leftbar-menu-item">
-                    <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Delete Account</a>
-                </li>
+            <li class="leftbar-menu-item">
+                <a class="menu-link" href="@Url.Action("DeleteAccount", "Account")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Delete Account</a>
+            </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.Helpdesk))
             {
-                <li class="leftbar-menu-item">
-                    <a href="javascript: void(0);" class="menu-link">
-                        <i data-feather="pie-chart" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>Report</span>
-                        <span class="menu-arrow">
-                            <i class="mdi mdi-chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="nav-second-level" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("BulkImport", "Report")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk Import File</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Bulk", "Report")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateUser", "Report")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create User[Syn]</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("UpdateUser", "Report")"><i data-feather="edit" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Update/Rename User[Syn]</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("DeleteUser", "Report")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Delete User[Syn]</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("Log", "Report")"><i data-feather="list" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Transaction Log</a></li>
-                    </ul>
-                </li>
+            <li class="leftbar-menu-item">
+                <a href="javascript: void(0);" class="menu-link">
+                    <i data-feather="pie-chart" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>Report</span>
+                    <span class="menu-arrow">
+                        <i class="mdi mdi-chevron-right"></i>
+                    </span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("BulkImport", "Report")"><i data-feather="file-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk Import File</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Bulk", "Report")"><i data-feather="users" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Bulk</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CreateUser", "Report")"><i data-feather="user-plus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Create User[Syn]</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("UpdateUser", "Report")"><i data-feather="edit" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Update/Rename User[Syn]</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("DeleteUser", "Report")"><i data-feather="user-minus" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Delete User[Syn]</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Log", "Report")"><i data-feather="list" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Transaction Log</a></li>
+                </ul>
+            </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.WebMaster))
             {
-                <li class="leftbar-menu-item">
-                    <a href="javascript: void(0);" class="menu-link">
-                        <i data-feather="code" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>Home CMS</span>
-                        <span class="menu-arrow">
-                            <i class="mdi mdi-chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="nav-second-level" aria-expanded="false">
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSTest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Test</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStaff", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Staff</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStudent", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Student</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>VIP</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Office</a></li>
-                        <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Guest</a></li>
-                    </ul>
-                </li>
+            <li class="leftbar-menu-item">
+                <a href="javascript: void(0);" class="menu-link">
+                    <i data-feather="code" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>Home CMS</span>
+                    <span class="menu-arrow">
+                        <i class="mdi mdi-chevron-right"></i>
+                    </span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSTest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Test</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStaff", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Staff</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSStudent", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Student</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSVIP", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>VIP</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSOffice", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Office</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("CMSGuest", "System")"><i data-feather="home" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Guest</a></li>
+                </ul>
+            </li>
             }
             @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.WebMaster))
             {
-                <li class="leftbar-menu-item">
-                    <a href="javascript: void(0);" class="menu-link">
-                        <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>Setup</span>
-                        <span class="menu-arrow">
-                            <i class="mdi mdi-chevron-right"></i>
-                        </span>
-                    </a>
-                    <ul class="nav-second-level" aria-expanded="false">
-                        @if (roles.Contains(roleType.Admin))
+            <li class="leftbar-menu-item">
+                <a href="javascript: void(0);" class="menu-link">
+                    <i data-feather="tool" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>Setup</span>
+                    <span class="menu-arrow">
+                        <i class="mdi mdi-chevron-right"></i>
+                    </span>
+                </a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    @if (roles.Contains(roleType.Admin))
                         {
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("UserRole", "System")"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>User Role</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("UserRole", "System")"><i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>User Role</a></li>
                         }
-                        @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.WebMaster))
+                    @if (roles.Contains(roleType.Admin) | roles.Contains(roleType.WebMaster))
                         {
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Setup</a></li>
-                            <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Landing Page Image</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("Setup", "System")"><i data-feather="settings" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Setup</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@Url.Action("LandingPage", "System")"><i data-feather="image" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>Landing Page Image</a></li>
                         }
 
-                    </ul>
-                </li>
+                </ul>
+            </li>
             }
             @if (!roles.Contains(roleType.Admin) & !roles.Contains(roleType.Helpdesk) & !roles.Contains(roleType.PasswordOperator) & !roles.Contains(roleType.WebMaster))
             {
-                <li class="leftbar-menu-item">
-                    <a href="@Url.Action("Index", "Profile")" class="menu-link">
-                        <i data-feather="user" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>Account Profile</span>
-                    </a>
-                </li>
-                @*<li class="leftbar-menu-item">
+            <li class="leftbar-menu-item">
+                <a href="@Url.Action("Index", "Profile")" class="menu-link">
+                    <i data-feather="user" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>Account Profile</span>
+                </a>
+            </li>
+            @*<li class="leftbar-menu-item">
                     <a href="@Url.Action("ChangePassword", "Profile")" class="menu-link">
                         <i data-feather="lock" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
                         <span>Change Password</span>
                     </a>
                 </li>*@
-                <li class="leftbar-menu-item">
-                    <a href="@Url.Action("Logout", "Auth")" class="menu-link" onclick="logout()">
-                        <i data-feather="power" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
-                        <span>Logout</span>
-                    </a>
-                </li>
+            <li class="leftbar-menu-item">
+                <a href="@Url.Action("Logout", "Auth")" class="menu-link" onclick="logout()">
+                    <i data-feather="power" class="align-self-center vertical-menu-icon icon-dual-vertical"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
             }
+
         </ul>
 
     </div>
@@ -232,7 +240,7 @@
                     <a class="nav-link dropdown-toggle waves-effect waves-light nav-user" data-toggle="dropdown" href="#" role="button"
                        aria-haspopup="false" aria-expanded="false">
                         <div class="avatar-box thumb-sm align-self-center">
-                            <span class="avatar-title bg-secondary  rounded-circle">@loginServices.AuthenName().ToUpper().Substring(0, 2)</span>
+                            <span id="user-avatar" class="avatar-title bg-primary rounded-circle">@loginServices.AuthenName().ToUpper().Substring(0, 2)</span>
                         </div>
                         <span class="ml-1 nav-user-name hidden-sm">
                             <span>@loginServices.AuthenName()</span>
@@ -247,7 +255,7 @@
                         }
                         else
                         {
-                            <a class="dropdown-item" href="@Url.Action("ChangePassword","Profile")"><i class="dripicons-lock text-muted mr-2"></i> Change Password</a>
+                        <a class="dropdown-item" href="@Url.Action("ChangePassword","Profile")"><i class="dripicons-lock text-muted mr-2"></i> Change Password</a>
                         }
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="@Url.Action("Logout", "Auth")" onclick="logout()"><i class="dripicons-exit text-muted mr-2"></i> Logout</a>
@@ -271,26 +279,23 @@
         <!-- end navbar-->
     </div>
     <!-- Top Bar End -->
-    
+
     <div class="page-wrapper">
         <!-- Page Content-->
         <div class="page-content-tab">
-            <div style="display:none">
+            <div >
                 <form method="post" action="@actionUrl" id="ssoform1">
-                    <div id="pnlCookie" >
+                    <div id="pnlCookie" style="display:none">
                         <div>
-                            @if (responseXml != null && relayState != null)
-                            {
-                                <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20">
+                            <textarea name="SAMLResponse" id="SAMLResponse" style="width:100%" rows="20" >
                                     @Html.Raw(responseXml)
                                 </textarea>
-                                <textarea name="RelayState" id="RelayState" cols="130" rows="5">
+                            <textarea name="RelayState" id="RelayState" cols="130" rows="5" >
                                     @relayState
                                 </textarea>
-                            }
                         </div>
                     </div>
-                    <button id="btnssosubmit" type="submit">Submit</button>
+                    <button id="btnssosubmit" type="submit" style="display:none">TEST</button>
                 </form>
             </div>
             @RenderBody()
@@ -369,6 +374,64 @@
         });
     </script>
     <script>
+        $(document).ready(function () {
+            sso_check_successed();
+            @*$.ajax({
+                type: 'get',
+                url: '@Url.Action("LoadTest", "Auth")',
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (data) {
+                    
+                }
+            });*@
+        });
+        function LoadSSO() {
+            //$('#sso_msg').text('LoadSSO');
+            localStorage.removeItem("sso");
+            $.ajax({
+                type: 'post',
+                url: '@Url.Action("LoadSSO", "Auth")',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ UserName :'@loginServices.AuthenName()' }),
+                dataType: 'json',
+                success: function (data) {
+                    if (data != null) {
+                        //$('#sso_msg').text('LoadSSO data');
+                        if (data.actionUrl != null) {
+                            localStorage.setItem("sso", "successed");
+                            var form = document.getElementById("ssoform1");
+                            form.action = data.actionUrl;
+
+                            var sAMLResponse = document.getElementById("SAMLResponse");
+                            sAMLResponse.textContent = data.responseXml;
+
+                            var relayState = document.getElementById("RelayState");
+                            relayState.textContent = data.relayState;
+
+                            //$('#sso_msg').text(data.actionUrl + data.responseXml + data.relayState);
+                           form.submit();
+                            sso_check_successed();
+                        }
+                    }
+                },
+                error: function (data) {
+                    //$('#sso_msg').text(data.responseText);
+                }
+            });
+        }
+        function sso_check_successed() {
+            var sso = localStorage.getItem("sso");
+            if (sso == 'successed') {
+                $('#user-avatar').removeClass("bg-primary");
+                $('#user-avatar').addClass("bg-secondary");
+            }
+            else {
+                $('#user-avatar').removeClass("bg-secondary");
+                $('#user-avatar').addClass("bg-primary");
+            }
+
+        }
         function gmail_onclick() {
             sso('http://gmail.google.com/a/au.edu');
         }
@@ -378,24 +441,20 @@
         function doc_onclick() {
             sso('http://docs.google.com/a/au.edu');
         }
-
-        $(function () {
-
-        });
-
+        function reset_onclick() {
+            localStorage.removeItem("sso");
+            sso_check_successed();
+        }
         function sso(url) {
             var sso = localStorage.getItem("sso");
             if (sso != 'successed') {
-                localStorage.setItem("sso", "successed");
-                $('#ssoform1').submit();
+                LoadSSO();
             }
             else {
                 window.open(url, '_blank');
             }
         }
-        $(document).ready(function () {
 
-        });
         function logout() {
             localStorage.removeItem("sso");
         }

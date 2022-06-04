@@ -37,16 +37,11 @@
             }
         }
     </div>
-
 </div> <!-- end row -->
 @section scripts{
     <script>
         $(document).ready(function () {
-            if ('@ViewBag.renewsso' == 'True') {
-                localStorage.removeItem("sso");
-                var sso = localStorage.getItem("sso");
-               
-                localStorage.setItem("sso", "successed");
+            if ('@ViewBag.renewsso' == 'True') {             
                 $('#ssoform1').submit();
             }
         });

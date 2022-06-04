@@ -48,9 +48,137 @@ namespace ABAC.Controllers
             this._provider = provider;
 
         }
+        [HttpGet]
+        public IActionResult LoadTest()
+        {
+            writelog(LogType.log_sso, LogStatus.successfully, IDMSource.SSO, "testsso", "Load Test");
+            return Json(new { });
+        }
 
+            [HttpPost]
+        public async Task<IActionResult> LoadSSO([FromBody] LoginDTO model)
+        {
+            //writelog(LogType.log_sso, LogStatus.successfully, IDMSource.SSO, model.UserName, "Load SSO");
+            if (string.IsNullOrEmpty(model.UserName))
+            {
+                return Json(new { errmessage = "UserName is required." });
+            }
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                var aduser = await _provider.GetAdUser2(model.UserName, _context, _conf.Env);
+                if (aduser == null)
+                {
+                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "The account " + model.UserName + " is not exist on AD.", model.UserName);
+                    return Json(new { errmessage = "The account " + model.UserName + " is not exist on AD." });
+                }
+                if (aduser.Enabled == false)
+                {
+                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "The account " + model.UserName + " has been terminated.", model.UserName);
+                    return Json(new { errmessage = "The account " + model.UserName + " has been terminated." });
+                }
+                if (_provider.ValidateCredentials(model.UserName, model.Password, _context).result == false)
+                {
+                    writelog(LogType.log_login, LogStatus.failed, IDMSource.AD, model.UserName, "The account " + model.UserName + " key-in incorrect model.UserName or password.", model.UserName);
+                    ModelState.AddModelError("Password", "Incorrect model.UserName or password.");
+                    return Json(new { errmessage = "The account " + model.UserName + " key-in incorrect model.UserName or password." });
+                }
+            }
+            model.UserName = model.UserName  + _conf.DomainGmail;
+            var samlRequest = this._loginServices.SAMLRequest();
+            var relayState = this._loginServices.RelayState();
+            if (string.IsNullOrEmpty(samlRequest))
+                samlRequest = "fVLLTsMwELwj8Q+W70maHFBlNUGlVUUkHhENHLi5ziZx5djBa6fw96QpCDjQ63h2HutdXL93igxgURqd0jicUQJamErqJqXP5SaY0+vs8mKBvFM9W3rX6id484COjJMa2fSQUm81MxwlMs07QOYE2y7v71gSzlhvjTPCKErydUobs6v2eiervtWV2It9D7LhdceBG9VCvRedAdM2lLx8x0qOsXJED7lGx7UboVkSB3ESxPNyNmfxFUuSV0qKL6cbqU8NzsXanUjIbsuyCIrHbTkJDLIC+zCyj1FNoyAUpjvaFxxRDiNcc4VAyRIRrBsDroxG34Hdgh2kgOenu5S2zvXIouhwOIQ/MhGPuA+h8hEXSLNpq2wqZn+t83xs/m1Lsx/hRfRLKvv6rWOJfF0YJcUHWSplDisL3I0NnPVjgY2xHXf/u8VhPCGyCuqJyrzGHoSsJVSURNnJ9e9ZjMfyCQ==";
+            
+            if (string.IsNullOrEmpty(relayState))
+                relayState = "https://accounts.google.com/CheckCookie?continue=https://mail.google.com/mail/u/0/?hl=en&tab=wm&service=mail&hl=en&osid=1&ifkv=AU9NCcwRFq1XqjSPxFUembdC1eyFh3rLcWszpd6GnDviFhiihe9tqKVOcZ7mLpJB3BYUc-YIN5XX6g&continue=https://mail.google.com/mail/u/0/?hl=en&tab=wm";
+            var sso = SSO(model.UserName, samlRequest, relayState);
+            return Json(sso);
 
+        }
+        public SSODTO SSO(string username, string samlRequest, string relayState)
+        {
+            if (!string.IsNullOrEmpty(samlRequest) && !string.IsNullOrEmpty(relayState))
+            {
+                if (username != "")
+                {
+                    List<string> result = new List<string>();
+                    using (var process = new Process())
+                    {
+                        process.StartInfo.FileName = Path.Combine("C:\\Dthai\\SMAL\\", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        //process.StartInfo.FileName = Path.Combine("C:\\Work\\ABAC\\ABAC-SAML\\bin\\Debug", "ABAC-SAML.exe"); // relative path. absolute path works too. 
+                        process.StartInfo.ArgumentList.Add($"{username}");
+                        process.StartInfo.ArgumentList.Add($"{samlRequest}");
+                        process.StartInfo.CreateNoWindow = true;
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.RedirectStandardOutput = true;
+                        process.StartInfo.RedirectStandardError = true;
+                        process.OutputDataReceived += (sender, data) => result.Add(data.Data);
+                        process.ErrorDataReceived += (sender, data) => result.Add(data.Data);
+                        process.Start();
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();     // (optional) wait up to 10 seconds
+                        do
+                        {
+                            if (!process.HasExited)
+                            {
+                                // Refresh the current process property values.
+                                process.Refresh();
+                                Console.WriteLine($"exit {process.HasExited}");
+                            }
+                        }
+                        while (!process.WaitForExit(1000));
+                    }
+                    try
+                    {
 
+                        string responseXml = "";
+                        string actionUrl = "";
+                        var actionUrlbegin = false;
+                        if (result.Count() > 0)
+                        {
+                            foreach (var row in result)
+                            {
+                                if (!string.IsNullOrEmpty(row))
+                                {
+                                    if (row.Contains("actionUrl:"))
+                                    {
+                                        actionUrl = row.Replace("actionUrl:", "");
+                                        actionUrlbegin = true;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        if (actionUrlbegin == false)
+                                        {
+                                            if (row.Contains("responseXml:"))
+                                                responseXml += row.Replace("responseXml:", "");
+                                            else
+                                                responseXml += Environment.NewLine + row;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var sso = new SSODTO();
+                        sso.responseXml = responseXml;
+                        sso.actionUrl = actionUrl;
+                        sso.relayState = relayState;
+                        //writelog(LogType.log_sso, LogStatus.successfully, IDMSource.SSO, username, "SSO Done");
+                        return sso;
+                    }
+                    catch (Exception ex)
+                    {
+                        writelog(LogType.log_sso, LogStatus.failed, IDMSource.SSO, username, ex.Message);
+                        return null;
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return null;
+        }
         //public async Task<IActionResult> MailRegister(Guest model)
         //{
         //    var htmlToConvert = await RenderViewAsync("MailRegister", model, true);
@@ -841,6 +969,8 @@ namespace ABAC.Controllers
                     log_description = "Forgot password ";
                 else if (log_type_id == LogType.log_rename)
                     log_description = "Rename account ";
+                else if (log_type_id == LogType.log_sso)
+                    log_description = "SSO ";
 
                 log_description += uid ;
                 log_description += " on " + source.ToString();

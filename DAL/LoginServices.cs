@@ -16,9 +16,10 @@ namespace ABAC.Services
         bool isAuthen();
         bool isInAdminRoles(string[] roles);
         bool isInRoles(string[] roles);
-        void Login(AdUser2 user,string role, bool isPersistent, string responseXml, string relayState, string actionUrl);
+        void Login(AdUser2 user,string role, bool isPersistent, string sAMLRequest, string relayState, string actionUrl, string responseXml);
         void Logout();
         string UserRole();
+        string SAMLRequest();
         string ResponseXml();
         string RelayState();
         string ActionUrl();
@@ -40,6 +41,11 @@ namespace ABAC.Services
         {
             var rolename = this.httpContext.User.FindFirstValue(ClaimTypes.Role);
             return rolename;
+        }
+        public string SAMLRequest()
+        {
+            var sAMLRequest = this.httpContext.User.FindFirstValue("sAMLRequest");
+            return sAMLRequest;
         }
         public string ResponseXml()
         {
@@ -91,15 +97,22 @@ namespace ABAC.Services
         {
             this.httpContext = httpContext;
         }
-        public async void Login(AdUser2 user, string role, bool isPersistent, string responseXml, string relayState, string actionUrl)
+        public async void Login(AdUser2 user, string role, bool isPersistent, string sAMLRequest, string relayState, string actionUrl,string responseXml)
         {
+            if (string.IsNullOrEmpty(sAMLRequest))
+                sAMLRequest = "";
+            if (string.IsNullOrEmpty(relayState))
+                relayState = "";
+            if (string.IsNullOrEmpty(actionUrl))
+                actionUrl = "";
             var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme, ClaimTypes.Name, ClaimTypes.Role);
             identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.SamAccountName));
             identity.AddClaim(new Claim(ClaimTypes.Role, role));
             identity.AddClaim(new Claim(ClaimTypes.Name, user.SamAccountName));
-            identity.AddClaim(new Claim("responseXml", responseXml));
+            identity.AddClaim(new Claim("sAMLRequest", sAMLRequest));
             identity.AddClaim(new Claim("relayState", relayState));
             identity.AddClaim(new Claim("actionUrl", actionUrl));
+            identity.AddClaim(new Claim("responseXml", responseXml));
 
             // Authenticate using the identity
             var principal = new ClaimsPrincipal(identity);
